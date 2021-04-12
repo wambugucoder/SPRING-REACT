@@ -20,7 +20,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-               //ALLOW HTTPS TRAFFIC
+               //ALLOW HTTPS TRAFFIC AND TLS
         http.requiresChannel()
                 .anyRequest()
                 .requiresSecure()
