@@ -2,12 +2,14 @@ package com.server.pollingapp.models;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "address")
-public class AddressModel {
+public class AddressModel implements Serializable {
 
+    private static final long serialVersionUID = 8239677412360655401L;
     @Id
     private UUID id=UUID.randomUUID();
 
