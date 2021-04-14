@@ -6,13 +6,15 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
-public class UserModel {
+public class UserModel implements Serializable {
+    private static final long serialVersionUID = -999055560350713378L;
 
            @Id
            private  UUID id=UUID.randomUUID();
