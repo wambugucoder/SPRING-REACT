@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -32,6 +33,15 @@ public class JwtService {
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ 1000*60*60*10))
+                .signWith(SignatureAlgorithm.HS256,securityKey)
+                .compact();
+
+    }
+    private String CreateActivationToken(String username){
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+ 600000))
                 .signWith(SignatureAlgorithm.HS256,securityKey)
                 .compact();
 
@@ -63,17 +73,16 @@ public class JwtService {
 
     }
     public String GenerateLoginToken(UserModel user){
-        Map<String,Object> payload = null;
+        Map<String,Object> payload = new HashMap<>();
         payload.put("Role",user.getRoles().toString());
         payload.put("Email",user.getEmail());
         payload.put("CreatedAt",user.getCreatedAt().toString());
         return CreateJwtToken(payload,user.getUsername());
     }
 
-    public String GenerateAccountActivationToken(RegistrationRequest registrationRequest){
-        Map<String,Object> payload = null;
-        payload.put("Email",registrationRequest.getEmail());
-        return CreateJwtToken(payload,registrationRequest.getUsername());
+    public String GenerateAccountActivationToken(String username){
+
+        return CreateActivationToken(username);
 
 
     }

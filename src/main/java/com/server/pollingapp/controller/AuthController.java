@@ -1,5 +1,6 @@
 package com.server.pollingapp.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.server.pollingapp.request.LoginRequest;
 import com.server.pollingapp.request.RegistrationRequest;
 import com.server.pollingapp.response.LoginResponse;
