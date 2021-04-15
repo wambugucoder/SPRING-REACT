@@ -1,13 +1,13 @@
 package com.server.pollingapp.request;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class RealTimeLogRequest implements Serializable {
-    private String level;
-    private String message;
-    private LocalDateTime createdAt=LocalDateTime.now();
-    private  String serviceAffected;
+    public String level;
+    public String message;
+    public Date createdAt=new Date();
+    public  String serviceAffected;
 
     public RealTimeLogRequest(String level, String message, String serviceAffected) {
         this.level = level;
@@ -15,12 +15,32 @@ public class RealTimeLogRequest implements Serializable {
         this.serviceAffected = serviceAffected;
     }
 
+    public String getLevel() {
+        return level;
+    }
+
     public void setLevel(String level) {
         this.level = level;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getServiceAffected() {
+        return serviceAffected;
     }
 
     public void setServiceAffected(String serviceAffected) {

@@ -77,7 +77,7 @@ public class UserAuthenticationService {
         userRepository.save(newUser);
 
         //GENERATE LOGS
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", registrationRequest.getUsername()+"Has Successfully Been Registered","UserAuthenticationService"));
+        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", registrationRequest.getUsername()+" Has Successfully Been Registered","UserAuthenticationService"));
 
 
         //CREATE ACTIVATION TOKEN
@@ -85,7 +85,7 @@ public class UserAuthenticationService {
 
         //SEND EMAIL WITH LINK->TODO
         //GENERATE LOGS
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", registrationRequest.getUsername()+"Has Received An Email","UserAuthenticationService"));
+        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", registrationRequest.getUsername()+" Has Received An Email","UserAuthenticationService"));
 
         //SEND SUCCESS MESSAGE AFTER REGISTERING USER
         RegistrationResponse success=new RegistrationResponse();
