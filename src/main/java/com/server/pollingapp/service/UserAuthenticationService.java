@@ -37,6 +37,8 @@ public class UserAuthenticationService {
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     AuthenticationManager authenticationManager;
+    @Autowired
+    JwtService jwtService;
 
     public ResponseEntity<RegistrationResponse>RegisterUser(RegistrationRequest registrationRequest){
         // CHECK IF EMAIL OR USERNAME EXISTS
@@ -62,6 +64,12 @@ public class UserAuthenticationService {
 
         userRepository.save(newUser);
 
+
+        //CREATE ACTIVATION TOKEN
+        String activationToken=jwtService.GenerateAccountActivationToken(registrationRequest);
+
+        //SEND EMAIL WITH LINK->TODO
+
         //SEND SUCCESS MESSAGE AFTER REGISTERING USER
         RegistrationResponse success=new RegistrationResponse();
         success.setMessage("Please Check your Email To Activate your Account");
@@ -86,7 +94,7 @@ public class UserAuthenticationService {
         catch (LockedException e){
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
-            loginResponse.setMessage("Your Account has Been Temporarily Locked");
+            loginResponse.setMessage("Your Account Has Not Yeet Been Activated");
             loginResponse.setToken(null);
             return ResponseEntity.badRequest().body(loginResponse);
 
@@ -99,12 +107,12 @@ public class UserAuthenticationService {
             return ResponseEntity.badRequest().body(loginResponse);
 
         }
-        //AFTER SUCCESSFUL AUTHENTICATION
-
+        //AFTER SUCCESSFUL AUTHENTICATION CREATE A JWT TOKEN
+        String jwtToken=jwtService.GenerateLoginToken(userRepository.findByUsername(loginRequest.getUsername()));
         LoginResponse loginResponse=new LoginResponse();
         loginResponse.setError(false);
         loginResponse.setMessage("Successfully Logged In");
-        loginResponse.setToken("Incoming");
+        loginResponse.setToken(jwtToken);
         return ResponseEntity.ok().body(loginResponse);
 
     }
