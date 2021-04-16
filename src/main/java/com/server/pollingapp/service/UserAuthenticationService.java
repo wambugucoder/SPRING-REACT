@@ -43,6 +43,8 @@ public class UserAuthenticationService {
     JwtService jwtService;
     @Autowired
     PollStream pollStream;
+    @Autowired
+    EmailService emailService;
 
     public ResponseEntity<RegistrationResponse>RegisterUser(RegistrationRequest registrationRequest){
         // CHECK IF EMAIL OR USERNAME EXISTS
@@ -84,6 +86,8 @@ public class UserAuthenticationService {
         String activationToken=jwtService.GenerateAccountActivationToken(registrationRequest.getUsername());
 
         //SEND EMAIL WITH LINK->TODO
+        emailService.createActivationTemplate(activationToken,registrationRequest);
+
         //GENERATE LOGS
         pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", registrationRequest.getUsername()+" Has Received An Email","UserAuthenticationService"));
 
