@@ -1,12 +1,12 @@
 package com.server.pollingapp.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.server.pollingapp.models.AddressModel;
 import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.request.LoginRequest;
 import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.request.RegistrationRequest;
+import com.server.pollingapp.response.AccountActivationResponse;
 import com.server.pollingapp.response.LoginResponse;
 import com.server.pollingapp.response.RegistrationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,7 +121,7 @@ public class UserAuthenticationService {
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
-            loginResponse.setMessage("Your Account Has Not Yeet Been Activated");
+            loginResponse.setMessage("Your Account Has Not Yet Been Activated");
             loginResponse.setToken(null);
             return ResponseEntity.badRequest().body(loginResponse);
 
@@ -142,12 +142,50 @@ public class UserAuthenticationService {
         String jwtToken=jwtService.GenerateLoginToken(user);
         //GENERATE LOGS
         pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", loginRequest.getUsername()+"Successfully Logged In","UserAuthenticationService"));
-        //RETURN 200 ERROR
+        //RETURN 200 SUCCESS
         LoginResponse loginResponse=new LoginResponse();
         loginResponse.setError(false);
         loginResponse.setMessage("Successfully Logged In");
         loginResponse.setToken("Bearer" +jwtToken);
         return ResponseEntity.ok().body(loginResponse);
 
+    }
+    public ResponseEntity<AccountActivationResponse> ActivateUserAccount(String token){
+        //CHECK IF TOKEN IS EXPIRED
+        if (jwtService.IsTokenNotExpired(token).equals(false)){
+            AccountActivationResponse response= new AccountActivationResponse();
+            response.setError(true);
+            response.setMessage("Your Activation Token Seems to have already expired");
+            //GENERATE LOG
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN","Activation Token Is Expired","UserAuthenticationService"));
+            return ResponseEntity.badRequest().body(response);
+        }
+        //EXTRACT DETAILS
+        String username = jwtService.ExtractUserName(token);
+        UserModel user= userRepository.findByUsername(username);
+        //CHECK IF USER HAD ALREADY VALIDATED
+        if (user.getEnabled().equals(true)){
+            //RETURN ERROR SAYING ACCOUNT WAS ALREADY ACTIVATED
+            AccountActivationResponse response= new AccountActivationResponse();
+            response.setError(true);
+            response.setMessage("Your Account was already activated");
+            //GENERATE LOG
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN",username + "Tried to activate Account again","UserAuthenticationService"));
+        }
+        //IF NOT EXPIRED,NOT VALIDATE EXTRACT USER-DETAILS AND SET ENABLED TO TRUE
+        user.setEnabled(true);
+        user.setAccountNotLocked(true);
+
+        //UPDATE USER CONTENTS
+        userRepository.save(user);
+
+        //RETURN SUCCESS MESSAGE
+        AccountActivationResponse response= new AccountActivationResponse();
+        response.setError(false);
+        response.setMessage("Your Account Has Been Activated Successfully");
+
+        //GENERATE LOG
+        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO",username + "has activated their account","UserAuthenticationService"));
+        return ResponseEntity.ok().body(response);
     }
 }

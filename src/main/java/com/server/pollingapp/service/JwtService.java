@@ -2,9 +2,7 @@ package com.server.pollingapp.service;
 
 import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.request.RegistrationRequest;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -59,15 +57,15 @@ public class JwtService {
          return ExtractSpecificClaim(token,Claims::getExpiration);
     }
 
-    private String ExtractUserName(String token){
+    public String ExtractUserName(String token){
         return ExtractSpecificClaim(token,Claims::getSubject);
     }
 
-    private Boolean IsTokenNotExpired(String token){
+    public Boolean IsTokenNotExpired(String token){
         return ExpiryDate(token).after(new Date());
     }
 
-    private Boolean IsAuthHeaderValid(String token, UserDetails pollsUserDetails){
+    public Boolean IsAuthHeaderValid(String token, UserDetails pollsUserDetails){
         String username=ExtractUserName(token);
         return username.equals(pollsUserDetails.getUsername()) && IsTokenNotExpired(token);
 
@@ -81,10 +79,7 @@ public class JwtService {
     }
 
     public String GenerateAccountActivationToken(String username){
-
         return CreateActivationToken(username);
-
-
     }
 
 }

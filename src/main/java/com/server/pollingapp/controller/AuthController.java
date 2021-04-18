@@ -3,6 +3,7 @@ package com.server.pollingapp.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.server.pollingapp.request.LoginRequest;
 import com.server.pollingapp.request.RegistrationRequest;
+import com.server.pollingapp.response.AccountActivationResponse;
 import com.server.pollingapp.response.LoginResponse;
 import com.server.pollingapp.response.RegistrationResponse;
 import com.server.pollingapp.service.UserAuthenticationService;
@@ -10,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -54,6 +53,18 @@ public class AuthController {
             return ResponseEntity.badRequest().body(loginResponse);
         }
         return userAuthenticationService.LoginUser(loginRequest);
+
+    }
+    @PutMapping(value = "/api/v1/auth/activate/:token",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<AccountActivationResponse> activateAccount(@RequestParam String token){
+        //IF TOKEN IS NULL SEND ERROR
+        if (token.isEmpty()){
+            AccountActivationResponse response=new AccountActivationResponse();
+            response.setError(true);
+            response.setMessage("Your Token is Empty");
+            return ResponseEntity.badRequest().body(response);
+        }
+        return userAuthenticationService.ActivateUserAccount(token);
 
     }
 
