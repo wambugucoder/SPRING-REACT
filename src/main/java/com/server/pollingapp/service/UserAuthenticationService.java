@@ -145,7 +145,7 @@ public class UserAuthenticationService {
         LoginResponse loginResponse=new LoginResponse();
         loginResponse.setError(false);
         loginResponse.setMessage("Successfully Logged In");
-        loginResponse.setToken("Bearer"+""+jwtToken);
+        loginResponse.setToken("Bearer"+" "+jwtToken);
         return ResponseEntity.ok().body(loginResponse);
 
     }

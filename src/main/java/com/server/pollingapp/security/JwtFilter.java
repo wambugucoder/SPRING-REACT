@@ -74,7 +74,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(passToAuthorizationServer);
 
                 //GENERATE LOG
-                pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO",username +"has been authorized to access"+request.getRequestURI(),"JwtFilter"));
+                pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO",username+" "+"has been authorized to access"+" "+request.getRequestURI(),"JwtFilter"));
             }
 
         }
