@@ -43,13 +43,15 @@ public class JwtFilter extends OncePerRequestFilter {
      * @param response
      * @param filterChain
      */
-    String username=null;
-    String jwtToken=null;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
           //GET AUTH HEADER
        final String authHeader= request.getHeader("Authorization");
+        String username=null;
+        String jwtToken=null;
+
           //UPDATE VALUES OF TOKEN AND USERNAME
         if(authHeader!= null && authHeader.startsWith("Bearer ")){
             //ACQUIRE TOKEN
@@ -58,9 +60,8 @@ public class JwtFilter extends OncePerRequestFilter {
              if (jwtService.ValidateToken(jwtToken)){
                  username=jwtService.ExtractUserName(jwtToken);
              }
-        }
-        else{
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR","Token Does Not Begin with Bearer String","JWTFILTER"));
+
+
         }
         //IF TOKEN EXISTS,VALIDATE AND PLACE USER IN SESSION
         if (username!= null && SecurityContextHolder.getContext().getAuthentication()==null){
@@ -70,7 +71,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken passToAuthorizationServer = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 
                 passToAuthorizationServer.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
+                // After setting the Authentication in the context, we specify
+                // that the current user is authenticated. So it passes the
+                // Spring Security Configurations successfully.
                 SecurityContextHolder.getContext().setAuthentication(passToAuthorizationServer);
 
                 //GENERATE LOG

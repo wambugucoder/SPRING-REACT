@@ -88,21 +88,13 @@ public class JwtService {
     public boolean ValidateToken(String token){
         try {
             Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token);
-            return true;
         }
-        catch (SignatureException ex) {
+        catch (JwtException ex) {
             pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
-        } catch (MalformedJwtException ex) {
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
-        } catch (ExpiredJwtException ex) {
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
-        } catch (UnsupportedJwtException ex) {
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
-        } catch (IllegalArgumentException ex) {
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
+            return false;
         }
 
-        return false;
+        return true;
     }
 
 }
