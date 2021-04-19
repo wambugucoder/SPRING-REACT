@@ -8,6 +8,8 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Jos Wambugu
@@ -26,7 +28,24 @@ import org.springframework.context.annotation.Configuration;
         bearerFormat = "JWT",
         scheme = "bearer"
 )
-public class OpenApiConfig {
+public class OpenApiConfig implements WebMvcConfigurer {
+    /**
+     * Add handlers to serve static resources such as images, js, and, css
+     * files from specific locations under web application root, the classpath,
+     * and others.
+     *
+     * @param registry
+     * @see ResourceHandlerRegistry
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry
+                .addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
 
     @Bean
     public OpenAPI customOpenApi(){

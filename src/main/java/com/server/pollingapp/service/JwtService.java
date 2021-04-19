@@ -1,8 +1,9 @@
 package com.server.pollingapp.service;
 
 import com.server.pollingapp.models.UserModel;
-import com.server.pollingapp.request.RegistrationRequest;
+import com.server.pollingapp.request.RealTimeLogRequest;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
+    @Autowired
+    PollStream pollStream;
 
     @Value("${secret.key}")
     private String securityKey;
@@ -45,7 +48,7 @@ public class JwtService {
 
     }
     private Claims ExtractAllClaims(String token){
-        return Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token).getBody();
+        return  Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token).getBody();
 
     }
     private <R> R ExtractSpecificClaim(String token, Function<Claims,R> claimsResolver){
@@ -80,6 +83,26 @@ public class JwtService {
 
     public String GenerateAccountActivationToken(String username){
         return CreateActivationToken(username);
+    }
+
+    public boolean ValidateToken(String token){
+        try {
+            Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token);
+            return true;
+        }
+        catch (SignatureException ex) {
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
+        } catch (MalformedJwtException ex) {
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
+        } catch (ExpiredJwtException ex) {
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
+        } catch (UnsupportedJwtException ex) {
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
+        } catch (IllegalArgumentException ex) {
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
+        }
+
+        return false;
     }
 
 }

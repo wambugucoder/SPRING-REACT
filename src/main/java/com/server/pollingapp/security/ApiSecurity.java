@@ -2,15 +2,17 @@ package com.server.pollingapp.security;
 
 
 import com.server.pollingapp.service.PollsUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @author Jos Wambugu
@@ -20,8 +22,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 @Configuration
 public class ApiSecurity extends WebSecurityConfigurerAdapter {
-    @Autowired
-    PollsUserDetailsService pollsUserDetailsService;
+    final PollsUserDetailsService pollsUserDetailsService;
+
+    final JwtFilter jwtFilter;
+
+    public ApiSecurity(PollsUserDetailsService pollsUserDetailsService, JwtFilter jwtFilter) {
+        this.pollsUserDetailsService = pollsUserDetailsService;
+        this.jwtFilter = jwtFilter;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -56,8 +64,45 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
 
                 //STRICT AUTHORIZATION
                 .authorizeRequests()
-                .antMatchers("/api/v1/**").permitAll();
+                .antMatchers("/api/v1/auth/**").permitAll()
+                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+                .and()
 
+                //JWT-TOKEN-SESSION MANAGEMENT
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+
+                //XSS PROTECTION
+                .headers()
+                .contentSecurityPolicy("script-src 'self' https://trustedscripts.example.com; object-src https://trustedplugins.example.com; report-uri /csp-report-endpoint/");
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+    }
+
+    /**
+     * Override this method to configure {@link WebSecurity}. For example, if you wish to
+     * ignore certain requests.
+     * <p>
+     * Endpoints specified in this method will be ignored by Spring Security, meaning it
+     * will not protect them from CSRF, XSS, Clickjacking, and so on.
+     * <p>
+     * Instead, if you want to protect endpoints against common vulnerabilities, then see
+     * {@link #configure(HttpSecurity)} and the {@link HttpSecurity#authorizeRequests}
+     * configuration method.
+     *
+     * @param web
+     */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/webjars/**",
+                "/actuator"
+        );
     }
 
     /**
