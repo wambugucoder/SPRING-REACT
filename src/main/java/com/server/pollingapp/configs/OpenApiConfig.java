@@ -1,11 +1,15 @@
 package com.server.pollingapp.configs;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Jos Wambugu
@@ -18,7 +22,30 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
-public class OpenApiConfig {
+@SecurityScheme(
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
+public class OpenApiConfig implements WebMvcConfigurer {
+    /**
+     * Add handlers to serve static resources such as images, js, and, css
+     * files from specific locations under web application root, the classpath,
+     * and others.
+     *
+     * @param registry
+     * @see ResourceHandlerRegistry
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry
+                .addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
 
     @Bean
     public OpenAPI customOpenApi(){
