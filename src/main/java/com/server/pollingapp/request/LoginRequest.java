@@ -6,8 +6,8 @@ import javax.validation.constraints.Size;
 
 public class LoginRequest {
     @NotEmpty(message = "UserName Cannot Be Empty")
-    @Size(min = 6,message = "Minimum Characters allowed is 6")
-    private String username;
+    @Email(message = "Please Input a valid email")
+    private String email;
 
 
     @NotEmpty(message = "Password Cannot Be Empty")
@@ -15,12 +15,12 @@ public class LoginRequest {
     private String password;
 
     public LoginRequest(String username, String password) {
-        this.username = username;
+        this.email = username;
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
     public String getPassword() {

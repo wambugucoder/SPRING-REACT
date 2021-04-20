@@ -20,19 +20,19 @@ public class PollsUserDetailsService implements UserDetailsService {
      * object that comes back may have a username that is of a different case than what
      * was actually requested..
      *
-     * @param username the username identifying the user whose data is required.
+     * @param email the email identifying the user whose data is required.
      * @return a fully populated user record (never <code>null</code>)
      * @throws UsernameNotFoundException if the user could not be found or the user has no
      *                                   GrantedAuthority
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserDetails result;
-        if (userRepository.existsByUsername(username)) {
-            UserModel userModel = userRepository.findByUsername(username);
+        if (userRepository.existsByEmail(email)) {
+            UserModel userModel = userRepository.findByEmail(email);
             result = new PollsUserDetails(userModel);
         } else {
-            throw new UsernameNotFoundException("UserName Does Not Exist");
+            throw new UsernameNotFoundException("Email Does Not Exist");
         }
         return result;
     }

@@ -4,7 +4,6 @@ import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.service.JwtService;
 import com.server.pollingapp.service.PollStream;
 import com.server.pollingapp.service.PollsUserDetailsService;
-import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
             jwtToken=authHeader.substring(7);
             //VALIDATE IT TO ACQUIRE USERNAME ,IF SOMETHING IS WRONG WITH TOKEN USERNAME=NULL
              if (jwtService.ValidateToken(jwtToken)){
-                 username=jwtService.ExtractUserName(jwtToken);
+                 username=jwtService.ExtractEmail(jwtToken);
              }
 
 

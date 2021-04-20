@@ -4,17 +4,42 @@ import com.server.pollingapp.models.UserModel;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
-public class PollsUserDetails implements UserDetails {
+public class PollsUserDetails implements OAuth2User,UserDetails {
 
     private static final long serialVersionUID = -9094319770196344164L;
     private UserModel userModel;
+    private Map<String, Object> attributes;
 
     public PollsUserDetails(UserModel userModel) {
         this.userModel=userModel;
+    }
+
+    public static PollsUserDetails create(UserModel user) {
+        return new PollsUserDetails(user);
+    }
+
+    public static PollsUserDetails create(UserModel user, Map<String, Object> attributes) {
+        PollsUserDetails userPrincipal = PollsUserDetails.create(user);
+        userPrincipal.setAttributes(attributes);
+        return userPrincipal;
+    }
+
+
+
+
+
+    /**
+     * Get the OAuth 2.0 token attributes
+     *
+     * @return the OAuth 2.0 token attributes
+     */
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     /**
@@ -47,7 +72,7 @@ public class PollsUserDetails implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return userModel.getUsername();
+        return userModel.getEmail();
     }
 
     /**
@@ -94,5 +119,20 @@ public class PollsUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return userModel.getEnabled();
+    }
+
+    /**
+     * Returns the name of the authenticated <code>Principal</code>. Never
+     * <code>null</code>.
+     *
+     * @return the name of the authenticated <code>Principal</code>
+     */
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }

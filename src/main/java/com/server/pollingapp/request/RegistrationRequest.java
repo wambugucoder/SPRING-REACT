@@ -28,12 +28,11 @@ public class RegistrationRequest {
     @NotEmpty(message = "Country Cannot Be Empty")
     private String country;
 
-    public RegistrationRequest(String username, String email, String password, String city, String country) {
+    public RegistrationRequest(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.city = city;
-        this.country = country;
+
     }
 
     public String getUsername() {
@@ -51,13 +50,5 @@ public class RegistrationRequest {
     }
 
 
-    public String getCity() {
-        return city;
-    }
-
-
-    public String getCountry() {
-        return country;
-    }
 
 }
