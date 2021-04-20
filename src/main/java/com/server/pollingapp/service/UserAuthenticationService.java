@@ -1,6 +1,6 @@
 package com.server.pollingapp.service;
 
-import com.server.pollingapp.models.AddressModel;
+import com.server.pollingapp.models.AuthProvider;
 import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.request.LoginRequest;
@@ -71,9 +71,7 @@ public class UserAuthenticationService {
         //OTHERWISE OF EVERYTHING IS FINE ,ENCRYPT PASSWORD,SAVE USER AND SEND THEM A CONFIRMATION EMAIL
         String password=bCryptPasswordEncoder.encode(registrationRequest.getPassword());
 
-        AddressModel addressModel=new AddressModel(registrationRequest.getCity(), registrationRequest.getCountry());
-        UserModel newUser=new UserModel(registrationRequest.getUsername(), registrationRequest.getEmail(),
-                         password,addressModel );
+        UserModel newUser=new UserModel(registrationRequest.getUsername(), registrationRequest.getEmail(),password, AuthProvider.local);
 
         userRepository.save(newUser);
 
@@ -82,7 +80,7 @@ public class UserAuthenticationService {
 
 
         //CREATE ACTIVATION TOKEN
-        String activationToken=jwtService.GenerateAccountActivationToken(registrationRequest.getUsername());
+        String activationToken=jwtService.GenerateAccountActivationToken(registrationRequest.getEmail());
 
         //SEND EMAIL WITH LINK->TODO
         emailService.createActivationTemplate(activationToken,registrationRequest);
@@ -100,12 +98,12 @@ public class UserAuthenticationService {
 
     public ResponseEntity<LoginResponse> LoginUser(LoginRequest loginRequest){
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
                     loginRequest.getPassword()));
         }
         catch (DisabledException e){
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", loginRequest.getUsername()+" "+"Tried To Login with a Disabled Account","UserAuthenticationService"));
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", loginRequest.getEmail()+" "+"Tried To Login with a Disabled Account","UserAuthenticationService"));
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -116,7 +114,7 @@ public class UserAuthenticationService {
         }
         catch (LockedException e){
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", loginRequest.getUsername()+" "+"Tried To Login with a Disabled Account","UserAuthenticationService"));
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", loginRequest.getEmail()+" "+"Tried To Login with a Disabled Account","UserAuthenticationService"));
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -127,7 +125,7 @@ public class UserAuthenticationService {
         }
         catch (BadCredentialsException e){
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", loginRequest.getUsername()+" "+"Submitted Invalid Login Credentials","UserAuthenticationService"));
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", loginRequest.getEmail()+" "+"Submitted Invalid Login Credentials","UserAuthenticationService"));
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -137,10 +135,10 @@ public class UserAuthenticationService {
 
         }
         //AFTER SUCCESSFUL AUTHENTICATION CREATE A JWT TOKEN
-        UserModel user= userRepository.findByUsername(loginRequest.getUsername());
+        UserModel user= userRepository.findByEmail(loginRequest.getEmail());
         String jwtToken=jwtService.GenerateLoginToken(user);
         //GENERATE LOGS
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", loginRequest.getUsername()+" "+"Successfully Logged In","UserAuthenticationService"));
+        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", loginRequest.getEmail()+" "+"Successfully Logged In","UserAuthenticationService"));
         //RETURN 200 SUCCESS
         LoginResponse loginResponse=new LoginResponse();
         loginResponse.setError(false);
@@ -161,8 +159,8 @@ public class UserAuthenticationService {
         }
 
         //EXTRACT DETAILS
-        String username = jwtService.ExtractUserName(token);
-        UserModel user= userRepository.findByUsername(username);
+        String email = jwtService.ExtractEmail(token);
+        UserModel user= userRepository.findByEmail(email);
         //CHECK IF USER HAD ALREADY VALIDATED
         if (user.getEnabled()){
             //RETURN ERROR SAYING ACCOUNT WAS ALREADY ACTIVATED
@@ -170,7 +168,7 @@ public class UserAuthenticationService {
             response.setError(true);
             response.setMessage("Your Account was already activated");
             //GENERATE LOG
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN",username+" "+"Tried to activate Account again","UserAuthenticationService"));
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN",email+" "+"Tried to activate Account again","UserAuthenticationService"));
             return ResponseEntity.badRequest().body(response);
         }
         //IF NOT EXPIRED,NOT VALIDATE EXTRACT USER-DETAILS AND SET ENABLED TO TRUE
@@ -186,7 +184,7 @@ public class UserAuthenticationService {
         response.setMessage("Your Account Has Been Activated Successfully");
 
         //GENERATE LOG
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO",username+" "+"has activated their account","UserAuthenticationService"));
+        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO",email+" "+"has activated their account","UserAuthenticationService"));
         return ResponseEntity.ok().body(response);
     }
 }

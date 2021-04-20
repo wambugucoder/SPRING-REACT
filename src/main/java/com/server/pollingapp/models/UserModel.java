@@ -16,61 +16,63 @@ import java.util.UUID;
 public class UserModel implements Serializable {
     private static final long serialVersionUID = -999055560350713378L;
 
-           @Id
-           private  UUID id=UUID.randomUUID();
+    @Id
+    private String id = UUID.randomUUID().toString();
 
-           @Column(nullable = false,unique = true)
-           private String username;
+    @Column(nullable = false)
+    private String username;
 
-           @Column(nullable = false,unique = true)
-           private String email;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-           @Column(nullable = false)
-           private String password;
+    @Column
+    private String password;
 
-           @Column(nullable = false)
-           @Enumerated(EnumType.STRING)
-           private  UserRoles roles = UserRoles.ROLE_USER;
+    @Column
+    private String imageurl;
 
-           @Column(nullable = false)
-           private Boolean isEnabled=false;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRoles roles = UserRoles.ROLE_USER;
 
-           @Column(nullable = false)
-           private Boolean isAccountNotLocked=false;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider;
 
-           @Column(nullable = false)
-           private Boolean isAccountNonExpired=true;
+    @Column(nullable = false)
+    private Boolean isEnabled = false;
 
-           @CreatedDate
-           @Column(nullable = false, columnDefinition = "TIMESTAMP")
-           private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private Boolean isAccountNotLocked = false;
 
-           @LastModifiedDate
-           @Column(nullable = false, columnDefinition = "TIMESTAMP")
-           private LocalDateTime updateAt;
+    @Column(nullable = false)
+    private Boolean isAccountNonExpired = true;
 
-           @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL,orphanRemoval = true)
-           @JoinColumn(name = "address_id",referencedColumnName = "id")
-           private AddressModel address;
+    @CreatedDate
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
 
-
-    public UserModel(String username, String email, String password, AddressModel address) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.address = address;
-    }
+    @LastModifiedDate
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime updateAt;
 
 
     public UserModel() {
 
     }
 
-    public UUID getId() {
+    public UserModel(String username, String email, String password, AuthProvider authProvider) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.authProvider = authProvider;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -104,6 +106,14 @@ public class UserModel implements Serializable {
 
     public void setRoles(UserRoles roles) {
         this.roles = roles;
+    }
+
+    public AuthProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
     }
 
     public Boolean getEnabled() {
@@ -146,11 +156,11 @@ public class UserModel implements Serializable {
         this.updateAt = updateAt;
     }
 
-    public AddressModel getAddress() {
-        return address;
+    public String getImageurl() {
+        return imageurl;
     }
 
-    public void setAddress(AddressModel address) {
-        this.address = address;
+    public void setImageurl(String imageurl) {
+        this.imageurl = imageurl;
     }
 }

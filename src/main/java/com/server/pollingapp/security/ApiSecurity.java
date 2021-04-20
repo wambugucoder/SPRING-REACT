@@ -1,6 +1,10 @@
 package com.server.pollingapp.security;
 
 
+import com.server.pollingapp.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.server.pollingapp.oauth2.OAuth2AuthenticationFailureHandler;
+import com.server.pollingapp.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.server.pollingapp.service.CustomOauth2UserService;
 import com.server.pollingapp.service.PollsUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +30,19 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
 
     final JwtFilter jwtFilter;
 
-    public ApiSecurity(PollsUserDetailsService pollsUserDetailsService, JwtFilter jwtFilter) {
+    private final CustomOauth2UserService customOAuth2UserService;
+
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+
+
+    public ApiSecurity(PollsUserDetailsService pollsUserDetailsService, JwtFilter jwtFilter, CustomOauth2UserService customOAuth2UserService, OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler, OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
         this.pollsUserDetailsService = pollsUserDetailsService;
         this.jwtFilter = jwtFilter;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
+        this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
     }
 
     @Override
@@ -65,6 +79,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 //STRICT AUTHORIZATION
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
+                .antMatchers("api/v1/oauth2/**").permitAll()
                 .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
@@ -72,6 +87,23 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 //JWT-TOKEN-SESSION MANAGEMENT
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+
+                //OATH2
+                .oauth2Login()
+                .authorizationEndpoint()
+                //->http://localhost:8080/oauth2/authorize/{provider}?redirect_uri=<redirect_uri_after_login>.
+                .baseUri("/api/v1/oauth2/authorize")
+                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                .and()
+                .redirectionEndpoint()
+                .baseUri("/api/v1/oauth2/callback/*")
+                .and()
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService)
+                .and()
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler)
                 .and()
 
                 //XSS PROTECTION
@@ -133,5 +165,15 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    /**
+     By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
+     the authorization request. But, since our service is stateless, we can't save it in
+     the session. We'll save the request in a Base64 encoded cookie instead.
+   */
+    @Bean
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 }

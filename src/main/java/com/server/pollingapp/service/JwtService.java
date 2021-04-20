@@ -2,9 +2,11 @@ package com.server.pollingapp.service;
 
 import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.request.RealTimeLogRequest;
+import com.server.pollingapp.security.PollsUserDetails;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -38,15 +40,16 @@ public class JwtService {
                 .compact();
 
     }
-    private String CreateActivationToken(String username){
+    private String CreateActivationToken(String email){
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ 600000))
                 .signWith(SignatureAlgorithm.HS256,securityKey)
                 .compact();
 
     }
+
     private Claims ExtractAllClaims(String token){
         return  Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token).getBody();
 
@@ -60,7 +63,7 @@ public class JwtService {
          return ExtractSpecificClaim(token,Claims::getExpiration);
     }
 
-    public String ExtractUserName(String token){
+    public String ExtractEmail(String token){
         return ExtractSpecificClaim(token,Claims::getSubject);
     }
 
@@ -69,7 +72,7 @@ public class JwtService {
     }
 
     public Boolean IsAuthHeaderValid(String token, UserDetails pollsUserDetails){
-        String username=ExtractUserName(token);
+        String username= ExtractEmail(token);
         return username.equals(pollsUserDetails.getUsername()) && IsTokenNotExpired(token);
 
     }
@@ -77,12 +80,22 @@ public class JwtService {
         Map<String,Object> payload = new HashMap<>();
         payload.put("Role",user.getRoles().toString());
         payload.put("Email",user.getEmail());
+        payload.put("Looged_In_Via",user.getAuthProvider().toString());
         payload.put("CreatedAt",user.getCreatedAt().toString());
         return CreateJwtToken(payload,user.getUsername());
     }
 
-    public String GenerateAccountActivationToken(String username){
-        return CreateActivationToken(username);
+    public String GenerateOauthToken(Authentication authentication){
+        PollsUserDetails userPrincipal = (PollsUserDetails) authentication.getPrincipal();
+        Map<String,Object> payload = new HashMap<>();
+        payload.put("Role",userPrincipal.getAuthorities().toString());
+        payload.put("Email",userPrincipal.getUsername());
+
+        return CreateJwtToken(payload,userPrincipal.getUsername());
+    }
+
+    public String GenerateAccountActivationToken(String email){
+        return CreateActivationToken(email);
     }
 
     public boolean ValidateToken(String token){
