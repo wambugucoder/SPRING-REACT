@@ -1,5 +1,6 @@
 package com.server.pollingapp.service;
 
+import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.request.RegistrationRequest;
 import io.rocketbase.commons.colors.ColorPalette;
@@ -33,7 +34,7 @@ public class EmailService {
     @Value("${app.email}")
     private String emailToBeUsed;
 
-    public void createActivationTemplate(String token, RegistrationRequest registrationRequest){
+    public void createActivationTemplate(String token, UserModel userModel){
         EmailTemplateBuilder.EmailTemplateConfigBuilder builder = EmailTemplateBuilder.builder();
         String header = "ACCOUNT ACTIVATION";
         HtmlTextEmail htmlTextEmail = builder
@@ -41,7 +42,7 @@ public class EmailService {
                 .and()
                 .logo("https://www.rocketbase.io/img/logo-dark.png","",0,41)
                 .and()
-                .addText("Welcome," +registrationRequest.getUsername() +"!").fontWeight(FontWeight.BOLD).center()
+                .addText("Welcome," +userModel.getUsername() +"!").fontWeight(FontWeight.BOLD).center()
                 .and()
                 .addText("Thanks for Registering with Votex. We’re thrilled to have you on board. To get started you will need to verify your Account:")
                 .and()
@@ -63,9 +64,9 @@ public class EmailService {
                 .addImage("https://cdn.rocketbase.io/assets/loading/no-image.jpg","",100,0)
                 .linkUrl(website).and()
                 .build();
-           SendAccountActivationEmail( htmlTextEmail, registrationRequest);
+           SendAccountActivationEmail( htmlTextEmail, userModel);
     }
-    public void SendAccountActivationEmail(HtmlTextEmail htmlTextEmail,RegistrationRequest registrationRequest){
+    public void SendAccountActivationEmail(HtmlTextEmail htmlTextEmail,UserModel userModel){
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper messageHelper = null;
         try {
@@ -75,7 +76,7 @@ public class EmailService {
         }
         try {
             assert messageHelper != null;
-            messageHelper.setTo(registrationRequest.getEmail());
+            messageHelper.setTo( userModel.getEmail());
             messageHelper.setSubject("Votex Account Activation");
             messageHelper.setText(htmlTextEmail.getText(),htmlTextEmail.getHtml());
             messageHelper.setFrom(emailToBeUsed);

@@ -1,10 +1,12 @@
 package com.server.pollingapp.oauth2;
 
 import com.server.pollingapp.exception.BadRequestException;
+import com.server.pollingapp.models.UserModel;
+import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.request.RealTimeLogRequest;
+import com.server.pollingapp.security.PollsUserDetails;
 import com.server.pollingapp.service.JwtService;
 import com.server.pollingapp.service.PollStream;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -23,20 +25,38 @@ import static com.server.pollingapp.oauth2.HttpCookieOAuth2AuthorizationRequestR
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-  @Autowired
+  final
   HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-  @Autowired
+  final
   JwtService jwtService;
 
-  @Autowired
+  final
   PollStream pollStream;
+
+  final
+  UserRepository userRepository;
 
   @Value("${app.oauth2.authorizedRedirectUris}")
   String redirectUrRI;
 
+    public OAuth2AuthenticationSuccessHandler(HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository, JwtService jwtService, PollStream pollStream, UserRepository userRepository) {
+        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
+        this.jwtService = jwtService;
+        this.pollStream = pollStream;
+        this.userRepository = userRepository;
+    }
 
 
+    /**
+     * Called when a user has been successfully authenticated.
+     *
+     * @param request        the request which caused the successful authentication
+     * @param response       the response
+     * @param authentication the <tt>Authentication</tt> object which was created during
+     *                       the authentication process.
+     * @since 5.2.0
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String targetUrl = determineTargetUrl(request, response, authentication);
@@ -63,7 +83,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String token = jwtService.GenerateOauthToken(authentication);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", token)
+                .queryParam("token",token)
                 .build().toUriString();
     }
 
@@ -77,9 +97,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String authorizedRedirectUri=redirectUrRI;
         // Only validate host and port. Let the clients use different paths if they want to
         URI authorizedURI = URI.create(authorizedRedirectUri);
-        if(authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost()) && authorizedURI.getPort() == clientRedirectUri.getPort()) {
-            return true;
-        }
-        return false;
+        return authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost()) && authorizedURI.getPort() == clientRedirectUri.getPort();
     }
 }

@@ -1,6 +1,7 @@
 package com.server.pollingapp.oauth2;
 
 
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class OAuth2UserInfo {
@@ -21,6 +22,11 @@ public abstract class OAuth2UserInfo {
     public abstract String getEmail();
 
     public abstract String getImageUrl();
+
+    public void setEmail(String email) {
+        attributes = new HashMap<String, Object>(attributes);
+        attributes.put("email", email);
+    }
 
 }
 

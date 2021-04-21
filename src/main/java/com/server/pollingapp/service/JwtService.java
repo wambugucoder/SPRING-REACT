@@ -15,6 +15,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Service
@@ -35,7 +36,7 @@ public class JwtService {
                 .setClaims(payload)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ 1000*60*60*10))
+                .setExpiration(new Date(System.currentTimeMillis()+ TimeUnit.HOURS.toMillis(1)))
                 .signWith(SignatureAlgorithm.HS256,securityKey)
                 .compact();
 
@@ -44,7 +45,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ 600000))
+                .setExpiration(new Date(System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(10)))
                 .signWith(SignatureAlgorithm.HS256,securityKey)
                 .compact();
 
@@ -80,7 +81,9 @@ public class JwtService {
         Map<String,Object> payload = new HashMap<>();
         payload.put("Role",user.getRoles().toString());
         payload.put("Email",user.getEmail());
-        payload.put("Looged_In_Via",user.getAuthProvider().toString());
+        payload.put("Id",user.getId());
+        payload.put("Avatar",user.getImageurl());
+        payload.put("AuthProvider",user.getAuthProvider().toString());
         payload.put("CreatedAt",user.getCreatedAt().toString());
         return CreateJwtToken(payload,user.getUsername());
     }
@@ -90,8 +93,13 @@ public class JwtService {
         Map<String,Object> payload = new HashMap<>();
         payload.put("Role",userPrincipal.getAuthorities().toString());
         payload.put("Email",userPrincipal.getUsername());
+        payload.put("Id",userPrincipal.getId());
+        payload.put("Avatar",userPrincipal.getAvatar());
+        payload.put("AuthProvider",userPrincipal.getAuthProvider());
+        payload.put("CreatedAt",userPrincipal.getCreatedAt());
 
-        return CreateJwtToken(payload,userPrincipal.getUsername());
+
+        return CreateJwtToken(payload,userPrincipal.getUName());
     }
 
     public String GenerateAccountActivationToken(String email){

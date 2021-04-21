@@ -42,6 +42,22 @@ public class PollsUserDetails implements OAuth2User,UserDetails {
         return attributes;
     }
 
+    public String getId() {
+        return userModel.getId();
+    }
+
+    public String getAvatar() {
+        return userModel.getImageurl();
+    }
+
+    public String getAuthProvider() {
+        return userModel.getAuthProvider().toString();
+    }
+
+    public String getUName() {
+        return userModel.getUsername();
+    }
+
     /**
      * Returns the authorities granted to the user. Cannot return <code>null</code>.
      *
@@ -134,5 +150,9 @@ public class PollsUserDetails implements OAuth2User,UserDetails {
     @Override
     public String getName() {
         return null;
+    }
+
+    public String getCreatedAt() {
+        return userModel.getCreatedAt().toString();
     }
 }

@@ -29,7 +29,7 @@ public class UserModel implements Serializable {
     private String password;
 
     @Column
-    private String imageurl;
+    private String imageurl="none";
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -48,9 +48,14 @@ public class UserModel implements Serializable {
     @Column(nullable = false)
     private Boolean isAccountNonExpired = true;
 
+    @Column(nullable = false)
+    private Boolean isEmailVerificationSent=false;
+
     @CreatedDate
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
+
+
 
     @LastModifiedDate
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
@@ -162,5 +167,13 @@ public class UserModel implements Serializable {
 
     public void setImageurl(String imageurl) {
         this.imageurl = imageurl;
+    }
+
+    public Boolean getEmailVerificationSent() {
+        return isEmailVerificationSent;
+    }
+
+    public void setEmailVerificationSent(Boolean emailVerificationSent) {
+        isEmailVerificationSent = emailVerificationSent;
     }
 }
