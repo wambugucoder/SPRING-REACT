@@ -36,19 +36,21 @@ public class UserSchedule {
     @Scheduled(fixedDelay = 60000)
     public void sendEmailVerification(){
         List<UserModel> users = userRepository.findAll();
-        for (UserModel eachuser:users) {
-            if (!eachuser.getEmailVerificationSent() && eachuser.getAuthProvider().toString().equalsIgnoreCase("local")){
-                String token= jwtService.GenerateAccountActivationToken(eachuser.getEmail());
-                emailService.createActivationTemplate(token,eachuser);
-                //UPDATE EMAILSENT TO TRUE
-                eachuser.setEmailVerificationSent(true);
-                //GENERATE LOGS
-                pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", eachuser.getEmail()+" "+"Has Received An Email","UserSchedule"));
-
-                userRepository.save(eachuser);
-
-            }
-        }
+        users.stream().filter(eachuser -> (!eachuser.getEmailVerificationSent() && eachuser.getAuthProvider().toString().equalsIgnoreCase("local"))).map(eachuser -> {
+            String token= jwtService.GenerateAccountActivationToken(eachuser.getEmail());
+            emailService.createActivationTemplate(token,eachuser);
+            return eachuser;
+        }).map(eachuser -> {
+            //UPDATE EMAILSENT TO TRUE
+            eachuser.setEmailVerificationSent(true);
+            return eachuser;
+        }).map(eachuser -> {
+            //GENERATE LOGS
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", eachuser.getEmail()+" "+"Has Received An Email","UserSchedule"));
+            return eachuser;
+        }).forEachOrdered(eachuser -> {
+            userRepository.save(eachuser);
+        });
 
     }
 }
