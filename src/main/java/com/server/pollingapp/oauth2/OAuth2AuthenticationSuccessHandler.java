@@ -55,6 +55,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      * @param response       the response
      * @param authentication the <tt>Authentication</tt> object which was created during
      *                       the authentication process.
+     * @throws java.io.IOException
+     * @throws javax.servlet.ServletException
      * @since 5.2.0
      */
     @Override
