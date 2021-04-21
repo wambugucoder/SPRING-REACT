@@ -79,15 +79,6 @@ public class UserAuthenticationService {
         pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", registrationRequest.getUsername()+" "+"Has Successfully Been Registered","UserAuthenticationService"));
 
 
-        //CREATE ACTIVATION TOKEN
-        String activationToken=jwtService.GenerateAccountActivationToken(registrationRequest.getEmail());
-
-        //SEND EMAIL WITH LINK->TODO
-        emailService.createActivationTemplate(activationToken,registrationRequest);
-
-        //GENERATE LOGS
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", registrationRequest.getUsername()+" "+"Has Received An Email","UserAuthenticationService"));
-
         //SEND SUCCESS MESSAGE AFTER REGISTERING USER
         UniversalResponse success=new UniversalResponse();
         success.setMessage("Please Check your Email To Activate your Account");

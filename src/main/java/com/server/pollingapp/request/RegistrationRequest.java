@@ -22,11 +22,6 @@ public class RegistrationRequest {
     @Size(min =6,message ="Password Must Contain atleast 6 characters")
     private String password;
 
-    @NotEmpty(message = "City Cannot Be Empty")
-    private String city;
-
-    @NotEmpty(message = "Country Cannot Be Empty")
-    private String country;
 
     public RegistrationRequest(String username, String email, String password) {
         this.username = username;

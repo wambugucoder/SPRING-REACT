@@ -92,7 +92,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 //OATH2
                 .oauth2Login()
                 .authorizationEndpoint()
-                //->http://localhost:8080/oauth2/authorize/{provider}?redirect_uri=<redirect_uri_after_login>.
+                //->https://localhost:8443/api/v1/oauth2/authorize/{provider}?redirect_uri=<redirect_uri_after_login>.
                 .baseUri("/api/v1/oauth2/authorize")
                 .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                 .and()

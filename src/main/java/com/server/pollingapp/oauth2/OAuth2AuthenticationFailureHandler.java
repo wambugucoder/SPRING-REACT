@@ -20,6 +20,17 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
     @Autowired
     HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
+    /**
+     * Performs the redirect or forward to the {@code defaultFailureUrl} if set, otherwise
+     * returns a 401 error code.
+     * <p>
+     * If redirecting or forwarding, {@code saveException} will be called to cache the
+     * exception for use in the target view.
+     *
+     * @param request
+     * @param response
+     * @param exception
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
