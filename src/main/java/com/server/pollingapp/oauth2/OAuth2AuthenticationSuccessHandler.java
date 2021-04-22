@@ -83,6 +83,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         String token = jwtService.GenerateOauthToken(authentication);
+        
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token",token)
