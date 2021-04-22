@@ -59,7 +59,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
      * http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
      * </pre>
      * <p>
-     * Any endpoint that requires defense against common vulnerabilities can be specified
+     * Any endpoint that requires defence against common vulnerabilities can be specified
      * here, including public ones. See {@link HttpSecurity#authorizeRequests} and the
      * `permitAll()` authorization rule for more details on public endpoints.
      *
@@ -114,9 +114,8 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * Override this method to configure {@link WebSecurity}. For example, if you wish to
-     * ignore certain requests.
-     * <p>
+     * Override this method to configure {@link WebSecurity}.For example, if you wish to
+ ignore certain requests.<p>
      * Endpoints specified in this method will be ignored by Spring Security, meaning it
      * will not protect them from CSRF, XSS, Clickjacking, and so on.
      * <p>
@@ -125,6 +124,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
      * configuration method.
      *
      * @param web
+     * @throws java.lang.Exception
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -169,8 +169,9 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
 
     /**
      By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
-     the authorization request. But, since our service is stateless, we can't save it in
+     the authorization request.But, since our service is stateless, we can't save it in
      the session. We'll save the request in a Base64 encoded cookie instead.
+     * @return 
    */
     @Bean
     public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class PollsUserDetailsService implements UserDetailsService {
     @Autowired
+    UserRepositoryImpl userRepositoryImpl;
+
+    @Autowired
     UserRepository userRepository;
     /**
      * Locates the user based on the username. In the actual implementation, the search

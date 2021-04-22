@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 public class UserAuthenticationService {
 
     @Autowired
-    UserRepository userRepository;
+    UserRepositoryImpl userRepositoryImpl;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
@@ -44,6 +44,9 @@ public class UserAuthenticationService {
     PollStream pollStream;
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    UserRepository userRepository;
 
     public ResponseEntity<UniversalResponse>RegisterUser(RegistrationRequest registrationRequest){
         // CHECK IF EMAIL OR USERNAME EXISTS
@@ -73,7 +76,7 @@ public class UserAuthenticationService {
 
         UserModel newUser=new UserModel(registrationRequest.getUsername(), registrationRequest.getEmail(),password, AuthProvider.local);
 
-        userRepository.save(newUser);
+        userRepositoryImpl.addUser(newUser);
 
         //GENERATE LOGS
         pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", registrationRequest.getUsername()+" "+"Has Successfully Been Registered","UserAuthenticationService"));
@@ -167,7 +170,7 @@ public class UserAuthenticationService {
         user.setAccountNotLocked(true);
 
         //UPDATE USER CONTENTS
-        userRepository.save(user);
+        userRepositoryImpl.updateUser(user);
 
         //RETURN SUCCESS MESSAGE
         UniversalResponse response= new UniversalResponse();

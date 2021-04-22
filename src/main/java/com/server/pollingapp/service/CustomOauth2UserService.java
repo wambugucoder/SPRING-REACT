@@ -27,7 +27,10 @@ import java.util.Optional;
 @Service
 public class CustomOauth2UserService extends DefaultOAuth2UserService {
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepositoryImpl;
+
+    @Autowired
+    UserRepository userRepository;
 
 
     /**
@@ -114,14 +117,14 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         user.setImageurl(oAuth2UserInfo.getImageUrl());
         user.setEnabled(true);
         user.setAccountNotLocked(true);
-        return userRepository.save(user);
+        return userRepositoryImpl.addUser(user);
     }
 
     private UserModel updateExistingUser(UserModel existingUser, OAuth2UserInfo oAuth2UserInfo,OAuth2UserRequest oAuth2UserRequest) {
         existingUser.setUsername(oAuth2UserInfo.getName());
         existingUser.setImageurl(oAuth2UserInfo.getImageUrl());
         existingUser.setAuthProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
-        return userRepository.save(existingUser);
+        return userRepositoryImpl.updateUser(existingUser);
     }
     //SINCE EMAIL CANNOT BE RETRIEVED DIRECTLY FROM GITHUB
     //THIS METHODS FETCHES PRIMARY EMAIL BY USE OF REST TEMPLATES AND ACCESS TOKEN GENERATED

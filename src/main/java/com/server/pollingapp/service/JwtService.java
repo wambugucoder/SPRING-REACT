@@ -7,14 +7,12 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -90,8 +88,9 @@ public class JwtService {
 
     public String GenerateOauthToken(Authentication authentication){
         PollsUserDetails userPrincipal = (PollsUserDetails) authentication.getPrincipal();
+        Object[] roles = userPrincipal.getAuthorities().toArray();
         Map<String,Object> payload = new HashMap<>();
-        payload.put("Role",userPrincipal.getAuthorities().toString());
+        payload.put("Role",roles[0].toString());
         payload.put("Email",userPrincipal.getUsername());
         payload.put("Id",userPrincipal.getId());
         payload.put("Avatar",userPrincipal.getAvatar());

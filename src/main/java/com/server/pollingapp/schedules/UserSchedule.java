@@ -6,6 +6,7 @@ import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.service.EmailService;
 import com.server.pollingapp.service.JwtService;
 import com.server.pollingapp.service.PollStream;
+import com.server.pollingapp.service.UserRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import java.util.List;
 @Component
 public class UserSchedule {
     @Autowired
-    UserRepository userRepository;
+    UserRepositoryImpl userRepositoryImpl;
 
     @Autowired
     JwtService jwtService;
@@ -35,19 +36,24 @@ public class UserSchedule {
      */
     @Scheduled(fixedDelay = 60000)
     public void sendEmailVerification(){
-        List<UserModel> users = userRepository.findAll();
-        for (UserModel eachuser:users) {
-            if (!eachuser.getEmailVerificationSent() && eachuser.getAuthProvider().toString().equalsIgnoreCase("local")){
+        List<UserModel> users = userRepositoryImpl.findAllUsers();
+        if(!users.isEmpty()){
+            users.stream().filter(eachuser -> (!eachuser.getEmailVerificationSent() && eachuser.getAuthProvider().toString().equalsIgnoreCase("local"))).map((UserModel eachuser) -> {
                 String token= jwtService.GenerateAccountActivationToken(eachuser.getEmail());
                 emailService.createActivationTemplate(token,eachuser);
+                return eachuser;
+            }).map(eachuser -> {
                 //UPDATE EMAILSENT TO TRUE
                 eachuser.setEmailVerificationSent(true);
+                return eachuser;
+            }).map(eachuser -> {
                 //GENERATE LOGS
                 pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", eachuser.getEmail()+" "+"Has Received An Email","UserSchedule"));
+                return eachuser;
+            }).forEachOrdered(eachuser -> {
+                userRepositoryImpl.updateUser(eachuser);
+            });
 
-                userRepository.save(eachuser);
-
-            }
         }
 
     }
