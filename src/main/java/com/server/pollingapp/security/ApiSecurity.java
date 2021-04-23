@@ -80,8 +80,8 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("api/v1/oauth2/**").permitAll()
-                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
+                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .and()
 
                 //JWT-TOKEN-SESSION MANAGEMENT

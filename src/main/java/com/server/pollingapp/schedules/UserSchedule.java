@@ -1,7 +1,6 @@
 package com.server.pollingapp.schedules;
 
 import com.server.pollingapp.models.UserModel;
-import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.service.EmailService;
 import com.server.pollingapp.service.JwtService;
@@ -16,17 +15,24 @@ import java.util.List;
 
 @Component
 public class UserSchedule {
-    @Autowired
+    final
     UserRepositoryImpl userRepositoryImpl;
 
-    @Autowired
+    final
     JwtService jwtService;
 
-    @Autowired
+    final
     EmailService emailService;
 
-    @Autowired
+    final
     PollStream pollStream;
+
+    public UserSchedule(UserRepositoryImpl userRepositoryImpl, JwtService jwtService, EmailService emailService, PollStream pollStream) {
+        this.userRepositoryImpl = userRepositoryImpl;
+        this.jwtService = jwtService;
+        this.emailService = emailService;
+        this.pollStream = pollStream;
+    }
 
     /**
      * This scheduled method is supposed to run after every 1 minute sending verfication emails to users
