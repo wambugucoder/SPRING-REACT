@@ -9,13 +9,15 @@ import com.server.pollingapp.oauth2.OAuth2UserInfo;
 import com.server.pollingapp.oauth2.OAuth2UserInfoFactory;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.security.PollsUserDetails;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -23,14 +25,36 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-
+/**
+ * An implementation of an {@link OAuth2UserService} that supports standard OAuth 2.0
+ * Provider's.
+ * <p>
+ * For standard OAuth 2.0 Provider's, the attribute name used to access the user's name
+ * from the UserInfo response is required and therefore must be available via
+ * {@link ClientRegistration.ProviderDetails.UserInfoEndpoint#getUserNameAttributeName()
+ * UserInfoEndpoint.getUserNameAttributeName()}.
+ * <p>
+ * <b>NOTE:</b> Attribute names are <b>not</b> standardized between providers and
+ * therefore will vary. Please consult the provider's API documentation for the set of
+ * supported user attribute names.
+ *
+ *
+ * @since 5.0
+ * @see OAuth2UserService
+ * @see OAuth2UserRequest
+ * @see OAuth2User
+ * @see DefaultOAuth2User
+ */
 @Service
 public class CustomOauth2UserService extends DefaultOAuth2UserService {
-    @Autowired
-    private UserRepositoryImpl userRepositoryImpl;
+    private final UserRepositoryImpl userRepositoryImpl;
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public CustomOauth2UserService(UserRepositoryImpl userRepositoryImpl, UserRepository userRepository) {
+        this.userRepositoryImpl = userRepositoryImpl;
+        this.userRepository = userRepository;
+    }
 
 
     /**

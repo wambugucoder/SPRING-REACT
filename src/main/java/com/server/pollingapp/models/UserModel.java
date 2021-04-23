@@ -7,6 +7,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -49,6 +51,9 @@ public class UserModel implements Serializable {
 
     @Column(nullable = false)
     private Boolean isEmailVerificationSent=false;
+
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private List<PollModel> polls = Collections.emptyList();
 
     @CreatedDate
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
@@ -174,5 +179,13 @@ public class UserModel implements Serializable {
 
     public void setEmailVerificationSent(Boolean emailVerificationSent) {
         isEmailVerificationSent = emailVerificationSent;
+    }
+
+    public List<PollModel> getPolls() {
+        return polls;
+    }
+
+    public void setPolls(List<PollModel> createdBy) {
+        this.polls = createdBy;
     }
 }
