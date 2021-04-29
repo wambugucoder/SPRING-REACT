@@ -7,6 +7,7 @@ import com.server.pollingapp.request.ChoiceRequest;
 import com.server.pollingapp.request.NonScheduledPollRequest;
 import com.server.pollingapp.response.UniversalResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +25,13 @@ public class PollService {
 
 public ResponseEntity<UniversalResponse> CreateNonScheduledPoll(NonScheduledPollRequest nonScheduledPollRequest,String userId) {
     // FIND AUTHOR DETAILS
-    UserModel author = userRepository.getOne(userId);
+    UserModel author = userRepository.findByUserid(userId);
 
     //SET UP CHOICES
-    List<ChoiceModel> choiceModel=new ArrayList<ChoiceModel>();
+    List<ChoiceModel> list=new ArrayList<ChoiceModel>();
 
     //ADD CHOICES TO LIST<CHOICE MODEL>
-   nonScheduledPollRequest.getOptions().stream().map(choiceRequest -> {
-        ChoiceModel choice=new ChoiceModel();
-        choice.setOption(choiceRequest.getOption());
-      return choiceModel.add(choice) ;
-    });
+   nonScheduledPollRequest.getOptions().stream().map(choiceRequest -> new ChoiceModel(choiceRequest.getOption())).forEachOrdered(list::add);
 
 
     //CREATE POLL INSTANCE
@@ -43,7 +40,7 @@ public ResponseEntity<UniversalResponse> CreateNonScheduledPoll(NonScheduledPoll
     pollModel.setPollStatus(PollStatus.POLL_OPENED);
     pollModel.setClosingTime(nonScheduledPollRequest.getClosingTime());
     pollModel.setCreatedBy(author);
-    pollModel.setOptions(choiceModel);
+    pollModel.setOptions(list);
     pollModel.setQuestion(nonScheduledPollRequest.getQuestion());
 
     //SAVE POLL
@@ -56,14 +53,12 @@ public ResponseEntity<UniversalResponse> CreateNonScheduledPoll(NonScheduledPoll
        error.setMessage(e.getMessage());
        return ResponseEntity.badRequest().body(error);
     }
-    //ON SUCCESS
+    //ON SUCCESS->SEND 200
     UniversalResponse success= new UniversalResponse();
     success.setError(false);
     success.setMessage("Poll Created Successfully");
     return ResponseEntity.badRequest().body(success);
-
-
-
-
 }
+
+
 }

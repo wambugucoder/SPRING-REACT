@@ -28,6 +28,10 @@ public class ChoiceModel {
     public ChoiceModel() {
     }
 
+    public ChoiceModel(String option) {
+        this.option = option;
+    }
+
     public String getId() {
         return id;
     }

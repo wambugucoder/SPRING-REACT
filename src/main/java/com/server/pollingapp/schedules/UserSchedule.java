@@ -56,9 +56,7 @@ public class UserSchedule {
                 //GENERATE LOGS
                 pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", eachuser.getEmail()+" "+"Has Received An Email","UserSchedule"));
                 return eachuser;
-            }).forEachOrdered(eachuser -> {
-                userRepositoryImpl.updateUser(eachuser);
-            });
+            }).forEachOrdered(userRepositoryImpl::updateUser);
 
         }
 
