@@ -11,9 +11,21 @@ public class NonScheduledPollRequest {
     private String question;
 
     @Size(min = 2,max=6,message = "A min of 2 and a max of 6 Options are Required")
-    private List<String> options;
+    private List<ChoiceRequest> options;
 
     @Future(message = "Closing Time has to in the future ")
     @NotNull(message = "Closing Time cannot be empty")
     private LocalDateTime closingTime;
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public List<ChoiceRequest> getOptions() {
+        return options;
+    }
+
+    public LocalDateTime getClosingTime() {
+        return closingTime;
+    }
 }

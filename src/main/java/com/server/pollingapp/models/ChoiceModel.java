@@ -3,6 +3,7 @@ package com.server.pollingapp.models;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ public class ChoiceModel {
     private String option;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private List<VotesModel> votes;
+    private List<VotesModel> votes= Collections.emptyList();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "poll_id",referencedColumnName = "id")
