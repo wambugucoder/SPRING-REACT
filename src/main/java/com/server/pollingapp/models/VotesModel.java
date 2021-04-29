@@ -1,5 +1,9 @@
 package com.server.pollingapp.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -11,24 +15,24 @@ import java.util.UUID;
 public class VotesModel {
 
     @Id
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String id= UUID.randomUUID().toString();
 
-    @Column(nullable = false)
-    private String choices;
-
-    @Column(nullable = false)
-    private Integer votes=0;
-
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "poll_id",referencedColumnName = "id")
-    private UserModel polls;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private PollModel poll;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private UserModel user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "choice_id",referencedColumnName = "id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private ChoiceModel choice;
 
     public VotesModel() {
-    }
-
-    public VotesModel(String choices, Integer votes) {
-        this.choices = choices;
-        this.votes = votes;
     }
 
     public String getId() {
@@ -39,27 +43,27 @@ public class VotesModel {
         this.id = id;
     }
 
-    public String getChoices() {
-        return choices;
+    public PollModel getPoll() {
+        return poll;
     }
 
-    public void setChoices(String choices) {
-        this.choices = choices;
+    public void setPoll(PollModel poll) {
+        this.poll = poll;
     }
 
-    public Integer getVotes() {
-        return votes;
+    public UserModel getUser() {
+        return user;
     }
 
-    public void setVotes(Integer votes) {
-        this.votes = votes;
+    public void setUser(UserModel user) {
+        this.user = user;
     }
 
-    public UserModel getPolls() {
-        return polls;
+    public ChoiceModel getChoice() {
+        return choice;
     }
 
-    public void setPolls(UserModel polls) {
-        this.polls = polls;
+    public void setChoice(ChoiceModel choice) {
+        this.choice = choice;
     }
 }

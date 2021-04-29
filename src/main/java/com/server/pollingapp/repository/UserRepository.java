@@ -20,6 +20,9 @@ public interface UserRepository extends JpaRepository<UserModel, String> , Seria
     @Cacheable(value = "Users", key = "#email")
     UserModel findByEmail(String email) ;
 
+    @Cacheable(value = "Users",key = "#userId")
+    UserModel findByUserid(String userId);
+
 
 
 }

@@ -1,25 +1,19 @@
 package com.server.pollingapp.models;
 
 
-import com.vladmihalcea.hibernate.type.array.ListArrayType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@TypeDef(
-        name = "list-array",
-        typeClass = ListArrayType.class
-)
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "polls")
 public class PollModel implements Serializable {
@@ -35,10 +29,8 @@ public class PollModel implements Serializable {
     @Column(nullable = false)
     private LocalDateTime closingTime;
 
-  //LIMIT OF POSTGRES ARRAY ->268,435,456
-    @Type(type = "list-array")
-    @Column(name = "voters", columnDefinition = "text[]")
-    private List<String> voters=Collections.emptyList();
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private List<VotesModel> votes= Collections.emptyList();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id",referencedColumnName = "id")
@@ -48,7 +40,7 @@ public class PollModel implements Serializable {
     private String question;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private List<VotesModel> options ;
+    private List<ChoiceModel> options ;
 
     @Column
     private LocalDateTime scheduledTime;
@@ -71,7 +63,7 @@ public class PollModel implements Serializable {
     public PollModel() {
     }
 
-    public PollModel(PollsCategory category, LocalDateTime closingTime, UserModel createdBy, String question, List<VotesModel> options, PollStatus pollStatus) {
+    public PollModel(PollsCategory category, LocalDateTime closingTime, UserModel createdBy, String question, List<ChoiceModel> options, PollStatus pollStatus) {
         this.category = category;
         this.closingTime = closingTime;
         this.createdBy = createdBy;
@@ -80,7 +72,7 @@ public class PollModel implements Serializable {
         this.pollStatus = pollStatus;
     }
 
-    public PollModel(PollsCategory category, LocalDateTime closingTime, UserModel createdBy, String question, List<VotesModel> options, LocalDateTime scheduledTime, PollStatus pollStatus) {
+    public PollModel(PollsCategory category, LocalDateTime closingTime, UserModel createdBy, String question, List<ChoiceModel> options, LocalDateTime scheduledTime, PollStatus pollStatus) {
         this.category = category;
         this.closingTime = closingTime;
         this.createdBy = createdBy;
@@ -114,12 +106,12 @@ public class PollModel implements Serializable {
         this.closingTime = closingTime;
     }
 
-    public List<String> getVoters() {
-        return voters;
+    public List<VotesModel> getVotes() {
+        return votes;
     }
 
-    public void setVoters(List<String> voters) {
-        this.voters = voters;
+    public void setVotes(List<VotesModel> votes) {
+        this.votes = votes;
     }
 
     public UserModel getCreatedBy() {
@@ -138,11 +130,11 @@ public class PollModel implements Serializable {
         this.question = question;
     }
 
-    public List<VotesModel> getOptions() {
+    public List<ChoiceModel> getOptions() {
         return options;
     }
 
-    public void setOptions(List<VotesModel> options) {
+    public void setOptions(List<ChoiceModel> options) {
         this.options = options;
     }
 
