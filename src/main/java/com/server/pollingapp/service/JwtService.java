@@ -29,10 +29,10 @@ public class JwtService {
         securityKey = Base64.getEncoder().encodeToString(securityKey.getBytes());
     }
 
-    private String CreateJwtToken(Map<String,Object> payload, String username){
+    private String CreateJwtToken(Map<String,Object> payload, String email){
         return Jwts.builder()
                 .setClaims(payload)
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ TimeUnit.HOURS.toMillis(1)))
                 .signWith(SignatureAlgorithm.HS256,securityKey)
@@ -79,11 +79,12 @@ public class JwtService {
         Map<String,Object> payload = new HashMap<>();
         payload.put("Role",user.getRoles().toString());
         payload.put("Email",user.getEmail());
+        payload.put("UserName",user.getUsername());
         payload.put("Id",user.getId());
         payload.put("Avatar",user.getImageurl());
         payload.put("AuthProvider",user.getAuthProvider().toString());
         payload.put("CreatedAt",user.getCreatedAt().toString());
-        return CreateJwtToken(payload,user.getUsername());
+        return CreateJwtToken(payload,user.getEmail());
     }
 
     public String GenerateOauthToken(Authentication authentication){
@@ -92,13 +93,14 @@ public class JwtService {
         Map<String,Object> payload = new HashMap<>();
         payload.put("Role",roles[0].toString());
         payload.put("Email",userPrincipal.getUsername());
+        payload.put("UserName",userPrincipal.getUName());
         payload.put("Id",userPrincipal.getId());
         payload.put("Avatar",userPrincipal.getAvatar());
         payload.put("AuthProvider",userPrincipal.getAuthProvider());
         payload.put("CreatedAt",userPrincipal.getCreatedAt());
 
 
-        return CreateJwtToken(payload,userPrincipal.getUName());
+        return CreateJwtToken(payload,userPrincipal.getUsername());
     }
 
     public String GenerateAccountActivationToken(String email){

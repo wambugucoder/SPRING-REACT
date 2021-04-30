@@ -40,5 +40,8 @@ public class UserRepositoryImpl implements Serializable{
         return this.userRepository.save(userModel);
     }
 
+    @Cacheable(value = "Users",key = "#id")
+    public UserModel findUserById(String id){return this.userRepository.getOne(id);}
+
 
 }

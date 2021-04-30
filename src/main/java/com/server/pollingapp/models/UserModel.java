@@ -64,6 +64,7 @@ public class UserModel implements Serializable {
     @LastModifiedDate
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime updateAt;
+    
 
 
     public UserModel() {

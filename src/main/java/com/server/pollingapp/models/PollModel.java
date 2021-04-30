@@ -30,7 +30,7 @@ public class PollModel implements Serializable {
     private LocalDateTime closingTime;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private List<VotesModel> votes= Collections.emptyList();
+    private List<VotesModel> votes;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id",referencedColumnName = "id")

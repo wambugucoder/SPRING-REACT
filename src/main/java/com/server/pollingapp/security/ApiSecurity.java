@@ -80,8 +80,9 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("api/v1/oauth2/**").permitAll()
-                .anyRequest().authenticated()
                 .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/v1/unauthorized/auth").permitAll()
+                .anyRequest().authenticated()
                 .and()
 
                 //JWT-TOKEN-SESSION MANAGEMENT
@@ -91,6 +92,7 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
 
                 //OATH2
                 .oauth2Login()
+                .loginPage("/api/v1/unauthorized/auth")
                 .authorizationEndpoint()
                 //->https://localhost:8443/api/v1/oauth2/authorize/{provider}?redirect_uri=<redirect_uri_after_login>.
                 .baseUri("/api/v1/oauth2/authorize")

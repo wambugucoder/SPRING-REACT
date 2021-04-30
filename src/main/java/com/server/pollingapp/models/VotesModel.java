@@ -1,19 +1,19 @@
 package com.server.pollingapp.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "votes")
-public class VotesModel {
+public class VotesModel implements Serializable {
 
+    private static final long serialVersionUID = -7267712774522332916L;
     @Id
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String id= UUID.randomUUID().toString();
