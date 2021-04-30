@@ -28,7 +28,7 @@ public class SentimentAnalysisService {
             Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
            sentimentScore= RNNCoreAnnotations.getPredictedClass(tree);
         }
-
+        System.out.println(sentimentScore);
         return sentimentScore;
     }
 }
