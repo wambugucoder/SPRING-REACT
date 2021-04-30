@@ -4,6 +4,7 @@ import com.server.pollingapp.models.*;
 import com.server.pollingapp.repository.PollRepository;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.request.NonScheduledPollRequest;
+import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.request.ScheduledPollRequest;
 import com.server.pollingapp.response.UniversalResponse;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,13 @@ public class PollService {
 
     final UserRepositoryImpl userRepositoryImp;
 
-    public PollService(PollRepository pollRepository, UserRepository userRepository, UserRepositoryImpl userRepositoryImp) {
+    final PollStream pollStream;
+
+    public PollService(PollRepository pollRepository, UserRepository userRepository, UserRepositoryImpl userRepositoryImp, PollStream pollStream) {
         this.pollRepository = pollRepository;
         this.userRepository = userRepository;
         this.userRepositoryImp = userRepositoryImp;
+        this.pollStream = pollStream;
     }
 
     private UserModel fetchUserId(String userId){
@@ -54,12 +58,16 @@ public ResponseEntity<UniversalResponse> CreateNonScheduledPoll(NonScheduledPoll
         pollRepository.save(pollModel);
     }
     catch (IllegalArgumentException e){
+        //GENERATE LOGS
+        pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN",e.getMessage(),"PollService"));
        UniversalResponse error= new UniversalResponse();
        error.setError(true);
        error.setMessage(e.getMessage());
        return ResponseEntity.badRequest().body(error);
     }
     //ON SUCCESS->SEND 200
+    //GENERATE LOGS
+    pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO","Poll Created Successfully","PollService"));
     UniversalResponse success= new UniversalResponse();
     success.setError(false);
     success.setMessage("Poll Created Successfully");
@@ -91,12 +99,16 @@ public ResponseEntity<UniversalResponse>CreateScheduledPoll(ScheduledPollRequest
         pollRepository.save(pollModel);
     }
     catch (IllegalArgumentException e){
+        //GENERATE LOGS
+        pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN",e.getMessage(),"PollService"));
         UniversalResponse error= new UniversalResponse();
         error.setError(true);
         error.setMessage(e.getMessage());
         return ResponseEntity.badRequest().body(error);
     }
     //ON SUCCESS->SEND 200
+    //GENERATE LOGS
+    pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO","Poll Has Been Scheduled Successfully","PollService"));
     UniversalResponse success= new UniversalResponse();
     success.setError(false);
     success.setMessage("Poll Has been Scheduled For,"+ pollModel.getScheduledTime());
