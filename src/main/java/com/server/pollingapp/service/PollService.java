@@ -22,18 +22,34 @@ public class PollService {
 
     final PollStream pollStream;
 
-    public PollService(PollRepository pollRepository, UserRepository userRepository, UserRepositoryImpl userRepositoryImp, PollStream pollStream) {
+    final SentimentAnalysisService sentimentAnalysisService;
+
+    public PollService(PollRepository pollRepository, UserRepository userRepository, UserRepositoryImpl userRepositoryImp, PollStream pollStream, SentimentAnalysisService sentimentAnalysisService) {
         this.pollRepository = pollRepository;
         this.userRepository = userRepository;
         this.userRepositoryImp = userRepositoryImp;
         this.pollStream = pollStream;
+        this.sentimentAnalysisService = sentimentAnalysisService;
     }
 
     private UserModel fetchUserId(String userId){
     return userRepositoryImp.findUserById(userId);
 }
 
+private Boolean AnalyzePollContents(String text){
+    return sentimentAnalysisService.GetSentimentScoreOfPoll(text) >= 2;
+}
+
 public ResponseEntity<UniversalResponse> CreateNonScheduledPoll(NonScheduledPollRequest nonScheduledPollRequest,String userId) {
+   //ANALYZE POLL CONTENT
+    if (!AnalyzePollContents(nonScheduledPollRequest.getQuestion())){
+        pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN","Some Poll content was rejected","PollService"));
+        UniversalResponse error= new UniversalResponse();
+        error.setError(true);
+        error.setMessage("This Poll violates our guidelines.Please change the question");
+        return ResponseEntity.badRequest().body(error);
+    }
+
     // FIND AUTHOR DETAILS
     UserModel author = fetchUserId(userId);
 
@@ -74,6 +90,15 @@ public ResponseEntity<UniversalResponse> CreateNonScheduledPoll(NonScheduledPoll
     return ResponseEntity.ok().body(success);
 }
 public ResponseEntity<UniversalResponse>CreateScheduledPoll(ScheduledPollRequest scheduledPollRequest,String userId){
+    //ANALYZE POLL CONTENT
+    if (!AnalyzePollContents(scheduledPollRequest.getQuestion())){
+        pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN","Some Poll content was rejected","PollService"));
+        UniversalResponse error= new UniversalResponse();
+        error.setError(true);
+        error.setMessage("This Poll violates our guidelines.Please change the question");
+        return ResponseEntity.badRequest().body(error);
+    }
+
     // FIND AUTHOR DETAILS
     UserModel author = fetchUserId(userId);
 

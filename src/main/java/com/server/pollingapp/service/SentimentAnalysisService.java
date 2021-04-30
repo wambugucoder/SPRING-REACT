@@ -6,6 +6,7 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.util.CoreMap;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,18 +20,15 @@ public class SentimentAnalysisService {
         this.stanfordCoreNLP = stanfordCoreNLP;
     }
 
-    public AtomicReference<Integer> GetSentimentScoreOfPoll(String text){
-        AtomicReference<Integer> sentimentScore= new AtomicReference<>(0);
+    public int GetSentimentScoreOfPoll(String text){
+        int sentimentScore=0;
         Annotation annotation= stanfordCoreNLP.process(text);
-        annotation.get(CoreAnnotations.SentencesAnnotation.class).stream()
-                .map(sentence->{
-                    //CREATE A SENTIMENT TREE
-                    Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
-                    //USE RECURSIVE NEURAL NETWORK TO PREDICT CLASS(0,1,2,3,4)
-                    sentimentScore.set(RNNCoreAnnotations.getPredictedClass(tree));
+        for (CoreMap sentence: annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
+            //CREATE A SENTIMENT TREE
+            Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
+           sentimentScore= RNNCoreAnnotations.getPredictedClass(tree);
+        }
 
-                    return null;
-                });
         return sentimentScore;
     }
 }
