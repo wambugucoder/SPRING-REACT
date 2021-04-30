@@ -48,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
           //GET AUTH HEADER
        final String authHeader= request.getHeader("Authorization");
-        String username=null;
+        String email=null;
         String jwtToken=null;
 
           //UPDATE VALUES OF TOKEN AND USERNAME
@@ -57,14 +57,14 @@ public class JwtFilter extends OncePerRequestFilter {
             jwtToken=authHeader.substring(7);
             //VALIDATE IT TO ACQUIRE USERNAME ,IF SOMETHING IS WRONG WITH TOKEN USERNAME=NULL
              if (jwtService.ValidateToken(jwtToken)){
-                 username=jwtService.ExtractEmail(jwtToken);
+                 email=jwtService.ExtractEmail(jwtToken);
              }
 
 
         }
         //IF TOKEN EXISTS,VALIDATE AND PLACE USER IN SESSION
-        if (username!= null && SecurityContextHolder.getContext().getAuthentication()==null){
-           UserDetails userDetails=pollsUserDetailsService.loadUserByUsername(username);
+        if (email!= null && SecurityContextHolder.getContext().getAuthentication()==null){
+           UserDetails userDetails=pollsUserDetailsService.loadUserByUsername(email);
            //VALIDATE TOKEN DETAILS AND SET AUTHORIZED IN SECURITY CONTEXT
             if (jwtService.IsAuthHeaderValid(jwtToken, userDetails)){
                 UsernamePasswordAuthenticationToken passToAuthorizationServer = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
@@ -76,7 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(passToAuthorizationServer);
 
                 //GENERATE LOG
-                pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO",username+" "+"has been authorized to access"+" "+request.getRequestURI(),"JwtFilter"));
+                pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO",email+" "+"has been authorized to access"+" "+request.getRequestURI(),"JwtFilter"));
             }
 
         }
