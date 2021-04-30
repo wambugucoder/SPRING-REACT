@@ -9,7 +9,6 @@ import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class SentimentAnalysisService {
