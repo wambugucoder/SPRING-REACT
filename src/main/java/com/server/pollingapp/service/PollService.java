@@ -1,6 +1,7 @@
 package com.server.pollingapp.service;
 
 import com.server.pollingapp.models.*;
+import com.server.pollingapp.repository.ChoiceRepository;
 import com.server.pollingapp.repository.PollRepository;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.request.NonScheduledPollRequest;
@@ -24,12 +25,15 @@ public class PollService {
 
     final SentimentAnalysisService sentimentAnalysisService;
 
-    public PollService(PollRepository pollRepository, UserRepository userRepository, UserRepositoryImpl userRepositoryImp, PollStream pollStream, SentimentAnalysisService sentimentAnalysisService) {
+    final ChoiceRepository choiceRepository;
+
+    public PollService(PollRepository pollRepository, UserRepository userRepository, UserRepositoryImpl userRepositoryImp, PollStream pollStream, SentimentAnalysisService sentimentAnalysisService, ChoiceRepository choiceRepository) {
         this.pollRepository = pollRepository;
         this.userRepository = userRepository;
         this.userRepositoryImp = userRepositoryImp;
         this.pollStream = pollStream;
         this.sentimentAnalysisService = sentimentAnalysisService;
+        this.choiceRepository = choiceRepository;
     }
 
     private UserModel fetchUserId(String userId) {
@@ -50,12 +54,11 @@ public class PollService {
             //SET UP CHOICES
             List<ChoiceModel> list = new ArrayList<ChoiceModel>();
 
-            //ADD CHOICES TO LIST<CHOICE MODEL>
-            nonScheduledPollRequest.getOptions().stream().map(choiceRequest -> new ChoiceModel(choiceRequest.getOption())).forEachOrdered(list::add);
-
-
             //CREATE POLL INSTANCE
             PollModel pollModel = new PollModel();
+            //ADD CHOICES TO LIST<CHOICE MODEL>
+            nonScheduledPollRequest.getOptions().stream().map(choiceRequest -> new ChoiceModel(choiceRequest.getOption(),pollModel)).forEachOrdered(list::add);
+
             pollModel.setCategory(PollsCategory.NON_SCHEDULED_POLL);
             pollModel.setPollStatus(PollStatus.POLL_OPENED);
             pollModel.setClosingTime(nonScheduledPollRequest.getClosingTime());
@@ -63,9 +66,12 @@ public class PollService {
             pollModel.setOptions(list);
             pollModel.setQuestion(nonScheduledPollRequest.getQuestion());
 
+
+
             //SAVE POLL
             try {
-                pollRepository.save(pollModel);
+               pollRepository.save(pollModel);
+
             } catch (IllegalArgumentException e) {
                 //GENERATE LOGS
                 pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", e.getMessage(), "PollService"));
@@ -100,12 +106,14 @@ public class PollService {
             //SET UP CHOICES
             List<ChoiceModel> list = new ArrayList<ChoiceModel>();
 
-            //ADD CHOICES TO LIST<CHOICE MODEL>
-            scheduledPollRequest.getOptions().stream().map(choiceRequest -> new ChoiceModel(choiceRequest.getOption())).forEachOrdered(list::add);
-
 
             //CREATE POLL INSTANCE
             PollModel pollModel = new PollModel();
+
+            //ADD CHOICES TO LIST<CHOICE MODEL>
+            scheduledPollRequest.getOptions().stream().map(choiceRequest -> new ChoiceModel(choiceRequest.getOption(),pollModel)).forEachOrdered(list::add);
+
+
             pollModel.setCategory(PollsCategory.SCHEDULED_POLL);
             pollModel.setPollStatus(PollStatus.POLL_PENDING);
             pollModel.setScheduledTime(scheduledPollRequest.getScheduledTime());
@@ -114,7 +122,8 @@ public class PollService {
             pollModel.setOptions(list);
             pollModel.setQuestion(scheduledPollRequest.getQuestion());
 
-            //SAVE POLL
+
+            //SAVE POLL AND CHOICES
             try {
                 pollRepository.save(pollModel);
             } catch (IllegalArgumentException e) {
@@ -141,5 +150,8 @@ public class PollService {
         error.setMessage("This Poll violates our guidelines.Please change the question");
         return ResponseEntity.badRequest().body(error);
 
+    }
+    public List<PollModel> GetAllOpenPolls(PollStatus pollStatus){
+        return pollRepository.findAllByPollStatusEquals(pollStatus);
     }
 }

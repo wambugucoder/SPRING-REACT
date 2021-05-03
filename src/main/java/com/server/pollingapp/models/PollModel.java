@@ -2,6 +2,9 @@ package com.server.pollingapp.models;
 
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -30,6 +33,7 @@ public class PollModel implements Serializable {
     private LocalDateTime closingTime;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<VotesModel> votes;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -39,7 +43,8 @@ public class PollModel implements Serializable {
     @Column(nullable = false)
     private String question;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "polls")
+    @JsonManagedReference
     private List<ChoiceModel> options ;
 
     @Column
