@@ -151,4 +151,7 @@ public class PollService {
         return ResponseEntity.badRequest().body(error);
 
     }
+    public List<PollModel> GetAllOpenPolls(PollStatus pollStatus){
+        return pollRepository.findAllByPollStatusEquals(pollStatus);
+    }
 }

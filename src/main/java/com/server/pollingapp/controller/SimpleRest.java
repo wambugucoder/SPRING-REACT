@@ -26,8 +26,4 @@ public class SimpleRest implements SecuredController{
         return ResponseEntity.ok().body("it works");
     }
 
-    @GetMapping(value = "/api/v1/opened-polls",produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PollModel> getOpenPolls(){
-        return pollRepository.findAllByPollStatusEquals(PollStatus.POLL_OPENED);
-    }
 }

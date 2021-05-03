@@ -1,6 +1,8 @@
 package com.server.pollingapp.controller;
 
 
+import com.server.pollingapp.models.PollModel;
+import com.server.pollingapp.models.PollStatus;
 import com.server.pollingapp.request.NonScheduledPollRequest;
 import com.server.pollingapp.request.ScheduledPollRequest;
 import com.server.pollingapp.response.UniversalResponse;
@@ -13,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author Jos Wambugu
@@ -36,8 +39,8 @@ public class PollController implements SecuredController {
         return  pollService.CreateNonScheduledPoll(nonScheduledPollRequest,userId);
 
     }
-    @PostMapping(value = "/api/v1/polls/{userId}/scheduled-poll",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UniversalResponse>ScheduledPoll(@RequestBody @Valid ScheduledPollRequest scheduledPollRequest, @PathVariable String userId, BindingResult bindingResult){
+    @PostMapping(value = "/api/v1/polls/{userId}/scheduled_poll",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity<UniversalResponse>ScheduledPoll(@RequestBody @Valid ScheduledPollRequest scheduledPollRequest, @PathVariable String userId, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             UniversalResponse universalResponse=new UniversalResponse();
             universalResponse.setMessage("Please check the details you provided");
@@ -46,5 +49,9 @@ public class PollController implements SecuredController {
         }
         return  pollService.CreateScheduledPoll(scheduledPollRequest, userId);
 
+    }
+    @GetMapping(value = "/api/v1/polls/opened_polls",produces = MediaType.APPLICATION_JSON_VALUE)
+    private List<PollModel> GetAllOpenPolls(){
+        return pollService.GetAllOpenPolls(PollStatus.POLL_OPENED);
     }
 }
