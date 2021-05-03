@@ -1,5 +1,7 @@
 package com.server.pollingapp.models;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -52,7 +54,8 @@ public class UserModel implements Serializable {
     @Column(nullable = false)
     private Boolean isEmailVerificationSent=false;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<PollModel> polls = Collections.emptyList();
 
     @CreatedDate

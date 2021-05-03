@@ -1,8 +1,12 @@
 package com.server.pollingapp.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -10,8 +14,9 @@ import java.util.UUID;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "choices")
-public class ChoiceModel {
+public class ChoiceModel implements Serializable {
 
+    private static final long serialVersionUID = 5952008960623028980L;
     @Id
     private String id= UUID.randomUUID().toString();
 
@@ -19,17 +24,20 @@ public class ChoiceModel {
     private String option;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private List<VotesModel> votes= Collections.emptyList();
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<VotesModel> votes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "poll_id",referencedColumnName = "id")
+    @JsonBackReference
     private PollModel polls;
 
     public ChoiceModel() {
     }
 
-    public ChoiceModel(String option) {
+    public ChoiceModel(String option, PollModel polls) {
         this.option = option;
+        this.polls = polls;
     }
 
     public String getId() {
