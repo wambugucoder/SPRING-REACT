@@ -7,7 +7,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,8 +23,8 @@ public class ChoiceModel implements Serializable {
     private String option;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @Fetch(value = FetchMode.SUBSELECT)
-    private List<VotesModel> votes;
+   // @Fetch(value = FetchMode.SUBSELECT)
+    private List<VotesModel> incomingvotes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "poll_id",referencedColumnName = "id")
@@ -56,12 +55,12 @@ public class ChoiceModel implements Serializable {
         this.option = choices;
     }
 
-    public List<VotesModel> getVotes() {
-        return votes;
+    public List<VotesModel> getIncomingvotes() {
+        return incomingvotes;
     }
 
-    public void setVotes(List<VotesModel> votes) {
-        this.votes = votes;
+    public void setIncomingvotes(List<VotesModel> votes) {
+        this.incomingvotes = votes;
     }
 
     public PollModel getPolls() {

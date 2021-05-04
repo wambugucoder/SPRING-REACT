@@ -5,6 +5,7 @@ import com.server.pollingapp.models.PollStatus;
 import com.server.pollingapp.models.PollsCategory;
 import com.server.pollingapp.repository.PollRepository;
 import com.server.pollingapp.service.PollStream;
+import com.server.pollingapp.service.TwitterService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +21,11 @@ public class PollSchedule {
 
     final PollStream pollStream;
     final PollRepository pollRepository;
-
-    public PollSchedule(PollRepository pollRepository, PollStream pollStream) {
+    final TwitterService twitterService;
+    public PollSchedule(PollRepository pollRepository, PollStream pollStream, TwitterService twitterService) {
         this.pollRepository = pollRepository;
         this.pollStream = pollStream;
+        this.twitterService = twitterService;
     }
 
 
@@ -62,7 +64,31 @@ public class PollSchedule {
                  .forEachOrdered(pollRepository::save);
      }
      }
+
+    /**
+     * Once A poll is Closed,Results should be posted to the "official" Twitter feed
+     * If result has been posted,change poll status to POLL_CLOSED_AND_RESULTS SENT to
+     * avoid resending.
+     * Process runs after every 1 minute
+     * Reason for sending results to twitter->To Notify Users and direct traffic towards the app.
+     */
+    private void SendResultsToTwitterFeed(){
+        List<PollModel> closedPolls=pollRepository.findAllByPollStatusEquals(PollStatus.POLL_CLOSED);
+        if (!closedPolls.isEmpty()){
+            closedPolls.stream()
+                    .map(eachPoll->{
+                        //SEND RESULTS TO TWITTER AND UPDATE STATUS
+                        twitterService.SendResults(eachPoll);
+                        eachPoll.setPollStatus(PollStatus.POLL_CLOSED_AND_NOTIFICATION_SENT);
+                        return eachPoll;
+                    })
+                    .forEachOrdered(pollRepository::save);
+        }
+
+
     }
+
+}
 
 
 

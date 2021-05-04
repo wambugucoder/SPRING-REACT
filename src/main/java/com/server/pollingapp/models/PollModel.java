@@ -38,6 +38,7 @@ public class PollModel implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id",referencedColumnName = "id")
+    @JsonManagedReference
     private UserModel createdBy;
 
     @Column(nullable = false)
