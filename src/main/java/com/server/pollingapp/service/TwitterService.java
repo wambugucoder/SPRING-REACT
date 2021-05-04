@@ -1,33 +1,33 @@
 package com.server.pollingapp.service;
 
-import com.server.pollingapp.models.ChoiceModel;
 import com.server.pollingapp.models.PollModel;
+import com.server.pollingapp.request.RealTimeLogRequest;
+import org.springframework.social.twitter.api.InvalidMessageRecipientException;
+import org.springframework.social.twitter.api.MessageTooLongException;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class TwitterService {
 
     final Twitter twitter;
 
-    public TwitterService(Twitter twitter) {
+    final PollStream pollStream;
+
+    public TwitterService(Twitter twitter, PollStream pollStream) {
         this.twitter = twitter;
+        this.pollStream = pollStream;
     }
 
-    public void SendResults(PollModel pollModel){
-        String question= pollModel.getQuestion();
-        String author=pollModel.getCreatedBy().getUsername();
-        String createdAt=pollModel.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME).toString();
-        String text="A poll with id"+""+pollModel.getId()+":"+question+","+"created by"+""+author+""+"at"+""+
-                createdAt+""+"just closed.To view results click the following link";
+    public void SendNotification(PollModel pollModel){
+        try {
+            twitter.directMessageOperations().sendDirectMessage("JosWambugu","Poll with id:"+""+pollModel.getId() +" "+"Has just been Closed at"+" "+LocalDateTime.now().toString());
+        }
+        catch (Exception e){
+            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",e.getMessage(),"TwitterService"));
+        }
+        }
 
-        twitter.timelineOperations().updateStatus(text);
-    }
 }
