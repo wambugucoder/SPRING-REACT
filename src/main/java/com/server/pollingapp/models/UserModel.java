@@ -1,5 +1,9 @@
 package com.server.pollingapp.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,43 +27,54 @@ public class UserModel implements Serializable {
     private String id = UUID.randomUUID().toString();
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String username;
 
     @Column(nullable = false, unique = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String email;
 
     @Column
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String imageurl="none";
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserRoles roles = UserRoles.ROLE_USER;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private AuthProvider authProvider;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Boolean isEnabled = false;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Boolean isAccountNotLocked = false;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Boolean isAccountNonExpired = true;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Boolean isEmailVerificationSent=false;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<PollModel> polls = Collections.emptyList();
 
     @CreatedDate
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private LocalDateTime createdAt;
 
 

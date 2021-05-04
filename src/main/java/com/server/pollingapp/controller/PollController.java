@@ -54,4 +54,19 @@ public class PollController implements SecuredController {
     private List<PollModel> GetAllOpenPolls(){
         return pollService.GetAllOpenPolls(PollStatus.POLL_OPENED);
     }
+
+    @GetMapping(value = "/api/v1/polls/closed_polls",produces = MediaType.APPLICATION_JSON_VALUE)
+    private List<PollModel> GetAllClosedPolls(){
+        return pollService.GetClosedPolls(PollStatus.POLL_CLOSED);
+    }
+
+    @GetMapping(value = "/api/v1/polls/specific_poll/{pollId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    private Object GetSpecificPoll(@PathVariable String pollId){
+        return pollService.GetPollById(pollId);
+    }
+
+    @PostMapping(value = "/api/v1/polls/cast_vote/{userId}/{pollId}/{choiceId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity<UniversalResponse> CastVote(@PathVariable String choiceId, @PathVariable String pollId, @PathVariable String userId){
+        return pollService.CastVote(pollId,choiceId,userId);
+    }
 }
