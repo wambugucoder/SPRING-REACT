@@ -1,9 +1,8 @@
 package com.server.pollingapp.service;
 
 import com.server.pollingapp.models.PollModel;
-import com.server.pollingapp.request.RealTimeLogRequest;
-import org.springframework.social.twitter.api.InvalidMessageRecipientException;
-import org.springframework.social.twitter.api.MessageTooLongException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +13,9 @@ public class TwitterService {
 
     final Twitter twitter;
 
-    final PollStream pollStream;
-
-    public TwitterService(Twitter twitter, PollStream pollStream) {
+    @Autowired
+    public TwitterService(@Lazy Twitter twitter) {
         this.twitter = twitter;
-        this.pollStream = pollStream;
     }
 
     public void SendNotification(PollModel pollModel){
@@ -26,7 +23,7 @@ public class TwitterService {
             twitter.directMessageOperations().sendDirectMessage("JosWambugu","Poll with id:"+""+pollModel.getId() +" "+"Has just been Closed at"+" "+LocalDateTime.now().toString());
         }
         catch (Exception e){
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",e.getMessage(),"TwitterService"));
+
         }
         }
 

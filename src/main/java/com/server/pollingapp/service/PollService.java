@@ -6,9 +6,10 @@ import com.server.pollingapp.repository.PollRepository;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.repository.VotesRepository;
 import com.server.pollingapp.request.NonScheduledPollRequest;
-import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.request.ScheduledPollRequest;
 import com.server.pollingapp.response.UniversalResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -23,19 +24,17 @@ public class PollService {
 
     final UserRepositoryImpl userRepositoryImp;
 
-    final PollStream pollStream;
-
     final SentimentAnalysisService sentimentAnalysisService;
 
     final ChoiceRepository choiceRepository;
 
     final VotesRepository votesRepository;
 
-    public PollService(PollRepository pollRepository, UserRepository userRepository, UserRepositoryImpl userRepositoryImp, PollStream pollStream, SentimentAnalysisService sentimentAnalysisService, ChoiceRepository choiceRepository, VotesRepository votesRepository) {
+    @Autowired
+    public PollService(@Lazy PollRepository pollRepository, @Lazy UserRepository userRepository,@Lazy UserRepositoryImpl userRepositoryImp,@Lazy SentimentAnalysisService sentimentAnalysisService,@Lazy ChoiceRepository choiceRepository,@Lazy VotesRepository votesRepository) {
         this.pollRepository = pollRepository;
         this.userRepository = userRepository;
         this.userRepositoryImp = userRepositoryImp;
-        this.pollStream = pollStream;
         this.sentimentAnalysisService = sentimentAnalysisService;
         this.choiceRepository = choiceRepository;
         this.votesRepository = votesRepository;
@@ -78,7 +77,7 @@ public class PollService {
 
             } catch (IllegalArgumentException e) {
                 //GENERATE LOGS
-                pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", e.getMessage(), "PollService"));
+
                 UniversalResponse error = new UniversalResponse();
                 error.setError(true);
                 error.setMessage(e.getMessage());
@@ -86,13 +85,13 @@ public class PollService {
             }
             //ON SUCCESS->SEND 200
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", "Poll Created Successfully", "PollService"));
+
             UniversalResponse success = new UniversalResponse();
             success.setError(false);
             success.setMessage("Poll Created Successfully");
             return ResponseEntity.ok().body(success);
         }
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", "Some Poll content was rejected", "PollService"));
+
         UniversalResponse error = new UniversalResponse();
         error.setError(true);
         error.setMessage("This Poll violates our guidelines.Please change the question");
@@ -132,7 +131,7 @@ public class PollService {
                 pollRepository.save(pollModel);
             } catch (IllegalArgumentException e) {
                 //GENERATE LOGS
-                pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", e.getMessage(), "PollService"));
+
                 UniversalResponse error = new UniversalResponse();
                 error.setError(true);
                 error.setMessage(e.getMessage());
@@ -140,7 +139,7 @@ public class PollService {
             }
             //ON SUCCESS->SEND 200
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", "Poll Has Been Scheduled Successfully", "PollService"));
+
             UniversalResponse success = new UniversalResponse();
             success.setError(false);
             success.setMessage("Poll Has been Scheduled For," + pollModel.getScheduledTime());
@@ -148,7 +147,7 @@ public class PollService {
 
 
         }
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", "Some Poll content was rejected", "PollService"));
+
         UniversalResponse error = new UniversalResponse();
         error.setError(true);
         error.setMessage("This Poll violates our guidelines.Please change the question");
@@ -176,7 +175,7 @@ public class PollService {
             votesModel.setUser(user);
 
             try {
-                List<ChoiceModel>choicelist=new ArrayList<ChoiceModel>();
+                List<ChoiceModel>choicelist= new ArrayList<>();
                 List<VotesModel>list =new ArrayList<VotesModel>();
                 //SET CHOICEMODEL
                 choice.setIncomingvotes(list);
@@ -191,9 +190,8 @@ public class PollService {
                 pollRepository.save(poll);
 
 
-                pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", user.getUsername() + "" + "just voted in poll id->" + "" + pollId, "PollService"));
+
             } catch (IllegalArgumentException e) {
-                pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", e.getMessage(), "PollService"));
                 UniversalResponse error = new UniversalResponse();
                 error.setMessage(e.getMessage());
                 error.setError(true);
@@ -219,6 +217,10 @@ public class PollService {
     }
     public List<PollModel> GetClosedPolls(PollStatus pollStatus){
         return pollRepository.findAllByPollStatusEquals(PollStatus.POLL_CLOSED);
+    }
+
+    public List<PollModel> GetScheduledPolls(PollsCategory pollsCategory){
+        return pollRepository.findAllByCategoryEquals(pollsCategory);
     }
 
 }

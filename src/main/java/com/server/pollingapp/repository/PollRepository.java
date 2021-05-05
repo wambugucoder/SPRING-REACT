@@ -5,14 +5,17 @@ import com.server.pollingapp.models.PollStatus;
 import com.server.pollingapp.models.PollsCategory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 
 import java.util.List;
 
+
+@Repository
 public interface PollRepository extends JpaRepository<PollModel,String> {
 
 
-    @Cacheable("Polls")
+   @Cacheable("Polls")
   //  @Query(value = "SELECT polls FROM PollModel polls WHERE polls.pollStatus = ?1",nativeQuery = true)
     List<PollModel> findAllByPollStatusEquals(PollStatus pollStatus);
 

@@ -4,6 +4,7 @@ import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.security.PollsUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,11 +12,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PollsUserDetailsService implements UserDetailsService {
-    @Autowired
-    UserRepositoryImpl userRepositoryImpl;
+
+    final UserRepositoryImpl userRepositoryImpl;
+
+    final UserRepository userRepository;
 
     @Autowired
-    UserRepository userRepository;
+    public PollsUserDetailsService(@Lazy UserRepositoryImpl userRepositoryImpl,@Lazy UserRepository userRepository) {
+        this.userRepositoryImpl = userRepositoryImpl;
+        this.userRepository = userRepository;
+    }
+
     /**
      * Locates the user based on the username. In the actual implementation, the search
      * may possibly be case sensitive, or case insensitive depending on how the

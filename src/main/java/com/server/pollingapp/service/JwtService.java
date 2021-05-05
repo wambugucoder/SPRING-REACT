@@ -1,10 +1,8 @@
 package com.server.pollingapp.service;
 
 import com.server.pollingapp.models.UserModel;
-import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.security.PollsUserDetails;
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,8 +15,6 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    @Autowired
-    PollStream pollStream;
 
     @Value("${secret.key}")
     private String securityKey;
@@ -111,7 +107,6 @@ public class JwtService {
             Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token);
         }
         catch (JwtException ex) {
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",ex.getMessage(),"JWtService"));
             return false;
         }
 

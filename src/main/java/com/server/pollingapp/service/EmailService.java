@@ -1,8 +1,6 @@
 package com.server.pollingapp.service;
 
 import com.server.pollingapp.models.UserModel;
-import com.server.pollingapp.request.RealTimeLogRequest;
-import com.server.pollingapp.request.RegistrationRequest;
 import io.rocketbase.commons.colors.ColorPalette;
 
 import io.rocketbase.commons.email.EmailTemplateBuilder;
@@ -10,6 +8,7 @@ import io.rocketbase.commons.email.model.HtmlTextEmail;
 import io.rocketbase.commons.email.template.styling.FontWeight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,17 +21,19 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class EmailService {
 
-    @Autowired
-    JavaMailSender javaMailSender;
+    final JavaMailSender javaMailSender;
 
-    @Autowired
-    PollStream pollStream;
 
     @Value("${app.frontend}")
     private String website;
 
     @Value("${app.email}")
     private String emailToBeUsed;
+
+    @Autowired
+    public EmailService(@Lazy JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
 
     public void createActivationTemplate(String token, UserModel userModel){
         EmailTemplateBuilder.EmailTemplateConfigBuilder builder = EmailTemplateBuilder.builder();
@@ -72,7 +73,7 @@ public class EmailService {
         try {
             messageHelper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
         } catch (MessagingException e) {
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",e.getMessage(),"EmailService"));
+
         }
         try {
             assert messageHelper != null;
@@ -81,13 +82,12 @@ public class EmailService {
             messageHelper.setText(htmlTextEmail.getText(),htmlTextEmail.getHtml());
             messageHelper.setFrom(emailToBeUsed);
         } catch (MessagingException e) {
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",e.getMessage(),"EmailService"));
+
         }
         try {
             javaMailSender.send(message);
         }
         catch (MailException e) {
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR",e.getMessage(),"EmailService"));
     }
 
     }

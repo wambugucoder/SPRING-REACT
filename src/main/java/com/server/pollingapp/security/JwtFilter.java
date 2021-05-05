@@ -1,9 +1,9 @@
 package com.server.pollingapp.security;
 
-import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.service.JwtService;
-import com.server.pollingapp.service.PollStream;
 import com.server.pollingapp.service.PollsUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,14 +20,11 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     final JwtService jwtService;
-
-    final PollStream pollStream;
-
     final PollsUserDetailsService pollsUserDetailsService;
 
-    public JwtFilter(JwtService jwtService, PollStream pollStream, PollsUserDetailsService pollsUserDetailsService) {
+    @Autowired
+    public JwtFilter(@Lazy JwtService jwtService,@Lazy PollsUserDetailsService pollsUserDetailsService) {
         this.jwtService = jwtService;
-        this.pollStream = pollStream;
         this.pollsUserDetailsService = pollsUserDetailsService;
     }
 
@@ -76,7 +73,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(passToAuthorizationServer);
 
                 //GENERATE LOG
-                pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO",email+" "+"has been authorized to access"+" "+request.getRequestURI(),"JwtFilter"));
+
             }
 
         }
