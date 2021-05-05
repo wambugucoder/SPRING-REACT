@@ -386,5 +386,136 @@ class PollingappApplicationTests {
                 ));
 
     }
+    @Test
+    @Order(14)
+    @DisplayName("/api/v1/polls/{userId}/non_scheduled_poll - Do Not Create A Poll with One Option")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void DoNotCreateANonScheduledWithOneOption() throws Exception {
+        //GIVEN USERID
+        String id=userRepository.findByEmail("abcd@gmail.com").getId();
+        //GIVEN SCHEDULED POLL
 
+        List<ChoiceRequest> list= new ArrayList<>();
+        list.add(new ChoiceRequest("JavaScript"));
+        NonScheduledPollRequest nonscheduledPollRequest=new NonScheduledPollRequest();
+        nonscheduledPollRequest.setQuestion("Java or JavaScript?");
+        nonscheduledPollRequest.setOptions(list);
+        nonscheduledPollRequest.setClosingTime(LocalDateTime.now().plusMinutes(1));
+        //CONVERT TO JSON
+        Gson gson=new Gson();
+        String jsonData=gson.toJson(nonscheduledPollRequest);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/non_scheduled_poll")
+                        .secure(true)
+                        .content(jsonData)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().is4xxClientError(),
+                        MockMvcResultMatchers.jsonPath("$.error").value(true)
+
+                ));
+
+    }
+    @Test
+    @Order(15)
+    @DisplayName("/api/v1/polls/{userId}/scheduled_poll - Do Not Create A Scheduled Poll with one option")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void DoNotCreateAScheduledPollwithOneOption() throws Exception {
+        //GIVEN USERID
+        String id=userRepository.findByEmail("abcd@gmail.com").getId();
+        //GIVEN SCHEDULED POLL
+
+        List<ChoiceRequest> list= new ArrayList<>();
+        list.add(new ChoiceRequest("B"));
+        ScheduledPollRequest scheduledPollRequest=new ScheduledPollRequest();
+        scheduledPollRequest.setQuestion("A or B ?");
+        scheduledPollRequest.setOptions(list);
+        scheduledPollRequest.setScheduledTime(LocalDateTime.now().plusHours(1));
+        scheduledPollRequest.setClosingTime(LocalDateTime.now().plusHours(2));
+        //CONVERT TO JSON
+        Gson gson=new Gson();
+        String jsonData=gson.toJson(scheduledPollRequest);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/scheduled_poll")
+                        .secure(true)
+                        .content(jsonData)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk(),
+                        MockMvcResultMatchers.jsonPath("$.error").value(false)
+
+                ));
+
+    }
+    @Test
+    @Order(16)
+    @DisplayName("/api/v1/polls/{userId}/scheduled_poll -Do Not Publish Polls that violates code of conduct")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void CaptureDeMeaningPolls() throws Exception {
+        //GIVEN USERID
+        String id=userRepository.findByEmail("abcd@gmail.com").getId();
+        //GIVEN SCHEDULED POLL
+
+        List<ChoiceRequest> list= new ArrayList<>();
+        list.add(new ChoiceRequest("Yes"));
+        list.add(new ChoiceRequest("No"));
+        ScheduledPollRequest scheduledPollRequest=new ScheduledPollRequest();
+        scheduledPollRequest.setQuestion(" Are you racist?");
+        scheduledPollRequest.setOptions(list);
+        scheduledPollRequest.setScheduledTime(LocalDateTime.now().plusHours(1));
+        scheduledPollRequest.setClosingTime(LocalDateTime.now().plusHours(2));
+        //CONVERT TO JSON
+        Gson gson=new Gson();
+        String jsonData=gson.toJson(scheduledPollRequest);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/scheduled_poll")
+                        .secure(true)
+                        .content(jsonData)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk(),
+                        MockMvcResultMatchers.jsonPath("$.error").value(false)
+
+                ));
+
+    }
+    @Test
+    @Order(17)
+    @DisplayName("/api/v1/polls/opened_polls -Retrieve All Open Polls")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void RetrieveAllOpenPolls() throws Exception {
+        //GIVEN NOTHING
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/polls/opened_polls")
+                        .secure(true)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk(),
+                        MockMvcResultMatchers.jsonPath("$.error").value(false)
+
+                ));
+
+    }
 }
