@@ -56,9 +56,10 @@ class PollingappApplicationTests {
     }
 
     /**
-     * Registration Tests from order 1- order3
+     * Registration Tests from order 1- order 4
      * @throws Exception
      */
+
     @Test
     @Order(1)
     @DisplayName("/api/v1/auth/signup - Given Correct Details")
@@ -152,7 +153,7 @@ class PollingappApplicationTests {
 
 
     /**
-    * Token Validation Tests order 4- order 6
+    * Token Validation Tests order 5- order 7
     */
 
     @Test
@@ -217,8 +218,9 @@ class PollingappApplicationTests {
     }
 
     /**
-     * Login Validation Tests order 7- order 10
+     * Login Validation Tests order 8- order 11
      */
+
     @Test
     @Order(8)
     @DisplayName("/api/v1/auth/signin - Given Correct Login Details")
@@ -313,7 +315,7 @@ class PollingappApplicationTests {
                 ));
     }
     /**
-     * Polls Test order 12->order
+     * Polls Test order 12->order 20
      */
     @Test
     @Order(12)
@@ -634,6 +636,11 @@ class PollingappApplicationTests {
                 ));
 
     }
+
+    /**
+     * Vote Test order 21-> 22
+     * @throws Exception
+     */
     @Test
     @Order(21)
     @DisplayName("/api/v1/polls/cast_vote/{userId}/{pollId}/{choiceId} -Cast Vote")
@@ -650,7 +657,7 @@ class PollingappApplicationTests {
 
         //WHEN API IS CALLED
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/v1/polls/specific_poll/"+poll.getId())
+                MockMvcRequestBuilders.post("/api/v1/polls/cast_vote/"+user.getId()+"/"+poll.getId()+"/"+choiceModel.getId())
                         .secure(true)
                         .header("Authorization","Bearer"+" "+token)
                         .accept(MediaType.APPLICATION_JSON)
@@ -658,6 +665,56 @@ class PollingappApplicationTests {
                 //EXPECT THE FOLLOWING
                 .andExpect(ResultMatcher.matchAll(
                         MockMvcResultMatchers.status().isOk()
+
+                ));
+    }
+    @Test
+    @Order(22)
+    @DisplayName("/api/v1/polls/cast_vote/{userId}/{pollId}/{choiceId} -Cast Vote")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void DoNotCastVoteTwice() throws Exception {
+        //GIVEN USERDETAILS
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+        PollModel poll=pollRepository.findAllByPollStatusEquals(PollStatus.POLL_OPENED).get(0);
+        ChoiceModel choiceModel=poll.getOptions().get(1);
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/polls/cast_vote/"+user.getId()+"/"+poll.getId()+"/"+choiceModel.getId())
+                        .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().is4xxClientError()
+                ));
+    }
+
+    /**
+     * UnAuthTest order 23
+     * @throws Exception
+     */
+    @Test
+    @Order(23)
+    @DisplayName("/api/v1/unauthorized/auth -Redirect To Unauthorized")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void RedirectToUnAuthorized() throws Exception {
+        //GIVEN NOTHING
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/unauthorized/auth")
+                        .secure(true)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().is4xxClientError()
                 ));
 
     }
