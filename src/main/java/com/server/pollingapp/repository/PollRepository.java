@@ -12,7 +12,7 @@ import java.util.List;
 public interface PollRepository extends JpaRepository<PollModel,String> {
 
 
-    @Cacheable("Polls")
+   @Cacheable("Polls")
   //  @Query(value = "SELECT polls FROM PollModel polls WHERE polls.pollStatus = ?1",nativeQuery = true)
     List<PollModel> findAllByPollStatusEquals(PollStatus pollStatus);
 

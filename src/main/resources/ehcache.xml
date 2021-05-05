@@ -10,5 +10,26 @@
         <heap unit="entries">1000000</heap>
         <jsr107:mbeans enable-statistics="true"/>
     </cache>
+    <cache alias="Polls">
+        <expiry>
+            <ttl unit="seconds">5</ttl>
+        </expiry>
+        <heap unit="entries">1000000</heap>
+        <jsr107:mbeans enable-statistics="true"/>
+    </cache>
+    <cache alias="ScheduledPolls">
+        <expiry>
+            <ttl unit="seconds">5</ttl>
+        </expiry>
+        <heap unit="entries">1000000</heap>
+        <jsr107:mbeans enable-statistics="true"/>
+    </cache>
+    <cache alias="Users">
+        <expiry>
+            <ttl unit="seconds">5</ttl>
+        </expiry>
+        <heap unit="entries">1000000</heap>
+        <jsr107:mbeans enable-statistics="true"/>
+    </cache>
 
 </config>

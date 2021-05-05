@@ -14,6 +14,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ import java.util.List;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = PollingappApplication.class
+        classes = {PollingappApplication.class}
 )
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -40,20 +41,16 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("POLLING-SERVER INTEGRATION TESTS")
 class PollingappApplicationTests {
-
-    final MockMvc mockMvc;
-    final JwtService jwtService;
-    final UserRepository userRepository;
-    final PollRepository pollRepository;
-    final ChoiceRepository choiceRepository;
-
-    PollingappApplicationTests(MockMvc mockMvc, JwtService jwtService, UserRepository userRepository, PollRepository pollRepository, ChoiceRepository choiceRepository) {
-        this.mockMvc = mockMvc;
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
-        this.pollRepository = pollRepository;
-        this.choiceRepository = choiceRepository;
-    }
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    JwtService jwtService;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    PollRepository pollRepository;
+    @Autowired
+    ChoiceRepository choiceRepository;
 
     /**
      * Registration Tests from order 1- order 4
