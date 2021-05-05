@@ -1,6 +1,7 @@
 package com.server.pollingapp;
 
 import com.google.gson.Gson;
+import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.repository.ChoiceRepository;
 import com.server.pollingapp.repository.PollRepository;
 import com.server.pollingapp.repository.UserRepository;
@@ -318,9 +319,13 @@ class PollingappApplicationTests {
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
     public void CreateAScheduledPoll() throws Exception {
         //GIVEN USERID
-        String id=userRepository.findByEmail("abcd@gmail.com").getId();
-        //GIVEN SCHEDULED POLL
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+        String id= user.getId();
 
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
+        //GIVEN SCHEDULED POLL
         List<ChoiceRequest> list= new ArrayList<>();
         list.add(new ChoiceRequest("A"));
         list.add(new ChoiceRequest("B"));
@@ -336,10 +341,11 @@ class PollingappApplicationTests {
         //WHEN API IS CALLED
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/scheduled_poll")
-                .secure(true)
-                .content(jsonData)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
+                        .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
+                        .content(jsonData)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
         )
                 //EXPECT THE FOLLOWING
         .andExpect(ResultMatcher.matchAll(
@@ -356,7 +362,12 @@ class PollingappApplicationTests {
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
     public void CreateANonScheduledPoll() throws Exception {
         //GIVEN USERID
-        String id=userRepository.findByEmail("abcd@gmail.com").getId();
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+        String id= user.getId();
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
         //GIVEN SCHEDULED POLL
 
         List<ChoiceRequest> list= new ArrayList<>();
@@ -374,6 +385,7 @@ class PollingappApplicationTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/non_scheduled_poll")
                         .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
                         .content(jsonData)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -393,7 +405,11 @@ class PollingappApplicationTests {
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
     public void DoNotCreateANonScheduledWithOneOption() throws Exception {
         //GIVEN USERID
-        String id=userRepository.findByEmail("abcd@gmail.com").getId();
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+        String id= user.getId();
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
         //GIVEN SCHEDULED POLL
 
         List<ChoiceRequest> list= new ArrayList<>();
@@ -410,6 +426,7 @@ class PollingappApplicationTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/non_scheduled_poll")
                         .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
                         .content(jsonData)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -429,7 +446,12 @@ class PollingappApplicationTests {
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
     public void DoNotCreateAScheduledPollwithOneOption() throws Exception {
         //GIVEN USERID
-        String id=userRepository.findByEmail("abcd@gmail.com").getId();
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+        String id= user.getId();
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
         //GIVEN SCHEDULED POLL
 
         List<ChoiceRequest> list= new ArrayList<>();
@@ -447,6 +469,7 @@ class PollingappApplicationTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/scheduled_poll")
                         .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
                         .content(jsonData)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -466,7 +489,12 @@ class PollingappApplicationTests {
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
     public void CaptureDeMeaningPolls() throws Exception {
         //GIVEN USERID
-        String id=userRepository.findByEmail("abcd@gmail.com").getId();
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+        String id= user.getId();
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
         //GIVEN SCHEDULED POLL
 
         List<ChoiceRequest> list= new ArrayList<>();
@@ -485,6 +513,7 @@ class PollingappApplicationTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/scheduled_poll")
                         .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
                         .content(jsonData)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -503,11 +532,17 @@ class PollingappApplicationTests {
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
     public void RetrieveAllOpenPolls() throws Exception {
-        //GIVEN NOTHING
+        //GIVEN USERDETAILS
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
         //WHEN API IS CALLED
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/polls/opened_polls")
                         .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
                         .accept(MediaType.APPLICATION_JSON)
         )
                 //EXPECT THE FOLLOWING
