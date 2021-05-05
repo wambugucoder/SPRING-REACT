@@ -1,6 +1,9 @@
 package com.server.pollingapp;
 
 import com.google.gson.Gson;
+import com.server.pollingapp.models.ChoiceModel;
+import com.server.pollingapp.models.PollModel;
+import com.server.pollingapp.models.PollStatus;
 import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.repository.ChoiceRepository;
 import com.server.pollingapp.repository.PollRepository;
@@ -540,16 +543,121 @@ class PollingappApplicationTests {
 
         //WHEN API IS CALLED
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/v1/polls/opened_polls")
+                MockMvcRequestBuilders.get("/api/v1/polls/opened_polls")
                         .secure(true)
                         .header("Authorization","Bearer"+" "+token)
                         .accept(MediaType.APPLICATION_JSON)
         )
                 //EXPECT THE FOLLOWING
                 .andExpect(ResultMatcher.matchAll(
-                        MockMvcResultMatchers.status().isOk(),
-                        MockMvcResultMatchers.jsonPath("$.error").value(false)
+                        MockMvcResultMatchers.status().isOk()
 
+                ));
+
+    }
+    @Test
+    @Order(18)
+    @DisplayName("/api/v1/polls/closed_polls -Retrieve All Closed Polls")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void RetrieveAllClosedPolls() throws Exception {
+        //GIVEN USERDETAILS
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/polls/closed_polls")
+                        .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk()
+
+
+                ));
+
+    }
+    @Test
+    @Order(19)
+    @DisplayName("/api/v1/polls/scheduled_polls -Retrieve All Scheduled Polls")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void RetrieveAllScheduledPolls() throws Exception {
+        //GIVEN USERDETAILS
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/polls/scheduled_polls")
+                        .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk()
+
+                ));
+
+    }
+    @Test
+    @Order(20)
+    @DisplayName("/api/v1/polls/specific_poll/{pollId} -Retrieve All Open Polls")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void RetrieveSpecificPoll() throws Exception {
+        //GIVEN USERDETAILS
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+        PollModel poll=pollRepository.findAll().get(0);
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/polls/specific_poll/"+poll.getId())
+                        .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk()
+                ));
+
+    }
+    @Test
+    @Order(21)
+    @DisplayName("/api/v1/polls/cast_vote/{userId}/{pollId}/{choiceId} -Cast Vote")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void CastVote() throws Exception {
+        //GIVEN USERDETAILS
+        UserModel user=userRepository.findByEmail("abcd@gmail.com");
+        PollModel poll=pollRepository.findAllByPollStatusEquals(PollStatus.POLL_OPENED).get(0);
+        ChoiceModel choiceModel=poll.getOptions().get(0);
+
+        //GIVEN AUTH TOKEN
+        String token=jwtService.GenerateLoginToken(user);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/polls/specific_poll/"+poll.getId())
+                        .secure(true)
+                        .header("Authorization","Bearer"+" "+token)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk()
                 ));
 
     }
