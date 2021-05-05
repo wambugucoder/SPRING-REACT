@@ -22,6 +22,7 @@ import java.util.List;
 @Service
 public class UserRepositoryImpl implements Serializable{
 
+    private static final long serialVersionUID = 2227703948534184774L;
     final UserRepository userRepository;
 
     @Autowired
