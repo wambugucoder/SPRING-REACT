@@ -29,7 +29,7 @@ public class PollController implements SecuredController {
     @Autowired
     PollService pollService;
 
-    @PostMapping(value = "/api/v1/polls/{userId}/non-scheduled-poll",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/api/v1/polls/{userId}/non_scheduled_poll",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UniversalResponse> NonScheduledPoll(@RequestBody @Valid NonScheduledPollRequest nonScheduledPollRequest, @PathVariable String userId, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             UniversalResponse universalResponse=new UniversalResponse();

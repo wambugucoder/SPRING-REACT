@@ -1,7 +1,10 @@
 package com.server.pollingapp;
 
 import com.google.gson.Gson;
-import com.server.pollingapp.request.RegistrationRequest;
+import com.server.pollingapp.repository.ChoiceRepository;
+import com.server.pollingapp.repository.PollRepository;
+import com.server.pollingapp.repository.UserRepository;
+import com.server.pollingapp.request.*;
 import com.server.pollingapp.service.JwtService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledOnJre;
@@ -18,6 +21,10 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = PollingappApplication.class
@@ -32,10 +39,16 @@ class PollingappApplicationTests {
 
     final MockMvc mockMvc;
     final JwtService jwtService;
+    final UserRepository userRepository;
+    final PollRepository pollRepository;
+    final ChoiceRepository choiceRepository;
 
-    PollingappApplicationTests(MockMvc mockMvc, JwtService jwtService) {
+    PollingappApplicationTests(MockMvc mockMvc, JwtService jwtService, UserRepository userRepository, PollRepository pollRepository, ChoiceRepository choiceRepository) {
         this.mockMvc = mockMvc;
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
+        this.pollRepository = pollRepository;
+        this.choiceRepository = choiceRepository;
     }
 
     /**
@@ -64,10 +77,32 @@ class PollingappApplicationTests {
                 MockMvcResultMatchers.jsonPath("$.error").value(false)
         ));
     }
+    @Test
+    @Order(2)
+    @DisplayName("/api/v1/auth/signup - Given Correct Details")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void RegisterUnActivatedUser() throws Exception {
+        //GIVEN REGISTRATION DETAILS
+        Gson gson=new Gson();
+        RegistrationRequest registrationRequest=new RegistrationRequest("notactivated","notactivated@gmail.com","123456");
+        String jsonData = gson.toJson(registrationRequest);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/auth/signup").secure(true).content(jsonData).contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk(),
+                        MockMvcResultMatchers.jsonPath("$.error").value(false)
+                ));
+    }
 
 
     @Test
-    @Order(2)
+    @Order(3)
     @DisplayName("/api/v1/auth/signup - Given Wrong Email")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
@@ -89,7 +124,7 @@ class PollingappApplicationTests {
                 ));
     }
     @Test
-    @Order(3)
+    @Order(4)
     @DisplayName("/api/v1/auth/signup - Given Already Existing Email")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
@@ -117,7 +152,7 @@ class PollingappApplicationTests {
     */
 
     @Test
-    @Order(4)
+    @Order(5)
     @DisplayName("/api/v1/auth/activate/:token - Given Correct Token")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
@@ -138,7 +173,7 @@ class PollingappApplicationTests {
                 ));
     }
     @Test
-    @Order(5)
+    @Order(6)
     @DisplayName("/api/v1/auth/activate/:token - Given No Token")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
@@ -156,7 +191,7 @@ class PollingappApplicationTests {
                 ));
     }
     @Test
-    @Order(6)
+    @Order(7)
     @DisplayName("/api/v1/auth/activate/:token - Given Invalid Signature Token")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
@@ -181,18 +216,44 @@ class PollingappApplicationTests {
      * Login Validation Tests order 7- order 10
      */
     @Test
-    @Order(7)
+    @Order(8)
     @DisplayName("/api/v1/auth/signin - Given Correct Login Details")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
     public void LoginUserWithCorrectDetails() throws Exception {
-        //GIVEN A VALID TOKEN
-        String InvalidToken ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" ;
+        //GIVEN CORRECT LOGIN DETAILS
+        Gson gson=new Gson();
+        LoginRequest loginRequest=new LoginRequest("abcd@gmail.com","123456");
+        String jsonData=gson.toJson(loginRequest);
 
 
         //WHEN API IS CALLED
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/api/v1/auth/activate/"+InvalidToken).secure(true)
+                MockMvcRequestBuilders.post("/api/v1/auth/signin").secure(true).content(jsonData).contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk(),
+                        MockMvcResultMatchers.jsonPath("$.error").value(false),
+                        MockMvcResultMatchers.jsonPath("$.token").exists()
+                ));
+    }
+    @Test
+    @Order(9)
+    @DisplayName("/api/v1/auth/signin - Given Wrong Email")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void DoNotLoginWithWrongEmail() throws Exception {
+        //GIVEN CORRECT LOGIN DETAILS
+        Gson gson=new Gson();
+        LoginRequest loginRequest=new LoginRequest("abc@gmail.com","123456");
+        String jsonData=gson.toJson(loginRequest);
+
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/auth/signin").secure(true).content(jsonData).contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         )
                 //EXPECT THE FOLLOWING
@@ -201,6 +262,129 @@ class PollingappApplicationTests {
                         MockMvcResultMatchers.jsonPath("$.error").value(true)
                 ));
     }
+    @Test
+    @Order(10)
+    @DisplayName("/api/v1/auth/signin - Given Wrong Password")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void DoNotLoginWithWrongPassword() throws Exception {
+        //GIVEN CORRECT LOGIN DETAILS
+        Gson gson=new Gson();
+        LoginRequest loginRequest=new LoginRequest("abcd@gmail.com","12345");
+        String jsonData=gson.toJson(loginRequest);
 
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/auth/signin").secure(true).content(jsonData).contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().is4xxClientError(),
+                        MockMvcResultMatchers.jsonPath("$.error").value(true)
+                ));
+    }
+    @Test
+    @Order(11)
+    @DisplayName("/api/v1/auth/signin - Given UnActivated Credentials")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void DoNotLoginWithUnActivatedCreds() throws Exception {
+        //GIVEN CORRECT LOGIN DETAILS
+        Gson gson=new Gson();
+        LoginRequest loginRequest=new LoginRequest("notactivated@gmail.com","123456");
+        String jsonData=gson.toJson(loginRequest);
+
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/auth/signin").secure(true).content(jsonData).contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().is4xxClientError(),
+                        MockMvcResultMatchers.jsonPath("$.error").value(true)
+                ));
+    }
+    /**
+     * Polls Test order 12->order
+     */
+    @Test
+    @Order(12)
+    @DisplayName("/api/v1/polls/{userId}/scheduled_poll - Create A scheduled Poll")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void CreateAScheduledPoll() throws Exception {
+        //GIVEN USERID
+        String id=userRepository.findByEmail("abcd@gmail.com").getId();
+        //GIVEN SCHEDULED POLL
+
+        List<ChoiceRequest> list= new ArrayList<>();
+        list.add(new ChoiceRequest("A"));
+        list.add(new ChoiceRequest("B"));
+        ScheduledPollRequest scheduledPollRequest=new ScheduledPollRequest();
+        scheduledPollRequest.setQuestion("A or B ?");
+        scheduledPollRequest.setOptions(list);
+        scheduledPollRequest.setScheduledTime(LocalDateTime.now().plusHours(1));
+        scheduledPollRequest.setClosingTime(LocalDateTime.now().plusHours(2));
+        //CONVERT TO JSON
+        Gson gson=new Gson();
+        String jsonData=gson.toJson(scheduledPollRequest);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/scheduled_poll")
+                .secure(true)
+                .content(jsonData)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+        .andExpect(ResultMatcher.matchAll(
+                MockMvcResultMatchers.status().isOk(),
+                MockMvcResultMatchers.jsonPath("$.error").value(false)
+
+        ));
+
+    }
+    @Test
+    @Order(13)
+    @DisplayName("/api/v1/polls/{userId}/non_scheduled_poll - Create A Non Scheduled Poll")
+    @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
+    // @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
+    public void CreateANonScheduledPoll() throws Exception {
+        //GIVEN USERID
+        String id=userRepository.findByEmail("abcd@gmail.com").getId();
+        //GIVEN SCHEDULED POLL
+
+        List<ChoiceRequest> list= new ArrayList<>();
+        list.add(new ChoiceRequest("Java"));
+        list.add(new ChoiceRequest("JavaScript"));
+        NonScheduledPollRequest nonscheduledPollRequest=new NonScheduledPollRequest();
+        nonscheduledPollRequest.setQuestion("Java or JavaScript?");
+        nonscheduledPollRequest.setOptions(list);
+        nonscheduledPollRequest.setClosingTime(LocalDateTime.now().plusMinutes(1));
+        //CONVERT TO JSON
+        Gson gson=new Gson();
+        String jsonData=gson.toJson(nonscheduledPollRequest);
+
+        //WHEN API IS CALLED
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/polls/"+id+"/non_scheduled_poll")
+                        .secure(true)
+                        .content(jsonData)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                //EXPECT THE FOLLOWING
+                .andExpect(ResultMatcher.matchAll(
+                        MockMvcResultMatchers.status().isOk(),
+                        MockMvcResultMatchers.jsonPath("$.error").value(false)
+
+                ));
+
+    }
 
 }
