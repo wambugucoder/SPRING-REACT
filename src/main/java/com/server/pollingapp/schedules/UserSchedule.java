@@ -1,12 +1,11 @@
 package com.server.pollingapp.schedules;
 
 import com.server.pollingapp.models.UserModel;
-import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.service.EmailService;
 import com.server.pollingapp.service.JwtService;
-import com.server.pollingapp.service.PollStream;
 import com.server.pollingapp.service.UserRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,14 +23,12 @@ public class UserSchedule {
     final
     EmailService emailService;
 
-    final
-    PollStream pollStream;
-
-    public UserSchedule(UserRepositoryImpl userRepositoryImpl, JwtService jwtService, EmailService emailService, PollStream pollStream) {
+    @Autowired
+    public UserSchedule(@Lazy UserRepositoryImpl userRepositoryImpl,@Lazy JwtService jwtService,@Lazy EmailService emailService) {
         this.userRepositoryImpl = userRepositoryImpl;
         this.jwtService = jwtService;
         this.emailService = emailService;
-        this.pollStream = pollStream;
+
     }
 
     /**
@@ -53,7 +50,7 @@ public class UserSchedule {
                 eachuser.setEmailVerificationSent(true);
             }).peek(eachuser -> {
                 //GENERATE LOGS
-                pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", eachuser.getEmail()+" "+"Has Received An Email","UserSchedule"));
+
             }).forEachOrdered(userRepositoryImpl::updateUser);
 
         }

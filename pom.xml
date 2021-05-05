@@ -57,41 +57,18 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-            <version>2.5.2.RELEASE</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/io.rocketbase.commons/email-template-builder -->
         <dependency>
             <groupId>io.rocketbase.commons</groupId>
             <artifactId>email-template-builder</artifactId>
             <version>1.6.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.giffing.bucket4j.spring.boot.starter/bucket4j-spring-boot-starter -->
-        <dependency>
-            <groupId>com.giffing.bucket4j.spring.boot.starter</groupId>
-            <artifactId>bucket4j-spring-boot-starter</artifactId>
-            <version>0.2.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.ehcache/ehcache -->
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>3.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-twitter -->
         <dependency>
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-twitter</artifactId>
             <version>1.1.2.RELEASE</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>

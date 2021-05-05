@@ -1,9 +1,6 @@
 package com.server.pollingapp;
 
-import com.server.pollingapp.request.RealTimeLogRequest;
-import com.server.pollingapp.service.PollStream;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;

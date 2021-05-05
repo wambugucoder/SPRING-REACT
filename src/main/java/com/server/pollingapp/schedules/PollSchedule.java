@@ -4,8 +4,9 @@ import com.server.pollingapp.models.PollModel;
 import com.server.pollingapp.models.PollStatus;
 import com.server.pollingapp.models.PollsCategory;
 import com.server.pollingapp.repository.PollRepository;
-import com.server.pollingapp.service.PollStream;
 import com.server.pollingapp.service.TwitterService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -19,12 +20,13 @@ import java.util.List;
 @Component
 public class PollSchedule {
 
-    final PollStream pollStream;
+
     final PollRepository pollRepository;
     final TwitterService twitterService;
-    public PollSchedule(PollRepository pollRepository, PollStream pollStream, TwitterService twitterService) {
+
+    @Autowired
+    public PollSchedule(@Lazy PollRepository pollRepository,@Lazy TwitterService twitterService) {
         this.pollRepository = pollRepository;
-        this.pollStream = pollStream;
         this.twitterService = twitterService;
     }
 

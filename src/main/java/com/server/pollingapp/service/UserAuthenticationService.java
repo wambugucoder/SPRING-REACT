@@ -4,11 +4,11 @@ import com.server.pollingapp.models.AuthProvider;
 import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.request.LoginRequest;
-import com.server.pollingapp.request.RealTimeLogRequest;
 import com.server.pollingapp.request.RegistrationRequest;
 import com.server.pollingapp.response.LoginResponse;
 import com.server.pollingapp.response.UniversalResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,21 +32,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserAuthenticationService {
 
-    @Autowired
+    final
     UserRepositoryImpl userRepositoryImpl;
-    @Autowired
+    final
     BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
+    final
     AuthenticationManager authenticationManager;
-    @Autowired
+    final
     JwtService jwtService;
-    @Autowired
-    PollStream pollStream;
-    @Autowired
+    final
     EmailService emailService;
+    final
+    UserRepository userRepository;
 
     @Autowired
-    UserRepository userRepository;
+    public UserAuthenticationService(@Lazy UserRepositoryImpl userRepositoryImpl, @Lazy BCryptPasswordEncoder bCryptPasswordEncoder, @Lazy AuthenticationManager authenticationManager, @Lazy JwtService jwtService, @Lazy EmailService emailService, @Lazy UserRepository userRepository) {
+        this.userRepositoryImpl = userRepositoryImpl;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.emailService = emailService;
+        this.userRepository = userRepository;
+    }
 
     public ResponseEntity<UniversalResponse>RegisterUser(RegistrationRequest registrationRequest){
         // CHECK IF EMAIL OR USERNAME EXISTS
@@ -56,8 +63,7 @@ public class UserAuthenticationService {
             details.setError(true);
 
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN","Someone tried Registering" +
-                    "With an Email That Already exists","UserAuthenticationService"));
+
             return ResponseEntity.badRequest().body(details);
         }
         else if (userRepository.existsByUsername(registrationRequest.getUsername())){
@@ -66,8 +72,7 @@ public class UserAuthenticationService {
             details.setError(true);
 
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN","Someone tried Registering" +
-                    "With a UserName That Already exists","UserAuthenticationService"));
+
             return ResponseEntity.badRequest().body(details);
 
         }
@@ -79,8 +84,6 @@ public class UserAuthenticationService {
         userRepositoryImpl.addUser(newUser);
 
         //GENERATE LOGS
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", registrationRequest.getUsername()+" "+"Has Successfully Been Registered","UserAuthenticationService"));
-
 
         //SEND SUCCESS MESSAGE AFTER REGISTERING USER
         UniversalResponse success=new UniversalResponse();
@@ -97,7 +100,7 @@ public class UserAuthenticationService {
         }
         catch (DisabledException e){
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", loginRequest.getEmail()+" "+"Tried To Login with a Disabled Account","UserAuthenticationService"));
+
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -108,7 +111,7 @@ public class UserAuthenticationService {
         }
         catch (LockedException e){
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", loginRequest.getEmail()+" "+"Tried To Login with a Disabled Account","UserAuthenticationService"));
+
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -119,7 +122,7 @@ public class UserAuthenticationService {
         }
         catch (BadCredentialsException e){
             //GENERATE LOGS
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN", loginRequest.getEmail()+" "+"Submitted Invalid Login Credentials","UserAuthenticationService"));
+
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -132,7 +135,7 @@ public class UserAuthenticationService {
         UserModel user= userRepository.findByEmail(loginRequest.getEmail());
         String jwtToken=jwtService.GenerateLoginToken(user);
         //GENERATE LOGS
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO", loginRequest.getEmail()+" "+"Successfully Logged In","UserAuthenticationService"));
+
         //RETURN 200 SUCCESS
         LoginResponse loginResponse=new LoginResponse();
         loginResponse.setError(false);
@@ -148,7 +151,7 @@ public class UserAuthenticationService {
             response.setError(true);
             response.setMessage("Your Activation Token No longer works");
             //GENERATE LOG
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN","Activation Token Is Expired","UserAuthenticationService"));
+
             return ResponseEntity.badRequest().body(response);
         }
 
@@ -162,7 +165,7 @@ public class UserAuthenticationService {
             response.setError(true);
             response.setMessage("Your Account was already activated");
             //GENERATE LOG
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("WARN",email+" "+"Tried to activate Account again","UserAuthenticationService"));
+
             return ResponseEntity.badRequest().body(response);
         }
         //IF NOT EXPIRED,NOT VALIDATE EXTRACT USER-DETAILS AND SET ENABLED TO TRUE
@@ -178,7 +181,7 @@ public class UserAuthenticationService {
         response.setMessage("Your Account Has Been Activated Successfully");
 
         //GENERATE LOG
-        pollStream.sendToMessageBroker(new RealTimeLogRequest("INFO",email+" "+"has activated their account","UserAuthenticationService"));
+
         return ResponseEntity.ok().body(response);
     }
 }

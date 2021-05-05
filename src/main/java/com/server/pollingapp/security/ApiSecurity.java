@@ -6,8 +6,10 @@ import com.server.pollingapp.oauth2.OAuth2AuthenticationFailureHandler;
 import com.server.pollingapp.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.server.pollingapp.service.CustomOauth2UserService;
 import com.server.pollingapp.service.PollsUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,8 +38,8 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
 
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
-
-    public ApiSecurity(PollsUserDetailsService pollsUserDetailsService, JwtFilter jwtFilter, CustomOauth2UserService customOAuth2UserService, OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler, OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
+    @Autowired
+    public ApiSecurity(@Lazy PollsUserDetailsService pollsUserDetailsService,@Lazy JwtFilter jwtFilter,@Lazy CustomOauth2UserService customOAuth2UserService,@Lazy OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler, OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
         this.pollsUserDetailsService = pollsUserDetailsService;
         this.jwtFilter = jwtFilter;
         this.customOAuth2UserService = customOAuth2UserService;

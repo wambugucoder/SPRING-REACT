@@ -10,6 +10,7 @@ import com.server.pollingapp.response.UniversalResponse;
 import com.server.pollingapp.security.SecuredController;
 import com.server.pollingapp.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -26,8 +27,13 @@ import java.util.List;
 @RestController
 public class PollController implements SecuredController {
 
-    @Autowired
-    PollService pollService;
+
+   final  PollService pollService;
+
+   @Autowired
+    public PollController(@Lazy PollService pollService) {
+        this.pollService = pollService;
+    }
 
     @PostMapping(value = "/api/v1/polls/{userId}/non_scheduled_poll",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UniversalResponse> NonScheduledPoll(@RequestBody @Valid NonScheduledPollRequest nonScheduledPollRequest, @PathVariable String userId, BindingResult bindingResult){

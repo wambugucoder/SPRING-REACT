@@ -9,6 +9,8 @@ import com.server.pollingapp.oauth2.OAuth2UserInfo;
 import com.server.pollingapp.oauth2.OAuth2UserInfoFactory;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.security.PollsUserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.*;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -51,7 +53,8 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
-    public CustomOauth2UserService(UserRepositoryImpl userRepositoryImpl, UserRepository userRepository) {
+    @Autowired
+    public CustomOauth2UserService(@Lazy UserRepositoryImpl userRepositoryImpl,@Lazy UserRepository userRepository) {
         this.userRepositoryImpl = userRepositoryImpl;
         this.userRepository = userRepository;
     }

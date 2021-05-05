@@ -6,6 +6,7 @@ import com.server.pollingapp.response.LoginResponse;
 import com.server.pollingapp.response.UniversalResponse;
 import com.server.pollingapp.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,8 +24,12 @@ import javax.validation.Valid;
 @RestController
 public class AuthController {
 
+    final UserAuthenticationService userAuthenticationService;
+
     @Autowired
-    UserAuthenticationService userAuthenticationService;
+    public AuthController(@Lazy UserAuthenticationService userAuthenticationService) {
+        this.userAuthenticationService = userAuthenticationService;
+    }
 
 
     @PostMapping(value = "/api/v1/auth/signup",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)

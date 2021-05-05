@@ -1,13 +1,11 @@
 package com.server.pollingapp.oauth2;
 
 import com.server.pollingapp.exception.BadRequestException;
-import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.repository.UserRepository;
-import com.server.pollingapp.request.RealTimeLogRequest;
-import com.server.pollingapp.security.PollsUserDetails;
 import com.server.pollingapp.service.JwtService;
-import com.server.pollingapp.service.PollStream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -32,18 +30,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
   JwtService jwtService;
 
   final
-  PollStream pollStream;
-
-  final
   UserRepository userRepository;
 
   @Value("${app.oauth2.authorizedRedirectUris}")
   String redirectUrRI;
 
-    public OAuth2AuthenticationSuccessHandler(HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository, JwtService jwtService, PollStream pollStream, UserRepository userRepository) {
+  @Autowired
+    public OAuth2AuthenticationSuccessHandler(@Lazy HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository,@Lazy JwtService jwtService,@Lazy UserRepository userRepository) {
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
         this.jwtService = jwtService;
-        this.pollStream = pollStream;
         this.userRepository = userRepository;
     }
 
@@ -64,7 +59,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
-            pollStream.sendToMessageBroker(new RealTimeLogRequest("ERROR","Response has already been committed. Unable to redirect to " + targetUrl,"OAuth-Success-Handler"));
             return;
         }
 
