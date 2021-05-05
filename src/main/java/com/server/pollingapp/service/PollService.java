@@ -221,4 +221,8 @@ public class PollService {
         return pollRepository.findAllByPollStatusEquals(PollStatus.POLL_CLOSED);
     }
 
+    public List<PollModel> GetScheduledPolls(PollsCategory pollsCategory){
+        return pollRepository.findAllByCategoryEquals(pollsCategory);
+    }
+
 }

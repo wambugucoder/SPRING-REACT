@@ -3,6 +3,7 @@ package com.server.pollingapp.controller;
 
 import com.server.pollingapp.models.PollModel;
 import com.server.pollingapp.models.PollStatus;
+import com.server.pollingapp.models.PollsCategory;
 import com.server.pollingapp.request.NonScheduledPollRequest;
 import com.server.pollingapp.request.ScheduledPollRequest;
 import com.server.pollingapp.response.UniversalResponse;
@@ -58,6 +59,11 @@ public class PollController implements SecuredController {
     @GetMapping(value = "/api/v1/polls/closed_polls",produces = MediaType.APPLICATION_JSON_VALUE)
     private List<PollModel> GetAllClosedPolls(){
         return pollService.GetClosedPolls(PollStatus.POLL_CLOSED);
+    }
+
+    @GetMapping(value = "/api/v1/polls/scheduled_polls",produces = MediaType.APPLICATION_JSON_VALUE)
+    private List<PollModel> GetAllScheduledPolls(){
+        return pollService.GetScheduledPolls(PollsCategory.SCHEDULED_POLL);
     }
 
     @GetMapping(value = "/api/v1/polls/specific_poll/{pollId}",produces = MediaType.APPLICATION_JSON_VALUE)
