@@ -76,8 +76,6 @@ public class ApiSecurity extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .requiresSecure()
                 .and()
-                .csrf().disable()
-
                 //STRICT AUTHORIZATION
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()

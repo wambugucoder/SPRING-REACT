@@ -47,7 +47,7 @@ public class PollController implements SecuredController {
 
     }
     @PostMapping(value = "/api/v1/polls/{userId}/scheduled_poll",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    private ResponseEntity<UniversalResponse>ScheduledPoll(@RequestBody @Valid ScheduledPollRequest scheduledPollRequest, @PathVariable String userId, BindingResult bindingResult){
+    public ResponseEntity<UniversalResponse>ScheduledPoll(@RequestBody @Valid ScheduledPollRequest scheduledPollRequest, @PathVariable String userId, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             UniversalResponse universalResponse=new UniversalResponse();
             universalResponse.setMessage("Please check the details you provided");
@@ -58,27 +58,27 @@ public class PollController implements SecuredController {
 
     }
     @GetMapping(value = "/api/v1/polls/opened_polls",produces = MediaType.APPLICATION_JSON_VALUE)
-    private List<PollModel> GetAllOpenPolls(){
+    public List<PollModel> GetAllOpenPolls(){
         return pollService.GetAllOpenPolls(PollStatus.POLL_OPENED);
     }
 
     @GetMapping(value = "/api/v1/polls/closed_polls",produces = MediaType.APPLICATION_JSON_VALUE)
-    private List<PollModel> GetAllClosedPolls(){
+    public List<PollModel> GetAllClosedPolls(){
         return pollService.GetClosedPolls(PollStatus.POLL_CLOSED);
     }
 
     @GetMapping(value = "/api/v1/polls/scheduled_polls",produces = MediaType.APPLICATION_JSON_VALUE)
-    private List<PollModel> GetAllScheduledPolls(){
+    public List<PollModel> GetAllScheduledPolls(){
         return pollService.GetScheduledPolls(PollsCategory.SCHEDULED_POLL);
     }
 
     @GetMapping(value = "/api/v1/polls/specific_poll/{pollId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    private Object GetSpecificPoll(@PathVariable String pollId){
+    public Object GetSpecificPoll(@PathVariable String pollId){
         return pollService.GetPollById(pollId);
     }
 
     @PostMapping(value = "/api/v1/polls/cast_vote/{userId}/{pollId}/{choiceId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    private ResponseEntity<UniversalResponse> CastVote(@PathVariable String choiceId, @PathVariable String pollId, @PathVariable String userId){
+    public ResponseEntity<UniversalResponse> CastVote(@PathVariable String choiceId, @PathVariable String pollId, @PathVariable String userId){
         return pollService.CastVote(pollId,choiceId,userId);
     }
 }
