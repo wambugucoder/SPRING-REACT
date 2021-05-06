@@ -1,178 +1,136 @@
 package com.server.pollingapp.models;
 
-
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import javax.persistence.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "polls")
 public class PollModel implements Serializable {
-    private static final long serialVersionUID = -4406604081033568663L;
+  private static final long serialVersionUID = -4406604081033568663L;
 
-    @Id
-    private String id= UUID.randomUUID().toString();
+  @Id private String id = UUID.randomUUID().toString();
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PollsCategory category=PollsCategory.NON_SCHEDULED_POLL;
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private PollsCategory category = PollsCategory.NON_SCHEDULED_POLL;
 
-    @Column(nullable = false)
-    private LocalDateTime closingTime;
+  @Column(nullable = false) private LocalDateTime closingTime;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @Fetch(value = FetchMode.SUBSELECT)
-    private List<VotesModel> votes;
+  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @Fetch(value = FetchMode.SUBSELECT)
+  private List<VotesModel> votes;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
-    @JsonManagedReference
-    private UserModel createdBy;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  @JsonManagedReference
+  private UserModel createdBy;
 
-    @Column(nullable = false)
-    private String question;
+  @Column(nullable = false) private String question;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "polls")
-    @JsonManagedReference
-    private List<ChoiceModel> options ;
+  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+             mappedBy = "polls")
+  @JsonManagedReference
+  private List<ChoiceModel> options;
 
-    @Column
-    private LocalDateTime scheduledTime;
+  @Column private LocalDateTime scheduledTime;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PollStatus pollStatus;
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private PollStatus pollStatus;
 
-    @CreatedDate
-    @Column(nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime createdAt;
+  @CreatedDate
+  @Column(nullable = false, columnDefinition = "TIMESTAMP")
+  private LocalDateTime createdAt;
 
+  @LastModifiedDate
+  @Column(nullable = false, columnDefinition = "TIMESTAMP")
+  private LocalDateTime updateAt;
 
+  public PollModel() {}
 
-    @LastModifiedDate
-    @Column(nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime updateAt;
+  public PollModel(PollsCategory category, LocalDateTime closingTime,
+                   UserModel createdBy, String question,
+                   List<ChoiceModel> options, PollStatus pollStatus) {
+    this.category = category;
+    this.closingTime = closingTime;
+    this.createdBy = createdBy;
+    this.question = question;
+    this.options = options;
+    this.pollStatus = pollStatus;
+  }
 
+  public PollModel(PollsCategory category, LocalDateTime closingTime,
+                   UserModel createdBy, String question,
+                   List<ChoiceModel> options, LocalDateTime scheduledTime,
+                   PollStatus pollStatus) {
+    this.category = category;
+    this.closingTime = closingTime;
+    this.createdBy = createdBy;
+    this.question = question;
+    this.options = options;
+    this.scheduledTime = scheduledTime;
+    this.pollStatus = pollStatus;
+  }
 
-    public PollModel() {
-    }
+  public String getId() { return id; }
 
-    public PollModel(PollsCategory category, LocalDateTime closingTime, UserModel createdBy, String question, List<ChoiceModel> options, PollStatus pollStatus) {
-        this.category = category;
-        this.closingTime = closingTime;
-        this.createdBy = createdBy;
-        this.question = question;
-        this.options = options;
-        this.pollStatus = pollStatus;
-    }
+  public void setId(String id) { this.id = id; }
 
-    public PollModel(PollsCategory category, LocalDateTime closingTime, UserModel createdBy, String question, List<ChoiceModel> options, LocalDateTime scheduledTime, PollStatus pollStatus) {
-        this.category = category;
-        this.closingTime = closingTime;
-        this.createdBy = createdBy;
-        this.question = question;
-        this.options = options;
-        this.scheduledTime = scheduledTime;
-        this.pollStatus = pollStatus;
-    }
+  public PollsCategory getCategory() { return category; }
 
-    public String getId() {
-        return id;
-    }
+  public void setCategory(PollsCategory category) { this.category = category; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public LocalDateTime getClosingTime() { return closingTime; }
 
-    public PollsCategory getCategory() {
-        return category;
-    }
+  public void setClosingTime(LocalDateTime closingTime) {
+    this.closingTime = closingTime;
+  }
 
-    public void setCategory(PollsCategory category) {
-        this.category = category;
-    }
+  public List<VotesModel> getVotes() { return votes; }
 
-    public LocalDateTime getClosingTime() {
-        return closingTime;
-    }
+  public void setVotes(List<VotesModel> votes) { this.votes = votes; }
 
-    public void setClosingTime(LocalDateTime closingTime) {
-        this.closingTime = closingTime;
-    }
+  public UserModel getCreatedBy() { return createdBy; }
 
-    public List<VotesModel> getVotes() {
-        return votes;
-    }
+  public void setCreatedBy(UserModel createdBy) { this.createdBy = createdBy; }
 
-    public void setVotes(List<VotesModel> votes) {
-        this.votes = votes;
-    }
+  public String getQuestion() { return question; }
 
-    public UserModel getCreatedBy() {
-        return createdBy;
-    }
+  public void setQuestion(String question) { this.question = question; }
 
-    public void setCreatedBy(UserModel createdBy) {
-        this.createdBy = createdBy;
-    }
+  public List<ChoiceModel> getOptions() { return options; }
 
-    public String getQuestion() {
-        return question;
-    }
+  public void setOptions(List<ChoiceModel> options) { this.options = options; }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
+  public LocalDateTime getScheduledTime() { return scheduledTime; }
 
-    public List<ChoiceModel> getOptions() {
-        return options;
-    }
+  public void setScheduledTime(LocalDateTime scheduledTime) {
+    this.scheduledTime = scheduledTime;
+  }
 
-    public void setOptions(List<ChoiceModel> options) {
-        this.options = options;
-    }
+  public PollStatus getPollStatus() { return pollStatus; }
 
-    public LocalDateTime getScheduledTime() {
-        return scheduledTime;
-    }
+  public void setPollStatus(PollStatus pollStatus) {
+    this.pollStatus = pollStatus;
+  }
 
-    public void setScheduledTime(LocalDateTime scheduledTime) {
-        this.scheduledTime = scheduledTime;
-    }
+  public LocalDateTime getCreatedAt() { return createdAt; }
 
-    public PollStatus getPollStatus() {
-        return pollStatus;
-    }
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
 
-    public void setPollStatus(PollStatus pollStatus) {
-        this.pollStatus = pollStatus;
-    }
+  public LocalDateTime getUpdateAt() { return updateAt; }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
-    }
+  public void setUpdateAt(LocalDateTime updateAt) { this.updateAt = updateAt; }
 }
-
-

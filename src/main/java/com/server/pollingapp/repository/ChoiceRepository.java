@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ChoiceRepository extends JpaRepository<ChoiceModel,String> {
+public interface ChoiceRepository extends JpaRepository<ChoiceModel, String> {
 
-    ChoiceModel findByOption(String option);
+  ChoiceModel findByOption(String option);
 }

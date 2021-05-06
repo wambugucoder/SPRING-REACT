@@ -8,223 +8,231 @@ import com.server.pollingapp.repository.VotesRepository;
 import com.server.pollingapp.request.NonScheduledPollRequest;
 import com.server.pollingapp.request.ScheduledPollRequest;
 import com.server.pollingapp.response.UniversalResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 
 @Service
 public class PollService {
-    final PollRepository pollRepository;
+  final PollRepository pollRepository;
 
-    final UserRepository userRepository;
+  final UserRepository userRepository;
 
-    final UserRepositoryImpl userRepositoryImp;
+  final UserRepositoryImpl userRepositoryImp;
 
-    final SentimentAnalysisService sentimentAnalysisService;
+  final SentimentAnalysisService sentimentAnalysisService;
 
-    final ChoiceRepository choiceRepository;
+  final ChoiceRepository choiceRepository;
 
-    final VotesRepository votesRepository;
+  final VotesRepository votesRepository;
 
-    Logger log=  LoggerFactory.getLogger(PollService.class);
+  Logger log = LoggerFactory.getLogger(PollService.class);
 
-    @Autowired
-    public PollService(@Lazy PollRepository pollRepository, @Lazy UserRepository userRepository,@Lazy UserRepositoryImpl userRepositoryImp,@Lazy SentimentAnalysisService sentimentAnalysisService,@Lazy ChoiceRepository choiceRepository,@Lazy VotesRepository votesRepository) {
-        this.pollRepository = pollRepository;
-        this.userRepository = userRepository;
-        this.userRepositoryImp = userRepositoryImp;
-        this.sentimentAnalysisService = sentimentAnalysisService;
-        this.choiceRepository = choiceRepository;
-        this.votesRepository = votesRepository;
-    }
+  @Autowired
+  public PollService(@Lazy PollRepository pollRepository,
+                     @Lazy UserRepository userRepository,
+                     @Lazy UserRepositoryImpl userRepositoryImp,
+                     @Lazy SentimentAnalysisService sentimentAnalysisService,
+                     @Lazy ChoiceRepository choiceRepository,
+                     @Lazy VotesRepository votesRepository) {
+    this.pollRepository = pollRepository;
+    this.userRepository = userRepository;
+    this.userRepositoryImp = userRepositoryImp;
+    this.sentimentAnalysisService = sentimentAnalysisService;
+    this.choiceRepository = choiceRepository;
+    this.votesRepository = votesRepository;
+  }
 
-    private UserModel fetchUserId(String userId) {
-        return userRepositoryImp.findUserById(userId);
-    }
+  private UserModel fetchUserId(String userId) {
+    return userRepositoryImp.findUserById(userId);
+  }
 
-    private Boolean AnalyzePollContents(String text) {
-        return sentimentAnalysisService.GetSentimentScoreOfPoll(text) >= 2;
-    }
+  private Boolean AnalyzePollContents(String text) {
+    return sentimentAnalysisService.GetSentimentScoreOfPoll(text) >= 2;
+  }
 
-    public ResponseEntity<UniversalResponse> CreateNonScheduledPoll(NonScheduledPollRequest nonScheduledPollRequest, String userId) {
-        //ANALYZE POLL CONTENT
-        if (AnalyzePollContents(nonScheduledPollRequest.getQuestion())) {
+  public ResponseEntity<UniversalResponse>
+  CreateNonScheduledPoll(NonScheduledPollRequest nonScheduledPollRequest,
+                         String userId) {
+    // ANALYZE POLL CONTENT
+    if (AnalyzePollContents(nonScheduledPollRequest.getQuestion())) {
 
-            // FIND AUTHOR DETAILS
-            UserModel author = fetchUserId(userId);
+      // FIND AUTHOR DETAILS
+      UserModel author = fetchUserId(userId);
 
-            //SET UP CHOICES
-            List<ChoiceModel> list = new ArrayList<ChoiceModel>();
+      // SET UP CHOICES
+      List<ChoiceModel> list = new ArrayList<ChoiceModel>();
 
-            //CREATE POLL INSTANCE
-            PollModel pollModel = new PollModel();
-            //ADD CHOICES TO LIST<CHOICE MODEL>
-            nonScheduledPollRequest.getOptions().stream().map(choiceRequest -> new ChoiceModel(choiceRequest.getOption(), pollModel)).forEachOrdered(list::add);
+      // CREATE POLL INSTANCE
+      PollModel pollModel = new PollModel();
+      // ADD CHOICES TO LIST<CHOICE MODEL>
+      nonScheduledPollRequest.getOptions()
+          .stream()
+          .map(choiceRequest
+               -> new ChoiceModel(choiceRequest.getOption(), pollModel))
+          .forEachOrdered(list::add);
 
-            pollModel.setCategory(PollsCategory.NON_SCHEDULED_POLL);
-            pollModel.setPollStatus(PollStatus.POLL_OPENED);
-            pollModel.setClosingTime(nonScheduledPollRequest.getClosingTime());
-            pollModel.setCreatedBy(author);
-            pollModel.setOptions(list);
-            pollModel.setQuestion(nonScheduledPollRequest.getQuestion());
+      pollModel.setCategory(PollsCategory.NON_SCHEDULED_POLL);
+      pollModel.setPollStatus(PollStatus.POLL_OPENED);
+      pollModel.setClosingTime(nonScheduledPollRequest.getClosingTime());
+      pollModel.setCreatedBy(author);
+      pollModel.setOptions(list);
+      pollModel.setQuestion(nonScheduledPollRequest.getQuestion());
 
+      // SAVE POLL
+      try {
+        pollRepository.save(pollModel);
 
-            //SAVE POLL
-            try {
-                pollRepository.save(pollModel);
-
-            } catch (IllegalArgumentException e) {
-                //GENERATE LOGS
-                log.error("Could Not Create Non-Scheduled Poll");
-                UniversalResponse error = new UniversalResponse();
-                error.setError(true);
-                error.setMessage(e.getMessage());
-                return ResponseEntity.badRequest().body(error);
-            }
-            //ON SUCCESS->SEND 200
-            //GENERATE LOGS
-            log.info("Non-Scheduled Poll Created Successfully");
-            UniversalResponse success = new UniversalResponse();
-            success.setError(false);
-            success.setMessage("Poll Created Successfully");
-            return ResponseEntity.ok().body(success);
-        }
-
+      } catch (IllegalArgumentException e) {
+        // GENERATE LOGS
+        log.error("Could Not Create Non-Scheduled Poll");
         UniversalResponse error = new UniversalResponse();
         error.setError(true);
-        error.setMessage("This Poll violates our guidelines.Please change the question");
+        error.setMessage(e.getMessage());
         return ResponseEntity.badRequest().body(error);
-
+      }
+      // ON SUCCESS->SEND 200
+      // GENERATE LOGS
+      log.info("Non-Scheduled Poll Created Successfully");
+      UniversalResponse success = new UniversalResponse();
+      success.setError(false);
+      success.setMessage("Poll Created Successfully");
+      return ResponseEntity.ok().body(success);
     }
 
-    public ResponseEntity<UniversalResponse> CreateScheduledPoll(ScheduledPollRequest scheduledPollRequest, String userId) {
-        //ANALYZE POLL CONTENT
-        if (AnalyzePollContents(scheduledPollRequest.getQuestion())) {
+    UniversalResponse error = new UniversalResponse();
+    error.setError(true);
+    error.setMessage(
+        "This Poll violates our guidelines.Please change the question");
+    return ResponseEntity.badRequest().body(error);
+  }
 
-            // FIND AUTHOR DETAILS
-            UserModel author = fetchUserId(userId);
+  public ResponseEntity<UniversalResponse>
+  CreateScheduledPoll(ScheduledPollRequest scheduledPollRequest,
+                      String userId) {
+    // ANALYZE POLL CONTENT
+    if (AnalyzePollContents(scheduledPollRequest.getQuestion())) {
 
-            //SET UP CHOICES
-            List<ChoiceModel> list = new ArrayList<ChoiceModel>();
+      // FIND AUTHOR DETAILS
+      UserModel author = fetchUserId(userId);
 
+      // SET UP CHOICES
+      List<ChoiceModel> list = new ArrayList<ChoiceModel>();
 
-            //CREATE POLL INSTANCE
-            PollModel pollModel = new PollModel();
+      // CREATE POLL INSTANCE
+      PollModel pollModel = new PollModel();
 
-            //ADD CHOICES TO LIST<CHOICE MODEL>
-            scheduledPollRequest.getOptions().stream().map(choiceRequest -> new ChoiceModel(choiceRequest.getOption(), pollModel)).forEachOrdered(list::add);
+      // ADD CHOICES TO LIST<CHOICE MODEL>
+      scheduledPollRequest.getOptions()
+          .stream()
+          .map(choiceRequest
+               -> new ChoiceModel(choiceRequest.getOption(), pollModel))
+          .forEachOrdered(list::add);
 
+      pollModel.setCategory(PollsCategory.SCHEDULED_POLL);
+      pollModel.setPollStatus(PollStatus.POLL_PENDING);
+      pollModel.setScheduledTime(scheduledPollRequest.getScheduledTime());
+      pollModel.setClosingTime(scheduledPollRequest.getClosingTime());
+      pollModel.setCreatedBy(author);
+      pollModel.setOptions(list);
+      pollModel.setQuestion(scheduledPollRequest.getQuestion());
 
-            pollModel.setCategory(PollsCategory.SCHEDULED_POLL);
-            pollModel.setPollStatus(PollStatus.POLL_PENDING);
-            pollModel.setScheduledTime(scheduledPollRequest.getScheduledTime());
-            pollModel.setClosingTime(scheduledPollRequest.getClosingTime());
-            pollModel.setCreatedBy(author);
-            pollModel.setOptions(list);
-            pollModel.setQuestion(scheduledPollRequest.getQuestion());
-
-
-            //SAVE POLL AND CHOICES
-            try {
-                pollRepository.save(pollModel);
-            } catch (IllegalArgumentException e) {
-                //GENERATE LOGS
-                log.error("Could Not Create Scheduled Poll");
-                UniversalResponse error = new UniversalResponse();
-                error.setError(true);
-                error.setMessage(e.getMessage());
-                return ResponseEntity.badRequest().body(error);
-            }
-            //ON SUCCESS->SEND 200
-            //GENERATE LOGS
-            log.info("Created a Scheduled Poll");
-            UniversalResponse success = new UniversalResponse();
-            success.setError(false);
-            success.setMessage("Poll Has been Scheduled For," + pollModel.getScheduledTime());
-            return ResponseEntity.ok().body(success);
-
-
-        }
-
+      // SAVE POLL AND CHOICES
+      try {
+        pollRepository.save(pollModel);
+      } catch (IllegalArgumentException e) {
+        // GENERATE LOGS
+        log.error("Could Not Create Scheduled Poll");
         UniversalResponse error = new UniversalResponse();
         error.setError(true);
-        error.setMessage("This Poll violates our guidelines.Please change the question");
+        error.setMessage(e.getMessage());
         return ResponseEntity.badRequest().body(error);
-
+      }
+      // ON SUCCESS->SEND 200
+      // GENERATE LOGS
+      log.info("Created a Scheduled Poll");
+      UniversalResponse success = new UniversalResponse();
+      success.setError(false);
+      success.setMessage("Poll Has been Scheduled For," +
+                         pollModel.getScheduledTime());
+      return ResponseEntity.ok().body(success);
     }
 
-    public List<PollModel> GetAllOpenPolls(PollStatus pollStatus) {
-        return pollRepository.findAllByPollStatusEquals(pollStatus);
-    }
+    UniversalResponse error = new UniversalResponse();
+    error.setError(true);
+    error.setMessage(
+        "This Poll violates our guidelines.Please change the question");
+    return ResponseEntity.badRequest().body(error);
+  }
 
-    public ResponseEntity<UniversalResponse> CastVote(String pollId, String choiceId, String userId) {
-        PollModel poll = pollRepository.getOne(pollId);
-        UserModel user = fetchUserId(userId);
-        ChoiceModel choice = choiceRepository.getOne(choiceId);
+  public List<PollModel> GetAllOpenPolls(PollStatus pollStatus) {
+    return pollRepository.findAllByPollStatusEquals(pollStatus);
+  }
 
-        Optional<VotesModel> findIfUserVoted = poll.getVotes().stream().filter(votes -> (votes.getUser().getId().equalsIgnoreCase(userId)))
-                .findFirst();
-        //IF USER DOESNT EXIST IN VOTER REGISTRY SAVE THEM
-        if (!findIfUserVoted.isPresent()) {
-            //CREATE VOTE INSTANCE
-            VotesModel votesModel = new VotesModel();
-            votesModel.setChoice(choice);
-            votesModel.setPoll(poll);
-            votesModel.setUser(user);
+  public ResponseEntity<UniversalResponse>
+  CastVote(String pollId, String choiceId, String userId) {
+    PollModel poll = pollRepository.getOne(pollId);
+    UserModel user = fetchUserId(userId);
+    ChoiceModel choice = choiceRepository.getOne(choiceId);
 
-            try {
-                List<VotesModel>list =new ArrayList<VotesModel>();
-                //SET POLL
-                list.add(votesModel);
-                poll.setVotes(list);
-                //CHOICES
-                choice.setIncomingvotes(list);
-                choice.setPolls(poll);
+    Optional<VotesModel> findIfUserVoted =
+        poll.getVotes()
+            .stream()
+            .filter(votes -> (votes.getUser().getId().equalsIgnoreCase(userId)))
+            .findFirst();
+    // IF USER DOESNT EXIST IN VOTER REGISTRY SAVE THEM
+    if (!findIfUserVoted.isPresent()) {
+      // CREATE VOTE INSTANCE
+      VotesModel votesModel = new VotesModel();
+      votesModel.setChoice(choice);
+      votesModel.setPoll(poll);
+      votesModel.setUser(user);
 
-                //SAVE TO DB
-                choiceRepository.save(choice);
+      try {
+        List<VotesModel> list = new ArrayList<VotesModel>();
+        // SET POLL
+        list.add(votesModel);
+        poll.setVotes(list);
+        // CHOICES
+        choice.setIncomingvotes(list);
+        choice.setPolls(poll);
 
+        // SAVE TO DB
+        choiceRepository.save(choice);
 
-
-
-
-            } catch (IllegalArgumentException e) {
-                UniversalResponse error = new UniversalResponse();
-                error.setMessage(e.getMessage());
-                error.setError(true);
-                return ResponseEntity.badRequest().body(error);
-            }
-            //IF USER DIDN'T VOTE
-            //CAST VOTE AND RETURN A 200
-            UniversalResponse success = new UniversalResponse();
-            success.setError(false);
-            success.setMessage("Your Vote has Been Placed");
-            return ResponseEntity.ok().body(success);
-
-        }
+      } catch (IllegalArgumentException e) {
         UniversalResponse error = new UniversalResponse();
-        error.setMessage("You Seem to have already voted");
+        error.setMessage(e.getMessage());
         error.setError(true);
         return ResponseEntity.badRequest().body(error);
+      }
+      // IF USER DIDN'T VOTE
+      // CAST VOTE AND RETURN A 200
+      UniversalResponse success = new UniversalResponse();
+      success.setError(false);
+      success.setMessage("Your Vote has Been Placed");
+      return ResponseEntity.ok().body(success);
     }
+    UniversalResponse error = new UniversalResponse();
+    error.setMessage("You Seem to have already voted");
+    error.setError(true);
+    return ResponseEntity.badRequest().body(error);
+  }
 
-    public Optional<PollModel> GetPollById(String id){
-        return pollRepository.findById(id);
+  public Optional<PollModel> GetPollById(String id) {
+    return pollRepository.findById(id);
+  }
+  public List<PollModel> GetClosedPolls(PollStatus pollStatus) {
+    return pollRepository.findAllByPollStatusEquals(PollStatus.POLL_CLOSED);
+  }
 
-    }
-    public List<PollModel> GetClosedPolls(PollStatus pollStatus){
-        return pollRepository.findAllByPollStatusEquals(PollStatus.POLL_CLOSED);
-    }
-
-    public List<PollModel> GetScheduledPolls(PollsCategory pollsCategory){
-        return pollRepository.findAllByCategoryEquals(pollsCategory);
-    }
-
+  public List<PollModel> GetScheduledPolls(PollsCategory pollsCategory) {
+    return pollRepository.findAllByCategoryEquals(pollsCategory);
+  }
 }
