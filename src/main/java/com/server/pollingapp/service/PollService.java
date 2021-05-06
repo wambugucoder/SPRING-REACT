@@ -55,7 +55,8 @@ public class PollService {
 
     public ResponseEntity<UniversalResponse> CreateNonScheduledPoll(NonScheduledPollRequest nonScheduledPollRequest, String userId) {
         //ANALYZE POLL CONTENT
-        if (AnalyzePollContents(nonScheduledPollRequest.getQuestion())) {
+        Boolean goodContent=AnalyzePollContents(nonScheduledPollRequest.getQuestion());
+        if (goodContent) {
 
             // FIND AUTHOR DETAILS
             UserModel author = fetchUserId(userId);
@@ -112,7 +113,7 @@ public class PollService {
             UserModel author = fetchUserId(userId);
 
             //SET UP CHOICES
-            List<ChoiceModel> list = new ArrayList<ChoiceModel>();
+            List<ChoiceModel> list = new ArrayList<>();
 
 
             //CREATE POLL INSTANCE
@@ -180,7 +181,7 @@ public class PollService {
             votesModel.setUser(user);
 
             try {
-                List<VotesModel>list =new ArrayList<VotesModel>();
+                List<VotesModel>list =new ArrayList<>();
                 //SET POLL
                 list.add(votesModel);
                 poll.setVotes(list);
@@ -220,7 +221,7 @@ public class PollService {
 
     }
     public List<PollModel> GetClosedPolls(PollStatus pollStatus){
-        return pollRepository.findAllByPollStatusEquals(PollStatus.POLL_CLOSED);
+        return pollRepository.findAllByPollStatusEquals(pollStatus);
     }
 
     public List<PollModel> GetScheduledPolls(PollsCategory pollsCategory){
