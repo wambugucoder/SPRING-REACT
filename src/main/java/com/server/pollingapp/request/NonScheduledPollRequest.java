@@ -37,15 +37,5 @@ public class NonScheduledPollRequest implements Serializable {
         return closingTime;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
 
-    public void setOptions(List<ChoiceRequest> options) {
-        this.options = options;
-    }
-
-    public void setClosingTime(LocalDateTime closingTime) {
-        this.closingTime = closingTime;
-    }
 }

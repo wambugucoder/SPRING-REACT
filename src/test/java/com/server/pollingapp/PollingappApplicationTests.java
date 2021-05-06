@@ -2,9 +2,13 @@ package com.server.pollingapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.server.pollingapp.models.ChoiceModel;
 import com.server.pollingapp.models.PollModel;
+import com.server.pollingapp.models.PollStatus;
 import com.server.pollingapp.models.UserModel;
+import com.server.pollingapp.repository.ChoiceRepository;
+import com.server.pollingapp.repository.PollRepository;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.request.*;
 import com.server.pollingapp.service.JwtService;
@@ -45,6 +49,10 @@ class PollingappApplicationTests {
     JwtService jwtService;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PollRepository pollRepository;
+    @Autowired
+    ChoiceRepository choiceRepository;
     @Autowired
     ObjectMapper objectMapper;
     /**
@@ -585,7 +593,7 @@ class PollingappApplicationTests {
     public void RetrieveSpecificPoll() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
-        PollModel poll=user.getPolls().stream().filter(specificPoll->(specificPoll.getQuestion().equalsIgnoreCase("Java or JavaScript"))).findFirst().get();
+        PollModel poll= pollRepository.findByQuestion("Java or JavaScript");
 
         //GIVEN AUTH TOKEN
         String token=jwtService.GenerateLoginToken(user);
@@ -616,8 +624,8 @@ class PollingappApplicationTests {
     public void CastVote() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
-        PollModel poll=user.getPolls().stream().filter(specificPoll->(specificPoll.getQuestion().equalsIgnoreCase("Java or JavaScript"))).findFirst().get();
-        ChoiceModel choiceModel=poll.getOptions().stream().filter(specificChoice->(specificChoice.getOption().equalsIgnoreCase("Java"))).findFirst().get();
+        PollModel poll=pollRepository.findByQuestion("Java or JavaScript");
+        ChoiceModel choiceModel=choiceRepository.findByOption("Java");
         //GIVEN AUTH TOKEN
         String token=jwtService.GenerateLoginToken(user);
 
@@ -642,8 +650,8 @@ class PollingappApplicationTests {
     public void DoNotCastVoteTwice() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
-        PollModel poll=user.getPolls().stream().filter(specificPoll->(specificPoll.getQuestion().equalsIgnoreCase("Java or JavaScript"))).findFirst().get();
-        ChoiceModel choiceModel=poll.getOptions().stream().filter(specificChoice->(specificChoice.getOption().equalsIgnoreCase("Java"))).findFirst().get();
+        PollModel poll=pollRepository.findByQuestion("Java or JavaScript");
+        ChoiceModel choiceModel=choiceRepository.findByOption("Java");
         //GIVEN AUTH TOKEN
         String token=jwtService.GenerateLoginToken(user);
 

@@ -23,5 +23,6 @@ public interface PollRepository extends JpaRepository<PollModel,String> {
     //@Query(value = "SELECT polls FROM PollModel polls WHERE polls.category=?1",nativeQuery = true)
     List<PollModel> findAllByCategoryEquals(PollsCategory pollsCategory);
 
+    PollModel findByQuestion(String question);
 
 }

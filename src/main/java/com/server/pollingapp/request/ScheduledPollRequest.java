@@ -41,23 +41,14 @@ public class ScheduledPollRequest implements Serializable {
         return options;
     }
 
-    public void setOptions(List<ChoiceRequest> options) {
-        this.options = options;
-    }
 
     public LocalDateTime getScheduledTime() {
         return scheduledTime;
-    }
-
-    public void setScheduledTime(LocalDateTime scheduledTime) {
-        this.scheduledTime = scheduledTime;
     }
 
     public LocalDateTime getClosingTime() {
         return closingTime;
     }
 
-    public void setClosingTime(LocalDateTime closingTime) {
-        this.closingTime = closingTime;
-    }
+
 }
