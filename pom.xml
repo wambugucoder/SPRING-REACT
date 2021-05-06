@@ -19,6 +19,7 @@
         <sonar.projectKey>wambugucoder_FINAL-YEAR-PROJECT</sonar.projectKey>
         <sonar.organization>wambugucoder</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>${credentials.for.analysis}</sonar.login>
     </properties>
 
     <dependencyManagement>
