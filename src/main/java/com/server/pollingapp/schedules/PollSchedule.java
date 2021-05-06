@@ -78,9 +78,8 @@ public class PollSchedule {
         List<PollModel> closedPolls=pollRepository.findAllByPollStatusEquals(PollStatus.POLL_CLOSED);
         if (!closedPolls.isEmpty()){
             closedPolls.stream()
+                    .peek(twitterService::SendNotification)
                     .peek(eachPoll->{
-                        //SEND RESULTS TO TWITTER AND UPDATE STATUS
-                        twitterService.SendNotification(eachPoll);
                         eachPoll.setPollStatus(PollStatus.POLL_CLOSED_AND_NOTIFICATION_SENT);
                     })
                     .forEachOrdered(pollRepository::save);

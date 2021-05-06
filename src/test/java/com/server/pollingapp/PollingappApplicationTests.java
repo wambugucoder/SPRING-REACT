@@ -539,7 +539,7 @@ class PollingappApplicationTests {
     @DisplayName("/api/v1/polls/closed_polls -Retrieve All Closed Polls")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
-    public void RetrieveAllClosedPolls() throws Exception {
+    void RetrieveAllClosedPolls() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
 
@@ -649,7 +649,7 @@ class PollingappApplicationTests {
     @DisplayName("/api/v1/polls/cast_vote/{userId}/{pollId}/{choiceId} -Cast Vote")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
-    public void DoNotCastVoteTwice() throws Exception {
+     void DoNotCastVoteTwice() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
         PollModel poll=pollRepository.findByQuestion("Java or JavaScript");

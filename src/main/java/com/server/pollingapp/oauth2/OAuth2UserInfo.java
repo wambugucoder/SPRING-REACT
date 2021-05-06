@@ -7,7 +7,7 @@ import java.util.Map;
 public abstract class OAuth2UserInfo {
     protected Map<String, Object> attributes;
 
-    public OAuth2UserInfo(Map<String, Object> attributes) {
+    protected OAuth2UserInfo(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 
@@ -24,7 +24,7 @@ public abstract class OAuth2UserInfo {
     public abstract String getImageUrl();
 
     public void setEmail(String email) {
-        attributes = new HashMap<String, Object>(attributes);
+        attributes = new HashMap<>(attributes);
         attributes.put("email", email);
     }
 

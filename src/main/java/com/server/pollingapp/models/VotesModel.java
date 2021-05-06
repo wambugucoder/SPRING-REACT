@@ -32,7 +32,9 @@ public class VotesModel implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private ChoiceModel choice;
 
+
     public VotesModel() {
+        //EMPTY CONSTRUCTOR
     }
 
     public String getId() {
