@@ -3,6 +3,8 @@ package com.server.pollingapp.service;
 import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.security.PollsUserDetails;
 import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +25,8 @@ public class JwtService {
     protected void init() {
         securityKey = Base64.getEncoder().encodeToString(securityKey.getBytes());
     }
+
+    Logger log= LoggerFactory.getLogger(JwtService.class);
 
     private String CreateJwtToken(Map<String,Object> payload, String email){
         return Jwts.builder()
@@ -107,6 +111,7 @@ public class JwtService {
             Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token);
         }
         catch (JwtException ex) {
+            log.error(ex.getLocalizedMessage());
             return false;
         }
 

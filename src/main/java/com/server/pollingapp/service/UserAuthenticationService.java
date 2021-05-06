@@ -67,7 +67,7 @@ public class UserAuthenticationService {
             details.setError(true);
 
             //GENERATE LOGS
-
+            log.warn(registrationRequest.getEmail()+" "+"Already Exists");
             return ResponseEntity.badRequest().body(details);
         }
         else if (userRepository.existsByUsername(registrationRequest.getUsername())){
@@ -76,7 +76,7 @@ public class UserAuthenticationService {
             details.setError(true);
 
             //GENERATE LOGS
-
+            log.warn(registrationRequest.getUsername()+""+"Already Exists");
             return ResponseEntity.badRequest().body(details);
 
         }
@@ -88,6 +88,7 @@ public class UserAuthenticationService {
         userRepositoryImpl.addUser(newUser);
 
         //GENERATE LOGS
+        log.info("User with Username"+newUser.getUsername()+" "+"has just been registered in the system");
 
         //SEND SUCCESS MESSAGE AFTER REGISTERING USER
         UniversalResponse success=new UniversalResponse();
@@ -104,7 +105,7 @@ public class UserAuthenticationService {
         }
         catch (DisabledException e){
             //GENERATE LOGS
-
+           log.warn(loginRequest.getEmail()+" "+"Has not been activated");
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -115,7 +116,7 @@ public class UserAuthenticationService {
         }
         catch (LockedException e){
             //GENERATE LOGS
-
+            log.warn(loginRequest.getEmail()+" "+"Has not been activated");
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -126,7 +127,7 @@ public class UserAuthenticationService {
         }
         catch (BadCredentialsException e){
             //GENERATE LOGS
-
+            log.warn(loginRequest.getEmail()+" "+"Has Provided Invalid Credentials");
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -155,7 +156,7 @@ public class UserAuthenticationService {
             response.setError(true);
             response.setMessage("Your Activation Token No longer works");
             //GENERATE LOG
-
+            log.warn(token +": "+"No Longer Works");
             return ResponseEntity.badRequest().body(response);
         }
 
@@ -169,7 +170,7 @@ public class UserAuthenticationService {
             response.setError(true);
             response.setMessage("Your Account was already activated");
             //GENERATE LOG
-
+            log.warn(email+" "+"Tried to access the activation token Again");
             return ResponseEntity.ok().body(response);
         }
         //IF NOT EXPIRED,NOT VALIDATE EXTRACT USER-DETAILS AND SET ENABLED TO TRUE
@@ -185,7 +186,7 @@ public class UserAuthenticationService {
         response.setMessage("Your Account Has Been Activated Successfully");
 
         //GENERATE LOG
-
+        log.info(email+" "+"Has Been Activated Successfully");
         return ResponseEntity.ok().body(response);
     }
 }

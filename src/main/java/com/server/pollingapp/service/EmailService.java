@@ -6,6 +6,8 @@ import io.rocketbase.commons.colors.ColorPalette;
 import io.rocketbase.commons.email.EmailTemplateBuilder;
 import io.rocketbase.commons.email.model.HtmlTextEmail;
 import io.rocketbase.commons.email.template.styling.FontWeight;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -29,6 +31,8 @@ public class EmailService {
 
     @Value("${app.email}")
     private String emailToBeUsed;
+
+    Logger log= LoggerFactory.getLogger(EmailService.class);
 
     @Autowired
     public EmailService(@Lazy JavaMailSender javaMailSender) {
@@ -73,7 +77,7 @@ public class EmailService {
         try {
             messageHelper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
         } catch (MessagingException e) {
-
+            log.error(e.getLocalizedMessage());
         }
         try {
             assert messageHelper != null;
@@ -81,13 +85,15 @@ public class EmailService {
             messageHelper.setSubject("Votex Account Activation");
             messageHelper.setText(htmlTextEmail.getText(),htmlTextEmail.getHtml());
             messageHelper.setFrom(emailToBeUsed);
-        } catch (MessagingException e) {
 
+        } catch (MessagingException e) {
+            log.error(e.getLocalizedMessage());
         }
         try {
             javaMailSender.send(message);
         }
         catch (MailException e) {
+            log.error(e.getLocalizedMessage());
     }
 
     }
