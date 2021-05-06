@@ -26,7 +26,7 @@ public class ChoiceModel implements Serializable {
    // @Fetch(value = FetchMode.SUBSELECT)
     private List<VotesModel> incomingvotes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "poll_id",referencedColumnName = "id")
     @JsonBackReference
     private PollModel polls;

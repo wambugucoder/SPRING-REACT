@@ -7,6 +7,8 @@ import com.server.pollingapp.request.LoginRequest;
 import com.server.pollingapp.request.RegistrationRequest;
 import com.server.pollingapp.response.LoginResponse;
 import com.server.pollingapp.response.UniversalResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +47,8 @@ public class UserAuthenticationService {
     final
     UserRepository userRepository;
 
+    Logger log= LoggerFactory.getLogger(UserAuthenticationService.class);
+
     @Autowired
     public UserAuthenticationService(@Lazy UserRepositoryImpl userRepositoryImpl, @Lazy BCryptPasswordEncoder bCryptPasswordEncoder, @Lazy AuthenticationManager authenticationManager, @Lazy JwtService jwtService, @Lazy EmailService emailService, @Lazy UserRepository userRepository) {
         this.userRepositoryImpl = userRepositoryImpl;
@@ -63,7 +67,7 @@ public class UserAuthenticationService {
             details.setError(true);
 
             //GENERATE LOGS
-
+            log.warn(registrationRequest.getEmail()+" "+"Already Exists");
             return ResponseEntity.badRequest().body(details);
         }
         else if (userRepository.existsByUsername(registrationRequest.getUsername())){
@@ -72,7 +76,7 @@ public class UserAuthenticationService {
             details.setError(true);
 
             //GENERATE LOGS
-
+            log.warn(registrationRequest.getUsername()+""+"Already Exists");
             return ResponseEntity.badRequest().body(details);
 
         }
@@ -84,6 +88,7 @@ public class UserAuthenticationService {
         userRepositoryImpl.addUser(newUser);
 
         //GENERATE LOGS
+        log.info("User with Username"+newUser.getUsername()+" "+"has just been registered in the system");
 
         //SEND SUCCESS MESSAGE AFTER REGISTERING USER
         UniversalResponse success=new UniversalResponse();
@@ -100,7 +105,7 @@ public class UserAuthenticationService {
         }
         catch (DisabledException e){
             //GENERATE LOGS
-
+           log.warn(loginRequest.getEmail()+" "+"Has not been activated");
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -111,7 +116,7 @@ public class UserAuthenticationService {
         }
         catch (LockedException e){
             //GENERATE LOGS
-
+            log.warn(loginRequest.getEmail()+" "+"Has not been activated");
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -122,7 +127,7 @@ public class UserAuthenticationService {
         }
         catch (BadCredentialsException e){
             //GENERATE LOGS
-
+            log.warn(loginRequest.getEmail()+" "+"Has Provided Invalid Credentials");
             //RETURN 404 ERROR
             LoginResponse loginResponse=new LoginResponse();
             loginResponse.setError(true);
@@ -151,7 +156,7 @@ public class UserAuthenticationService {
             response.setError(true);
             response.setMessage("Your Activation Token No longer works");
             //GENERATE LOG
-
+            log.warn(token +": "+"No Longer Works");
             return ResponseEntity.badRequest().body(response);
         }
 
@@ -165,8 +170,8 @@ public class UserAuthenticationService {
             response.setError(true);
             response.setMessage("Your Account was already activated");
             //GENERATE LOG
-
-            return ResponseEntity.badRequest().body(response);
+            log.warn(email+" "+"Tried to access the activation token Again");
+            return ResponseEntity.ok().body(response);
         }
         //IF NOT EXPIRED,NOT VALIDATE EXTRACT USER-DETAILS AND SET ENABLED TO TRUE
         user.setEnabled(true);
@@ -181,7 +186,7 @@ public class UserAuthenticationService {
         response.setMessage("Your Account Has Been Activated Successfully");
 
         //GENERATE LOG
-
+        log.info(email+" "+"Has Been Activated Successfully");
         return ResponseEntity.ok().body(response);
     }
 }

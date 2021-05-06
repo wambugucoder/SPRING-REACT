@@ -1,0 +1,50 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: /dockerapp1
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --no-cache py-pip=9.0.0-r1
+            pip install docker-compose==1.15.0
+      - run:
+          name: Start up Services
+          command: |
+            docker-compose -f docker-compose.test.yml up -d redis
+      - run:
+          name: Build Up Server
+          command: |
+            docker-compose -f docker-compose.test.yml build  server
+  deploy:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - run:
+          name: Deploy Services to linux ubuntu
+          command: |
+            echo "A git workflow Action will take care of this"
+
+
+workflows:
+  main:
+    jobs:
+      - build:
+          context: PollingAppSonarCloud
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+
+
+
+
+
+

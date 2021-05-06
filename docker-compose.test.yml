@@ -1,0 +1,33 @@
+version: "3"
+services:
+    redis:
+        image: redis:alpine
+        hostname: redis
+        restart: always
+        volumes:
+            - ../data/redis:/data
+        entrypoint: redis-server --appendonly yes
+        ports:
+            - 6379:6379
+        networks:
+            - backend-server
+    server:
+        build:
+          context: .
+          dockerfile: Dockerfile.test
+        ports:
+          - 8443:8443
+        container_name: polls_server
+        depends_on:
+          - redis
+        links:
+          - redis
+        networks:
+          - backend-server
+networks:
+    backend-server:
+         driver: bridge
+
+
+
+

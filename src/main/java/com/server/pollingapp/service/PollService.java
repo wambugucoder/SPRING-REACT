@@ -8,6 +8,8 @@ import com.server.pollingapp.repository.VotesRepository;
 import com.server.pollingapp.request.NonScheduledPollRequest;
 import com.server.pollingapp.request.ScheduledPollRequest;
 import com.server.pollingapp.response.UniversalResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class PollService {
@@ -29,6 +32,8 @@ public class PollService {
     final ChoiceRepository choiceRepository;
 
     final VotesRepository votesRepository;
+
+    Logger log=  LoggerFactory.getLogger(PollService.class);
 
     @Autowired
     public PollService(@Lazy PollRepository pollRepository, @Lazy UserRepository userRepository,@Lazy UserRepositoryImpl userRepositoryImp,@Lazy SentimentAnalysisService sentimentAnalysisService,@Lazy ChoiceRepository choiceRepository,@Lazy VotesRepository votesRepository) {
@@ -77,7 +82,7 @@ public class PollService {
 
             } catch (IllegalArgumentException e) {
                 //GENERATE LOGS
-
+                log.error("Could Not Create Non-Scheduled Poll");
                 UniversalResponse error = new UniversalResponse();
                 error.setError(true);
                 error.setMessage(e.getMessage());
@@ -85,7 +90,7 @@ public class PollService {
             }
             //ON SUCCESS->SEND 200
             //GENERATE LOGS
-
+            log.info("Non-Scheduled Poll Created Successfully");
             UniversalResponse success = new UniversalResponse();
             success.setError(false);
             success.setMessage("Poll Created Successfully");
@@ -131,7 +136,7 @@ public class PollService {
                 pollRepository.save(pollModel);
             } catch (IllegalArgumentException e) {
                 //GENERATE LOGS
-
+                log.error("Could Not Create Scheduled Poll");
                 UniversalResponse error = new UniversalResponse();
                 error.setError(true);
                 error.setMessage(e.getMessage());
@@ -139,7 +144,7 @@ public class PollService {
             }
             //ON SUCCESS->SEND 200
             //GENERATE LOGS
-
+            log.info("Created a Scheduled Poll");
             UniversalResponse success = new UniversalResponse();
             success.setError(false);
             success.setMessage("Poll Has been Scheduled For," + pollModel.getScheduledTime());
@@ -175,19 +180,18 @@ public class PollService {
             votesModel.setUser(user);
 
             try {
-                List<ChoiceModel>choicelist= new ArrayList<>();
                 List<VotesModel>list =new ArrayList<VotesModel>();
-                //SET CHOICEMODEL
-                choice.setIncomingvotes(list);
-                choicelist.add(choice);
-
                 //SET POLL
                 list.add(votesModel);
                 poll.setVotes(list);
-                poll.setOptions(choicelist);
+                //CHOICES
+                choice.setIncomingvotes(list);
+                choice.setPolls(poll);
 
                 //SAVE TO DB
-                pollRepository.save(poll);
+                choiceRepository.save(choice);
+
+
 
 
 
@@ -211,8 +215,8 @@ public class PollService {
         return ResponseEntity.badRequest().body(error);
     }
 
-    public PollModel GetPollById(String id){
-        return pollRepository.getOne(id);
+    public Optional<PollModel> GetPollById(String id){
+        return pollRepository.findById(id);
 
     }
     public List<PollModel> GetClosedPolls(PollStatus pollStatus){
