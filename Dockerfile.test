@@ -18,4 +18,3 @@ WORKDIR /code-analysis
 COPY --from=build /server .
 
 RUN  mvn sonar:sonar
-
