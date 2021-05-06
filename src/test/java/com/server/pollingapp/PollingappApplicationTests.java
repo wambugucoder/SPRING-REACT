@@ -1,6 +1,8 @@
 package com.server.pollingapp;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.server.pollingapp.models.ChoiceModel;
 import com.server.pollingapp.models.PollModel;
 import com.server.pollingapp.models.PollStatus;
@@ -51,7 +53,8 @@ class PollingappApplicationTests {
     PollRepository pollRepository;
     @Autowired
     ChoiceRepository choiceRepository;
-
+    @Autowired
+    ObjectMapper objectMapper;
     /**
      * Registration Tests from order 1- order 4
      * @throws Exception
@@ -188,8 +191,8 @@ class PollingappApplicationTests {
         )
                 //EXPECT THE FOLLOWING
                 .andExpect(ResultMatcher.matchAll(
-                        MockMvcResultMatchers.status().is4xxClientError(),
-                        MockMvcResultMatchers.jsonPath("$.error").value(true)
+                        MockMvcResultMatchers.status().is4xxClientError()
+
                 ));
     }
     @Test
@@ -331,14 +334,9 @@ class PollingappApplicationTests {
         List<ChoiceRequest> list= new ArrayList<>();
         list.add(new ChoiceRequest("A"));
         list.add(new ChoiceRequest("B"));
-        ScheduledPollRequest scheduledPollRequest=new ScheduledPollRequest();
-        scheduledPollRequest.setQuestion("A or B ?");
-        scheduledPollRequest.setOptions(list);
-        scheduledPollRequest.setScheduledTime(LocalDateTime.now().plusHours(1));
-        scheduledPollRequest.setClosingTime(LocalDateTime.now().plusHours(2));
+        ScheduledPollRequest scheduledPollRequest=new ScheduledPollRequest("A or B ?",list,LocalDateTime.now().plusHours(1),LocalDateTime.now().plusHours(2));
         //CONVERT TO JSON
-        Gson gson=new Gson();
-        String jsonData=gson.toJson(scheduledPollRequest);
+        String jsonData=objectMapper.writeValueAsString(scheduledPollRequest);
 
         //WHEN API IS CALLED
         mockMvc.perform(
@@ -375,13 +373,9 @@ class PollingappApplicationTests {
         List<ChoiceRequest> list= new ArrayList<>();
         list.add(new ChoiceRequest("Java"));
         list.add(new ChoiceRequest("JavaScript"));
-        NonScheduledPollRequest nonscheduledPollRequest=new NonScheduledPollRequest();
-        nonscheduledPollRequest.setQuestion("Java or JavaScript?");
-        nonscheduledPollRequest.setOptions(list);
-        nonscheduledPollRequest.setClosingTime(LocalDateTime.now().plusMinutes(1));
+        NonScheduledPollRequest nonscheduledPollRequest=new NonScheduledPollRequest("Java or JavaScript",list,LocalDateTime.now().plusMinutes(5));
         //CONVERT TO JSON
-        Gson gson=new Gson();
-        String jsonData=gson.toJson(nonscheduledPollRequest);
+        String jsonData=objectMapper.writeValueAsString(nonscheduledPollRequest);
 
         //WHEN API IS CALLED
         mockMvc.perform(
@@ -416,13 +410,10 @@ class PollingappApplicationTests {
 
         List<ChoiceRequest> list= new ArrayList<>();
         list.add(new ChoiceRequest("JavaScript"));
-        NonScheduledPollRequest nonscheduledPollRequest=new NonScheduledPollRequest();
-        nonscheduledPollRequest.setQuestion("Java or JavaScript?");
-        nonscheduledPollRequest.setOptions(list);
-        nonscheduledPollRequest.setClosingTime(LocalDateTime.now().plusMinutes(1));
+        NonScheduledPollRequest nonscheduledPollRequest=new NonScheduledPollRequest("Java or JavaScript",list,LocalDateTime.now().plusMinutes(5));
+
         //CONVERT TO JSON
-        Gson gson=new Gson();
-        String jsonData=gson.toJson(nonscheduledPollRequest);
+        String jsonData=objectMapper.writeValueAsString(nonscheduledPollRequest);
 
         //WHEN API IS CALLED
         mockMvc.perform(
@@ -435,8 +426,7 @@ class PollingappApplicationTests {
         )
                 //EXPECT THE FOLLOWING
                 .andExpect(ResultMatcher.matchAll(
-                        MockMvcResultMatchers.status().is4xxClientError(),
-                        MockMvcResultMatchers.jsonPath("$.error").value(true)
+                        MockMvcResultMatchers.status().is4xxClientError()
 
                 ));
 
@@ -458,14 +448,9 @@ class PollingappApplicationTests {
 
         List<ChoiceRequest> list= new ArrayList<>();
         list.add(new ChoiceRequest("B"));
-        ScheduledPollRequest scheduledPollRequest=new ScheduledPollRequest();
-        scheduledPollRequest.setQuestion("A or B ?");
-        scheduledPollRequest.setOptions(list);
-        scheduledPollRequest.setScheduledTime(LocalDateTime.now().plusHours(1));
-        scheduledPollRequest.setClosingTime(LocalDateTime.now().plusHours(2));
-        //CONVERT TO JSON
-        Gson gson=new Gson();
-        String jsonData=gson.toJson(scheduledPollRequest);
+        ScheduledPollRequest scheduledPollRequest=new ScheduledPollRequest("A or B ?",list,LocalDateTime.now().plusHours(1),LocalDateTime.now().plusHours(2));
+        //JSON
+        String jsonData=objectMapper.writeValueAsString(scheduledPollRequest);
 
         //WHEN API IS CALLED
         mockMvc.perform(
@@ -478,9 +463,7 @@ class PollingappApplicationTests {
         )
                 //EXPECT THE FOLLOWING
                 .andExpect(ResultMatcher.matchAll(
-                        MockMvcResultMatchers.status().isOk(),
-                        MockMvcResultMatchers.jsonPath("$.error").value(false)
-
+                        MockMvcResultMatchers.status().is4xxClientError()
                 ));
 
     }
@@ -502,14 +485,10 @@ class PollingappApplicationTests {
         List<ChoiceRequest> list= new ArrayList<>();
         list.add(new ChoiceRequest("Yes"));
         list.add(new ChoiceRequest("No"));
-        ScheduledPollRequest scheduledPollRequest=new ScheduledPollRequest();
+        ScheduledPollRequest scheduledPollRequest=new ScheduledPollRequest("Are you racist ?",list,LocalDateTime.now().plusHours(1),LocalDateTime.now().plusHours(2));
         scheduledPollRequest.setQuestion(" Are you racist?");
-        scheduledPollRequest.setOptions(list);
-        scheduledPollRequest.setScheduledTime(LocalDateTime.now().plusHours(1));
-        scheduledPollRequest.setClosingTime(LocalDateTime.now().plusHours(2));
         //CONVERT TO JSON
-        Gson gson=new Gson();
-        String jsonData=gson.toJson(scheduledPollRequest);
+        String jsonData=objectMapper.writeValueAsString(scheduledPollRequest);
 
         //WHEN API IS CALLED
         mockMvc.perform(
@@ -522,8 +501,7 @@ class PollingappApplicationTests {
         )
                 //EXPECT THE FOLLOWING
                 .andExpect(ResultMatcher.matchAll(
-                        MockMvcResultMatchers.status().isOk(),
-                        MockMvcResultMatchers.jsonPath("$.error").value(false)
+                        MockMvcResultMatchers.status().is4xxClientError()
 
                 ));
 
@@ -615,7 +593,7 @@ class PollingappApplicationTests {
     public void RetrieveSpecificPoll() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
-        PollModel poll=pollRepository.findAll().get(0);
+        PollModel poll= pollRepository.findByQuestion("Java or JavaScript");
 
         //GIVEN AUTH TOKEN
         String token=jwtService.GenerateLoginToken(user);
@@ -646,9 +624,8 @@ class PollingappApplicationTests {
     public void CastVote() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
-        PollModel poll=pollRepository.findAllByPollStatusEquals(PollStatus.POLL_OPENED).get(0);
-        ChoiceModel choiceModel=poll.getOptions().get(0);
-
+        PollModel poll=pollRepository.findByQuestion("Java or JavaScript");
+        ChoiceModel choiceModel=choiceRepository.findByOption("Java");
         //GIVEN AUTH TOKEN
         String token=jwtService.GenerateLoginToken(user);
 
@@ -673,9 +650,8 @@ class PollingappApplicationTests {
     public void DoNotCastVoteTwice() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
-        PollModel poll=pollRepository.findAllByPollStatusEquals(PollStatus.POLL_OPENED).get(0);
-        ChoiceModel choiceModel=poll.getOptions().get(1);
-
+        PollModel poll=pollRepository.findByQuestion("Java or JavaScript");
+        ChoiceModel choiceModel=choiceRepository.findByOption("Java");
         //GIVEN AUTH TOKEN
         String token=jwtService.GenerateLoginToken(user);
 

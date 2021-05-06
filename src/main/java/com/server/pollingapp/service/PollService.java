@@ -175,19 +175,18 @@ public class PollService {
             votesModel.setUser(user);
 
             try {
-                List<ChoiceModel>choicelist= new ArrayList<>();
                 List<VotesModel>list =new ArrayList<VotesModel>();
-                //SET CHOICEMODEL
-                choice.setIncomingvotes(list);
-                choicelist.add(choice);
-
                 //SET POLL
                 list.add(votesModel);
                 poll.setVotes(list);
-                poll.setOptions(choicelist);
+                //CHOICES
+                choice.setIncomingvotes(list);
+                choice.setPolls(poll);
 
                 //SAVE TO DB
-                pollRepository.save(poll);
+                choiceRepository.save(choice);
+
+
 
 
 
@@ -211,8 +210,8 @@ public class PollService {
         return ResponseEntity.badRequest().body(error);
     }
 
-    public PollModel GetPollById(String id){
-        return pollRepository.getOne(id);
+    public Optional<PollModel> GetPollById(String id){
+        return pollRepository.findById(id);
 
     }
     public List<PollModel> GetClosedPolls(PollStatus pollStatus){

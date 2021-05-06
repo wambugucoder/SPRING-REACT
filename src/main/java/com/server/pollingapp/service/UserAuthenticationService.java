@@ -7,6 +7,8 @@ import com.server.pollingapp.request.LoginRequest;
 import com.server.pollingapp.request.RegistrationRequest;
 import com.server.pollingapp.response.LoginResponse;
 import com.server.pollingapp.response.UniversalResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,8 @@ public class UserAuthenticationService {
     EmailService emailService;
     final
     UserRepository userRepository;
+
+    Logger log= LoggerFactory.getLogger(UserAuthenticationService.class);
 
     @Autowired
     public UserAuthenticationService(@Lazy UserRepositoryImpl userRepositoryImpl, @Lazy BCryptPasswordEncoder bCryptPasswordEncoder, @Lazy AuthenticationManager authenticationManager, @Lazy JwtService jwtService, @Lazy EmailService emailService, @Lazy UserRepository userRepository) {
@@ -166,7 +170,7 @@ public class UserAuthenticationService {
             response.setMessage("Your Account was already activated");
             //GENERATE LOG
 
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.ok().body(response);
         }
         //IF NOT EXPIRED,NOT VALIDATE EXTRACT USER-DETAILS AND SET ENABLED TO TRUE
         user.setEnabled(true);

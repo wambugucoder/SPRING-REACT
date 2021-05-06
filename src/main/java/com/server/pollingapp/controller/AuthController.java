@@ -58,8 +58,8 @@ public class AuthController {
         return userAuthenticationService.LoginUser(loginRequest);
 
     }
-    @PutMapping(value = "/api/v1/auth/activate/:token",produces = MediaType.APPLICATION_JSON_VALUE)
-    public  ResponseEntity<UniversalResponse> activateAccount(@RequestParam String token){
+    @PutMapping(value = "/api/v1/auth/activate/{token}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<UniversalResponse> activateAccount(@PathVariable String token){
         //IF TOKEN IS NULL SEND ERROR
         if (token.isEmpty()){
             UniversalResponse response=new UniversalResponse();
