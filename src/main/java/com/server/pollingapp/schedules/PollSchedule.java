@@ -71,17 +71,16 @@ public class PollSchedule {
      * Once A poll is Closed,Results should be posted to the "official" Twitter feed
      * If result has been posted,change poll status to POLL_CLOSED_AND_RESULTS SENT to
      * avoid resending.
-     * Process runs after every 1 minute
+     * Process runs after every 5 minutes
      * Reason for sending results to twitter->To Notify Users and direct traffic towards the app.
      */
+    @Scheduled(fixedDelay = 300000)
     private void SendResultsToTwitterFeed(){
         List<PollModel> closedPolls=pollRepository.findAllByPollStatusEquals(PollStatus.POLL_CLOSED);
         if (!closedPolls.isEmpty()){
             closedPolls.stream()
                     .peek(twitterService::SendNotification)
-                    .peek(eachPoll->{
-                        eachPoll.setPollStatus(PollStatus.POLL_CLOSED_AND_NOTIFICATION_SENT);
-                    })
+                    .peek(eachPoll-> eachPoll.setPollStatus(PollStatus.POLL_CLOSED_AND_NOTIFICATION_SENT))
                     .forEachOrdered(pollRepository::save);
         }
 
