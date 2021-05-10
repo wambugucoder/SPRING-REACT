@@ -1,12 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
-import { Button } from 'antd';
+import { Provider } from 'react-redux';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
+import Landing from './components/landing-component/Landing';
+import store from './store/store';
+
 
 function App() {
   return (
-    <div className="App">
-     <Button>Hello</Button>
-    </div>
+    <Provider store={store}>
+      <Router>
+        <div className="App">
+          <Route exact path="/"component={Landing}/>
+        </div>
+      </Router>
+
+    </Provider>
+    
   );
 }
 
