@@ -1,22 +1,34 @@
 .container{
     display: inline-block;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    
    
 }
 .container .content-topic{
     margin-top: 7rem;
     
  }
+.container .footer{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:60px;   /* Height of the footer */
+    text-align:right;
+    justify-content: right;
+    padding-left: 60px;
+    font-weight: 700;
 
+}
 
  .container .content-subtopic{
     margin-top: 1.5rem;
  }
 .container .content-buttons{
-   margin-top: 3rem;
+   margin-top: 8rem;
 }
 .content-subtopic .typewriter  {
     overflow: hidden; /* Ensures the content is not revealed until the animation */

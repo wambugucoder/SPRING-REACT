@@ -1,7 +1,7 @@
 import {Typography,Button,Row, Col } from 'antd';
-import {LineChartOutlined } from '@ant-design/icons';
+import {LineChartOutlined,GithubOutlined } from '@ant-design/icons';
 import "./Landing.css";
-import Snowfall from 'react-snowfall';
+
 
 
 
@@ -23,11 +23,8 @@ function RenderSignUpButton() {
 }
  function Landing() {
     return (
-        <div className="container">
-            <div className="App-header">
-            <Snowfall />
-                
-            </div>
+        <div className="container" >            
+            
      <div className="content-topic">
      <Row  justify="center" align="middle">
      <Col xs={{ span: 14, offset: 1 }} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 2 }}>
@@ -49,9 +46,16 @@ function RenderSignUpButton() {
    
      </Row>
      </div>
-    
 
-        </div>
+     <div className="footer">
+         <Row >
+         <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1}}><p>Privacy Policy</p></Col>
+         <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1}}><p>Report A Bug</p></Col>
+         <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 1 }}><GithubOutlined /></Col>
+         </Row>
+     
+     </div>
+     </div>
       
         
         
