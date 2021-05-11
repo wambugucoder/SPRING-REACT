@@ -1,0 +1,22 @@
+.register-form{
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    justify-content: center;
+   }
+
+
+.registration-form {
+    max-width: 300px;
+  }
+ .register-form .basic-form{
+     margin-top: 6rem;
+ }
+ .register-form .registration-title{
+     padding-left: 10px;
+     justify-content: center;
+     text-align: center;
+     margin-top: 4rem;
+ }
