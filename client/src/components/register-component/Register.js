@@ -1,8 +1,8 @@
 import  { React,useEffect} from "react";
-import { Form, Input, Button, Checkbox, Row ,Col,message} from 'antd';
+import { Form, Input, Button, Checkbox, Row ,Col,message,notification} from 'antd';
 import { UserOutlined, LockOutlined,MailOutlined} from '@ant-design/icons';
 import "./Register.css"
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Title from 'antd/lib/typography/Title';
 import {useDispatch, useSelector} from 'react-redux';
 import {RegisterUser} from "../../store/actions/Action";
@@ -12,11 +12,24 @@ import {RegisterUser} from "../../store/actions/Action";
 
 function Register(props) {
   const dispatch = useDispatch();
+  const history=useHistory();
   const auth=useSelector(state=>state.auth)
+  const error=useSelector(state=>state.error)
+
   
-  if(auth.isLoading){
+  if(auth.isLoading && error.isLoading){
     message.loading("Registering User..")
        
+   }
+   if(error.hasErrors && error.isLoading===false){
+    notification.error({
+      message: 'Registration Error',
+      description:error.errorHandler.message,
+    });
+   }
+   if(auth.isRegistered){
+      history.push("/login")
+
    }
     
    const onFinish = (values) => {
