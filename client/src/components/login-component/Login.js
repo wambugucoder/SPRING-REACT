@@ -1,7 +1,9 @@
-import { Form, Input, Button, Checkbox, Row ,Col} from 'antd';
+import { Form, Input, Button, Checkbox, Row ,Col, Alert} from 'antd';
 import { UserOutlined, LockOutlined,GoogleOutlined,GithubFilled } from '@ant-design/icons';
 import "./Login.css"
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Title from 'antd/lib/typography/Title';
 
 const onFinish = (values) => {
   console.log('Received values of form: ', values.username);
@@ -9,6 +11,29 @@ const onFinish = (values) => {
 
 
 function Login() {
+
+  const auth=useSelector(state=>state.auth);
+
+  const AlertUser=()=>{
+    if(auth.isRegistered){
+      return(
+        <Alert
+        message="Info"
+        description="Please Check Your Email To Activate Your Account"
+        type="info"
+        showIcon
+        closable
+      />
+      );
+    }
+    else{
+      return(
+        <div></div>
+      );
+     
+    }
+
+  }
 
   const LoginForm=()=>{
     return(
@@ -67,6 +92,13 @@ const GoogleOauth=()=>{
     
         return (
           <div className="login-page">
+            <div className="alert-registration">
+            <Row justify="center" align="center">
+              <Col xs={{ span: 19, offset: 2 }} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 10, offset: 1 }}>
+              <AlertUser/>
+              </Col>
+              </Row>
+            </div>
             <div className="oauth-github-button">
               <Row justify="center" align="center">
               <Col xs={{ span: 12, offset: 2 }} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>

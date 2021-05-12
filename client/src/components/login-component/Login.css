@@ -7,13 +7,16 @@
   justify-content: center;
  }
  .login-page .oauth-github-button{
-   margin-top:9rem;
+   margin-top:7rem;
  }
  .login-page .oauth-google-button{
   margin-top: 0.9rem;
 }
 .login-page .normal-login{
   margin-top: 2rem;
+}
+.login-page .alert-registration{
+margin-top: 0.5rem;
 }
  .oauth-redirect-buttons{
    border-radius: .5rem;
