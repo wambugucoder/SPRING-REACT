@@ -1,8 +1,9 @@
-import { GET_ERRORS, IS_LOADING } from "../actions/actionTypes";
+import { ACTIVATION_ERRORS, GET_ERRORS, IS_LOADING } from "../actions/actionTypes";
 
 const INITIAL_STATE = {
     isLoading:false,
     hasErrors:false,
+    hasActivationErrors:false,
     errorHandler:{}
 };
  
@@ -15,6 +16,13 @@ export default (state = INITIAL_STATE, action) => {
                 errorHandler:action.payload, 
                 hasErrors:true
             }
+        case ACTIVATION_ERRORS:{
+            return{...state,
+                isLoading:false,
+                hasActivationErrors:true,
+                errorHandler:action.payload
+            }
+        }
             case IS_LOADING:
                 return {...state,
                     isLoading:true
