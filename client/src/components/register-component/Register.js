@@ -1,4 +1,4 @@
-import  { React,useEffect} from "react";
+import  { React} from "react";
 import { Form, Input, Button, Checkbox, Row ,Col,message,notification} from 'antd';
 import { UserOutlined, LockOutlined,MailOutlined} from '@ant-design/icons';
 import "./Register.css"

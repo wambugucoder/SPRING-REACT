@@ -20,7 +20,7 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register}/>
           <Route exact path="/privacy-policy" component={Privacy}/>
-          <Route exact path="/token/:tokenid"component={Activate}/>
+          <Route exact path="/activate-account/:tokenid"component={Activate}/>
           <Route  path='/issues' component={() => { 
             window.location.href = 'https://github.com/wambugucoder/FINAL-YEAR-PROJECT/issues/new';  
             return null;

@@ -171,7 +171,7 @@ public class UserAuthenticationService {
             response.setMessage("Your Account was already activated");
             //GENERATE LOG
             log.warn("User Tried to access the activation token Again");
-            return ResponseEntity.ok().body(response);
+            return ResponseEntity.badRequest().body(response);
         }
         //IF NOT EXPIRED,NOT VALIDATE EXTRACT USER-DETAILS AND SET ENABLED TO TRUE
         user.setEnabled(true);

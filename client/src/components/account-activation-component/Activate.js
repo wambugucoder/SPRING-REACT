@@ -1,32 +1,47 @@
-import { useParams } from "react-router";
+import {useHistory, useParams } from "react-router";
 import { Result, Button,Spin, Row, Col } from 'antd';
 import "./Activate.css";
 import { HourglassTwoTone, InfoCircleTwoTone, SmileTwoTone } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { ActivateUserAccount } from "../../store/actions/Action";
+import { useState } from "react";
 
 function Activate(){
     const params=useParams()
+    const auth =useSelector(state=>state.auth)
+    const error =useSelector(state=>state.error)
+    const dispatch=useDispatch()
+    const [start,setStart]=useState(0);
+    const history=useHistory();
+    
+
+useEffect(() => {
+  if(start===0){
+    setTimeout(() => {
+      dispatch(ActivateUserAccount(params.tokenid))
+      //console.log("jelo")
+    }, 8500);
+    setStart(start+1)
+  }
+  
+});
+
+const OnRedirectToHomeClick=()=>{
+  history.push("/")
+}
+const OnRedirectToLoginClick=()=>{
+  history.push("/login")
+}
 
 const Loader=()=>{
 return(
     <Spin className="spinner" size="large" />
 );
 }
-const success=()=>{
-    return(
-        <Result
-        status="success"
-        title="Successfully Purchased Cloud Server ECS!"
-        subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
-        extra={[
-          <Button type="primary" key="console">
-            Go Console
-          </Button>,
-          <Button key="buy">Buy Again</Button>,
-        ]}
-      />
-    );
-}
-return(
+
+const InCheck=()=>{
+  return(
     <div className="activate-account">
         <div className="activate-content">
         <Row justify="center" align="middle">
@@ -49,6 +64,54 @@ return(
      </div>
   
     </div>
-);
+  );
+}
+const Success=()=>{
+    return(
+        <Result
+        status="success"
+        title="Account Activation Success"
+        subTitle="Your Account Has Successfully Been Activated!"
+        extra={[
+          <Button onClick={OnRedirectToLoginClick}>
+            Proceed To Login
+          </Button>,
+        ]}
+      />
+    );
+}
+
+const Decider=()=>{
+
+  if(auth.isAccountActivated){
+    return(
+      <Success/>
+    );
+  }
+  if (error.hasActivationErrors) {
+    return(
+      <Result
+      status="warning"
+      title="Account Activation Failed"
+      subTitle="Your Token Seems To Be Invalid or Already Activated! "
+      extra={[
+        <Button  onClick={OnRedirectToHomeClick}>
+          Proceed To Home
+        </Button>,
+       
+      ]}
+    />
+    );
+  }
+  if(auth.isAccountActivated===false && error.hasActivationErrors===false){
+    return(
+      <InCheck/>
+    );
+    }
+
+}
+return(
+    <Decider/>
+)
 }
 export default Activate;
