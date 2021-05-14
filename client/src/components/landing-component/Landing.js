@@ -2,11 +2,17 @@ import {Typography,Button,Row, Col } from 'antd';
 import {LineChartOutlined,GithubOutlined } from '@ant-design/icons';
 import{Link,useHistory}from "react-router-dom";
 import "./Landing.css";
+import { useSelector } from 'react-redux';
 
 function Landing() {
-
+    const auth=useSelector(state=>state.auth)
+    
     const { Title } = Typography;
     const history=useHistory();
+
+    if(auth.isAuthenticated){
+        history.push("/dashboard")
+      }
 
     //BUTTON FUNCTIONALITY
     const OnLoginClick=()=> {

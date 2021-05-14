@@ -1,18 +1,60 @@
-import { Form, Input, Button, Checkbox, Row ,Col, Alert} from 'antd';
+import { Form, Input, Button, Checkbox, Row ,Col, Alert,message,notification} from 'antd';
 import { UserOutlined, LockOutlined,GoogleOutlined,GithubFilled } from '@ant-design/icons';
 import "./Login.css"
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { LoginUser } from '../../store/actions/Action';
+import { GITHUB_AUTH_URL, GOOGLE_AUTH_URL } from '../../constants/Constant';
+import { useEffect } from 'react';
 
 
-const onFinish = (values) => {
-  console.log('Received values of form: ', values.username);
-}
 
 
-function Login() {
+
+function Login(props) {
 
   const auth=useSelector(state=>state.auth);
+  const error=useSelector(state=>state.error);
+  const dispatch=useDispatch();
+  const history=useHistory();
+
+
+ 
+  useEffect(() => {
+    if(props.location.state && props.location.state.error) {
+      notification.error({
+        message: 'Oauth Error',
+        description:props.location.state.error,
+      });
+      props.history.replace({
+        pathname:props.location.pathname,
+          state: {}
+       });
+  }
+  })
+
+  if(auth.isLoading && error.isLoading){
+    message.loading("Logging User In..")
+       
+   }
+   if(error.hasLoginErrors && error.isLoading===false){
+    notification.error({
+      message: 'Login Error',
+      description:error.errorHandler.message,
+    });
+  }
+  if(auth.isAuthenticated){
+    history.push("/dashboard");
+  }
+
+
+  const onFinish = (values) => {
+    const UserData={
+      email:values.email,
+      password:values.password
+    }
+    dispatch(LoginUser(UserData));
+  }
 
   const AlertUser=()=>{
     if(auth.isRegistered){
@@ -78,14 +120,22 @@ function Login() {
     </Form>
     );
   }
+
+const OnGithubClick=()=>{
+  window.location.href=GITHUB_AUTH_URL
+}
+const OnGoogleClick=()=>{
+  window.location.href=GOOGLE_AUTH_URL
+}
 const GithubOauth=()=>{
   return(
-    <Button  className="oauth-redirect-buttons" icon={<GithubFilled/>}>Login with Github</Button>
+    <Button  className="oauth-redirect-buttons" icon={<GithubFilled/>}
+    onClick={OnGithubClick} >Login with Github</Button>
   );
 }
 const GoogleOauth=()=>{
   return(
-<Button  className="oauth-redirect-buttons" icon={<GoogleOutlined/>}>Login with Google</Button>
+<Button  className="oauth-redirect-buttons" icon={<GoogleOutlined/>}onClick={OnGoogleClick}>Login with Google</Button>
   );
 }
 

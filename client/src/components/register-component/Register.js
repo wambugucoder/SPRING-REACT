@@ -31,6 +31,9 @@ function Register(props) {
       history.push("/login")
 
    }
+   if(auth.isAuthenticated){
+     history.push("/dashboard")
+   }
     
    const onFinish = (values) => {
         console.log(values)
