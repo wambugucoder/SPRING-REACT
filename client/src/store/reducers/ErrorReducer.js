@@ -1,9 +1,11 @@
-import { ACTIVATION_ERRORS, GET_ERRORS, IS_LOADING } from "../actions/actionTypes";
+import { ACTIVATION_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS, OAUTH2_ERRORS } from "../actions/actionTypes";
 
 const INITIAL_STATE = {
     isLoading:false,
     hasErrors:false,
+    hasOauthErrors:false,
     hasActivationErrors:false,
+    hasLoginErrors:false,
     errorHandler:{}
 };
  
@@ -23,6 +25,21 @@ export default (state = INITIAL_STATE, action) => {
                 errorHandler:action.payload
             }
         }
+        case LOGIN_ERRORS:{
+            return{...state,
+                isLoading:false,
+                hasLoginErrors:true,
+                errorHandler:action.payload
+            }
+        }
+        case OAUTH2_ERRORS:{
+            return{...state,
+                isLoading:false,
+                hasOauthErrors:true,
+                errorHandler:action.payload
+            }
+        }
+          
             case IS_LOADING:
                 return {...state,
                     isLoading:true
