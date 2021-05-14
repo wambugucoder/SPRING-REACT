@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Redirect} from "react-router";
-import { Oauth2Errors, OauthSuccess } from "../../store/actions/Action";
+import { OauthSuccess } from "../../store/actions/Action";
 
 function Oauth2(props){
     const dispatch=useDispatch();

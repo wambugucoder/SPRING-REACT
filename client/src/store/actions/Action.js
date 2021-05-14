@@ -83,15 +83,6 @@ export const LogOutUser = () => dispatch => {
      
    };
 
-export const Oauth2Errors = (error) => dispatch=>{
-
-    dispatch({
-        type: OAUTH2_ERRORS,
-        payload: error
-    })
-   
-};
-
 export const OauthSuccess=(token)=>dispatch=>{
     const headertoken="Bearer "+token
     localStorage.setItem(ACCESS_TOKEN, headertoken);
