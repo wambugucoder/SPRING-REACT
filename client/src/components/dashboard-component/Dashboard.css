@@ -1,0 +1,24 @@
+.polling-bar{
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    z-index:1000;
+   
+
+}
+ .polling-tabs{
+    padding-left: 64px;
+    width:100%;
+    align-content: center;
+    padding-right:64px;
+    margin-top:2rem;
+}
+.polling-bar .polling-section-1{
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+   
+}

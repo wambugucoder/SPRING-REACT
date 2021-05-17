@@ -3,16 +3,22 @@ import {LineChartOutlined,GithubOutlined } from '@ant-design/icons';
 import{Link,useHistory}from "react-router-dom";
 import "./Landing.css";
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+
 
 function Landing() {
-    const auth=useSelector(state=>state.auth)
-    
+
+    const auth=useSelector(state=>state.auth);
+    useEffect(() => {
+      if(auth.isAuthenticated){
+        history.push("/dashboard");
+       }
+     
+    }, [auth.isAuthenticated])
+
     const { Title } = Typography;
     const history=useHistory();
 
-    if(auth.isAuthenticated){
-        history.push("/dashboard")
-      }
 
     //BUTTON FUNCTIONALITY
     const OnLoginClick=()=> {

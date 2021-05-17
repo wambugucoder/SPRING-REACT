@@ -10,6 +10,10 @@ import SetAuthToken from './utils/SetAuthHeader';
 import jwt_decode from 'jwt-decode';
 import { LOGIN_USER, LOGOUT_USER } from './store/actions/actionTypes';
 import Oauth2 from './components/oauth2-component-handler/Oauth2';
+import Dashboard from './components/dashboard-component/Dashboard';
+import PollPageHeader from './components/page-header-component/PageHeader';
+import { LogOutUser } from './store/actions/Action';
+
 
 //const redux_store=useStore();
 
@@ -30,13 +34,13 @@ if(localStorage.jwtToken){
    // Check for expired token
    const currentTime= Date.now()/1000;
    if (decoded.exp < currentTime) {
+     //set header
+    SetAuthToken(false)
+    //remove token
+    localStorage.removeItem("jwtToken");
      // Logout user
-    store.dispatch({
-       type:LOGOUT_USER,
-       
-     });
-     // Redirect to login
-     window.location.href = "/login";
+    window.location.href="/login"
+    store.dispatch(LogOutUser())
    }
   }
 function App() {
@@ -45,12 +49,14 @@ function App() {
     <Provider store={store}>
       <Router>
         <div className="App">
+          <PollPageHeader/>
           <Route exact path="/"component={Landing}/>
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register}/>
           <Route exact path="/privacy-policy" component={Privacy}/>
           <Route exact path="/activate-account/:tokenid"component={Activate}/>
           <Route exact path="/oauth2/redirect" component={Oauth2}/>
+          <Route exact path="/dashboard" component={Dashboard}/>
           <Route  path='/issues' component={() => { 
             window.location.href = 'https://github.com/wambugucoder/FINAL-YEAR-PROJECT/issues/new';  
             return null;

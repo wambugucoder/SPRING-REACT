@@ -80,7 +80,8 @@ export const LogOutUser = () => dispatch => {
      type:LOGOUT_USER,
      
    })
-     
+     // Redirect to login
+window.location.href = "/login";
    };
 
 export const OauthSuccess=(token)=>dispatch=>{
@@ -93,5 +94,6 @@ export const OauthSuccess=(token)=>dispatch=>{
         type:LOGIN_USER,
         payload: decoded
 })
+
 }
 
