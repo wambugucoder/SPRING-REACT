@@ -1,4 +1,4 @@
-import { ACTIVATE_USER_ACCOUNT, IS_LOADING, LOGIN_USER, REGISTER_USER } from "../actions/actionTypes";
+import { ACTIVATE_USER_ACCOUNT, IS_LOADING, LOGIN_USER, LOGOUT_USER, REGISTER_USER } from "../actions/actionTypes";
 
 const INITIAL_STATE = {
     isLoading:false,
@@ -32,6 +32,12 @@ export default (state = INITIAL_STATE, action) => {
             isLoading:false,
             isAuthenticated:true,
             user:action.payload
+            }
+        case LOGOUT_USER:
+            return{...state,
+            isLoading:false,
+            isAuthenticated:false,
+            user:{}
             }
         default:
             return state

@@ -18,7 +18,12 @@ function Login(props) {
   const dispatch=useDispatch();
   const history=useHistory();
 
-
+  useEffect(() => {
+    if(auth.isAuthenticated){
+      history.push("/dashboard");
+     }
+   
+  }, [auth.isAuthenticated])
  
   useEffect(() => {
     if(props.location.state && props.location.state.error) {
@@ -43,9 +48,7 @@ function Login(props) {
       description:error.errorHandler.message,
     });
   }
-  if(auth.isAuthenticated){
-    history.push("/dashboard");
-  }
+  
 
 
   const onFinish = (values) => {
