@@ -1,4 +1,4 @@
-import { Provider, useStore } from 'react-redux';
+import { Provider} from 'react-redux';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
 import Landing from './components/landing-component/Landing';
 import store from './store/store';
@@ -8,11 +8,12 @@ import Privacy from './components/privacy-component/Privacy';
 import Activate from './components/account-activation-component/Activate';
 import SetAuthToken from './utils/SetAuthHeader';
 import jwt_decode from 'jwt-decode';
-import { LOGIN_USER, LOGOUT_USER } from './store/actions/actionTypes';
+import { LOGIN_USER} from './store/actions/actionTypes';
 import Oauth2 from './components/oauth2-component-handler/Oauth2';
 import Dashboard from './components/dashboard-component/Dashboard';
 import PollPageHeader from './components/page-header-component/PageHeader';
 import { LogOutUser } from './store/actions/Action';
+import CreatePollDashboard from './components/create-poll-dashboard/CreatePollDashboard';
 
 
 //const redux_store=useStore();
@@ -57,6 +58,7 @@ function App() {
           <Route exact path="/activate-account/:tokenid"component={Activate}/>
           <Route exact path="/oauth2/redirect" component={Oauth2}/>
           <Route exact path="/dashboard" component={Dashboard}/>
+          <Route exact path="/create_poll" component={CreatePollDashboard}/>
           <Route  path='/issues' component={() => { 
             window.location.href = 'https://github.com/wambugucoder/FINAL-YEAR-PROJECT/issues/new';  
             return null;

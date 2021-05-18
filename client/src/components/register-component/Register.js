@@ -21,7 +21,7 @@ function Register(props) {
       history.push("/dashboard");
      }
    
-  }, [auth.isAuthenticated])
+  }, [auth.isAuthenticated, history])
   
   
   if(auth.isLoading && error.isLoading){
