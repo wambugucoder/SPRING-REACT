@@ -23,7 +23,7 @@ function Login(props) {
       history.push("/dashboard");
      }
    
-  }, [auth.isAuthenticated])
+  }, [auth.isAuthenticated,history])
  
   useEffect(() => {
     if(props.location.state && props.location.state.error) {

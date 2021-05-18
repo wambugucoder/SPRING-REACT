@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom"
-import { Row, Tabs ,Col,Space,PageHeader, Menu,Avatar,Image } from 'antd';
-import { MailOutlined, AppstoreOutlined,HomeOutlined,EditOutlined, UserOutlined,CalendarOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Link, useHistory } from "react-router-dom"
+import { PageHeader, Menu,Avatar,Image } from 'antd';
+import { MailOutlined,HomeOutlined,EditOutlined, UserOutlined,CalendarOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RandomColor from "../../constants/RandomColor";
@@ -14,16 +14,13 @@ const { SubMenu } = Menu;
 
 function PollPageHeader(){
 const dispatch=useDispatch();
+const history=useHistory()
+const[current,setCurrent]=useState("home")
 
-    function callback(key) {
-          console.log(key);
-        }
-        const[current,setCurrent]=useState("home")
-        
-      const HandleClick = e => {
-        console.log('click ', e);
-        setCurrent(e.key);
-      };
+const HandleClick = e => {
+    console.log('click ', e);
+    setCurrent(e.key);
+ };
       const auth=useSelector(state=>state.auth)
 
 const RenderAvatar=()=>{
@@ -48,7 +45,7 @@ const RenderPageHeader=()=>{
      return(
         <PageHeader style={{position: "sticky",top:0,zIndex:1001}}
         ghost={false}
-        onBack={() => window.history.back()}
+        onBack={() => history.goBack()}
         title="Polling App"
         subTitle=""
         extra={[
