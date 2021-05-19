@@ -1,6 +1,6 @@
-import {useDispatch} from "react-redux";
-import {Redirect} from "react-router";
-import {OauthSuccess} from "../../store/actions/Action";
+import { useDispatch } from "react-redux";
+import { Redirect } from "react-router";
+import { OauthSuccess } from "../../store/actions/Action";
 
 function Oauth2(props) {
   const dispatch = useDispatch();
@@ -10,13 +10,17 @@ function Oauth2(props) {
 
   if (token) {
     dispatch(OauthSuccess(token));
-    return <Redirect to = "/dashboard" />
+    return <Redirect to="/dashboard" />;
   }
   if (error) {
-
-  return < Redirect to = {
-    { pathname: "/login", state: {from: props.location, error: error} }
-  } />;  
-    }
+    return (
+      <Redirect
+        to={{
+          pathname: "/login",
+          state: { from: props.location, error: error },
+        }}
+      />
+    );
+  }
 }
 export default Oauth2;
