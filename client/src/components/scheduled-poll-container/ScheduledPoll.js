@@ -1,35 +1,42 @@
- import { Form, Input, Button,DatePicker,message, Space} from 'antd';
+import { Form, Input, Button,DatePicker,message, Space} from 'antd';
 import { QuestionOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import "./ScheduledPoll.css";
 import moment from "moment";
+import { useDispatch, useSelector } from 'react-redux';
+import {  CreateScheduledPoll} from '../../store/actions/Action';
 
 const { RangePicker } = DatePicker;
-const onFinish = (values) => {
 
-    
 
-  /*const options=[];
-   for (const singleOption of values.options) {
-        options.push({"option":singleOption})
-    }
-    const data={
-        question:values.question,
-        closingTime:moment(values.closingTime._d).format(),
-        options:options
-    }
-    */
-   console.log(values)
-   
-    //dispatch(LoginUser(UserData));
-  }
-
-  function DisabledDate(current) {
+function DisabledDate(current) {
     // Can not select days before today and today
     return current && current < moment().startOf('day');
   }
  
 
+  
+
 function ScheduledPoll(){
+
+  const dispatch=useDispatch()
+  const auth =useSelector(state=>state.auth)
+  const userId=auth.user.Id
+  const onFinish = (values) => {
+    const options=[];
+    for (const singleOption of values.options) {
+        options.push({"option":singleOption})
+    }
+    const data={
+        question:values.question,
+        scheduledTime:moment(values.scheduledTime[0]._d).format('YYYY-MM-DDTHH:mm:ss'),
+        closingTime:moment(values.scheduledTime[1]._d).format('YYYY-MM-DDTHH:mm:ss'),
+        options:options
+    }
+   //console.log(data)
+   
+    dispatch(CreateScheduledPoll(userId,data));
+  }
+
 const ErrorMessage = () => {
     message.error('Maximum Number of Choices Reached');
     };
@@ -109,7 +116,7 @@ const NonScheduledForm=()=>{
               required: true,
               message: 'Scheduled Time is Required',
             },
-            ({ getFieldValue }) => ({
+            () => ({
                 validator(_, value) {
                    
                   if (value && moment(value[0]._d).isBefore(moment.now())) {
@@ -154,7 +161,7 @@ const NonScheduledForm=()=>{
     );
 }
 return(
-    <div className="non-scheduled-form">
+    <div className="scheduled-form">
 <NonScheduledForm/>
     </div>
 

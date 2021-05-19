@@ -9,15 +9,17 @@ import { useEffect } from 'react';
 function Landing() {
 
     const auth=useSelector(state=>state.auth);
+    const { Title } = Typography;
+    const history=useHistory();
+    
     useEffect(() => {
       if(auth.isAuthenticated){
         history.push("/dashboard");
        }
      
-    }, [auth.isAuthenticated])
+    }, [auth.isAuthenticated, history])
 
-    const { Title } = Typography;
-    const history=useHistory();
+   
 
 
     //BUTTON FUNCTIONALITY

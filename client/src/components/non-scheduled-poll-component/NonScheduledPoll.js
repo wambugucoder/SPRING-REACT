@@ -2,30 +2,38 @@ import { Form, Input, Button,DatePicker,message, Space} from 'antd';
 import { QuestionOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import "./NonScheduledPoll.css";
 import moment from "moment";
+import { useDispatch, useSelector } from 'react-redux';
+import { CreateNonScheduledPoll } from '../../store/actions/Action';
 
 
-const onFinish = (values) => {
+function NonScheduledPoll(){
+
+  const dispatch=useDispatch()
+  const auth =useSelector(state=>state.auth)
+  const userid=auth.user.Id
+
+  
+
+  const onFinish = (values) => {
     const options=[];
     for (const singleOption of values.options) {
         options.push({"option":singleOption})
     }
     const data={
         question:values.question,
-        closingTime:moment(values.closingTime._d).format(),
+        closingTime:moment(values.closingTime._d).format('YYYY-MM-DDTHH:mm:ss'),
         options:options
     }
-   console.log(data)
+  // console.log(data)
    
-    //dispatch(LoginUser(UserData));
+    dispatch(CreateNonScheduledPoll(userid,data));
   }
 
   function DisabledDate(current) {
     // Can not select days before today and today
     return current && current < moment().startOf('day');
-  }
- 
+  }  
 
-function NonScheduledPoll(){
 const ErrorMessage = () => {
     message.error('Maximum Number of Choices Reached');
     };

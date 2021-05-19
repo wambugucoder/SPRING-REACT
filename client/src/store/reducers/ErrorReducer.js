@@ -1,10 +1,12 @@
-import { ACTIVATION_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS } from "../actions/actionTypes";
+import { ACTIVATION_ERRORS, CLEANUP_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS, NON_SCHEDULED_POLL_ERRORS, SCHEDULED_POLL_ERRORS } from "../actions/actionTypes";
 
 const INITIAL_STATE = {
     isLoading:false,
     hasErrors:false,
     hasActivationErrors:false,
     hasLoginErrors:false,
+    hasNonScheduledPollErrors:false,
+    hasScheduledPollErrors:false,
     errorHandler:{}
 };
  
@@ -31,10 +33,34 @@ export default (state = INITIAL_STATE, action) => {
                 errorHandler:action.payload
             }
         }
-         case IS_LOADING:
+        case NON_SCHEDULED_POLL_ERRORS:{
+            return{...state,
+                isLoading:false,
+                hasNonScheduledPollErrors:true,
+                errorHandler:action.payload
+            }
+        } 
+        case SCHEDULED_POLL_ERRORS:
+            return {...state,
+                isLoading:true,
+                hasScheduledPollErrors:true,
+                errorHandler:action.payload
+        
+    }        
+        case IS_LOADING:
                 return {...state,
                     isLoading:true
-                }
+            
+        }
+         case CLEANUP_ERRORS:
+              return{...state,
+                isLoading:false,
+                hasErrors:false,
+                hasActivationErrors:false,
+                hasLoginErrors:false,
+                hasNonScheduledPollErrors:false,
+                hasScheduledPollErrors:false,
+            }
         default:
             return state
     }
