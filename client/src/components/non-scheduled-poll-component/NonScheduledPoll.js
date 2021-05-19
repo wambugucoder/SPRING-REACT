@@ -1,52 +1,54 @@
-import { Form, Input, Button,DatePicker,message, Space} from 'antd';
-import { QuestionOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import "./NonScheduledPoll.css";
+
+import {
+  MinusCircleOutlined,
+  PlusOutlined,
+  QuestionOutlined
+} from '@ant-design/icons';
+import {Button, DatePicker, Form, Input, message, Space} from 'antd';
 import moment from "moment";
-import { useDispatch, useSelector } from 'react-redux';
-import { CreateNonScheduledPoll } from '../../store/actions/Action';
+import {useDispatch, useSelector} from 'react-redux';
 
+import {CreateNonScheduledPoll} from '../../store/actions/Action';
 
-function NonScheduledPoll(){
+function NonScheduledPoll() {
 
-  const dispatch=useDispatch()
-  const auth =useSelector(state=>state.auth)
-  const userid=auth.user.Id
+  const dispatch = useDispatch()
+  const auth = useSelector(state => state.auth)
+  const userid = auth.user.Id
 
-  
+  const onFinish =
+      (values) => {
+        const options = [];
+        for (const singleOption of values.options) {
+          options.push({"option" : singleOption})
+        }
+        const data = {
+          question : values.question,
+          closingTime :
+              moment(values.closingTime._d).format('YYYY-MM-DDTHH:mm:ss'),
+          options : options
+        } // console.log(data)
 
-  const onFinish = (values) => {
-    const options=[];
-    for (const singleOption of values.options) {
-        options.push({"option":singleOption})
-    }
-    const data={
-        question:values.question,
-        closingTime:moment(values.closingTime._d).format('YYYY-MM-DDTHH:mm:ss'),
-        options:options
-    }
-  // console.log(data)
-   
-    dispatch(CreateNonScheduledPoll(userid,data));
-  }
+        dispatch(CreateNonScheduledPoll(userid, data));
+      }
 
   function DisabledDate(current) {
     // Can not select days before today and today
     return current && current < moment().startOf('day');
-  }  
+  }
 
-const ErrorMessage = () => {
-    message.error('Maximum Number of Choices Reached');
-    };
-    
-const NonScheduledForm=()=>{
+  const ErrorMessage =
+      () => { message.error('Maximum Number of Choices Reached'); };
+
+  const NonScheduledForm = () => {
     return(
         <Form
-        name="dynamic_form_item" 
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-      >
-        <Form.Item
-          name="question"
+    name = "dynamic_form_item"
+    initialValues = {
+      { remember: true }
+    } onFinish = {onFinish} > < Form.Item
+    name = "question"
           rules={[{ required: true, message: "Question Cannot Be Empty"}]}
         >
           <Input prefix={<QuestionOutlined className="site-form-item-icon" />} placeholder="Question" />
@@ -89,22 +91,24 @@ const NonScheduledForm=()=>{
                     className="dynamic-delete-button"
                     onClick={() => remove(field.name)}
                   />
-                ) : null}
-              </Form.Item>
+                ) : null
+  }</Form.Item>
             ))}
             <Form.Item>
                  <Button
                  type="dashed"
                  onClick={() =>{fields.length < 5 ? add():ErrorMessage()} }
                  style={{ width: '60%' }}
-                 icon={<PlusOutlined/>}
+                 icon={<PlusOutlined/>
+}
                >
                  Add Option
                </Button>
            <Form.ErrorList errors={errors} />
             </Form.Item>
           </>
-        )}
+        )
+               }
       </Form.List>
       <Form.Item
           name="closingTime"
@@ -149,7 +153,7 @@ const NonScheduledForm=()=>{
 
       </Form>
     );
-}
+      }
 return(
     <div className="non-scheduled-form">
 <NonScheduledForm/>
