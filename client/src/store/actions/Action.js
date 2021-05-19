@@ -3,7 +3,7 @@ import jwt_decode from 'jwt-decode';
 import { ACCESS_TOKEN } from "../../constants/Constant";
 import SetAuthToken from "../../utils/SetAuthHeader";
 import { ACTIVATE_USER_ACCOUNT, ACTIVATION_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS, LOGIN_USER, LOGOUT_USER, 
-    REGISTER_USER,OAUTH2_ERRORS } from "./actionTypes";
+    REGISTER_USER, CREATE_NON_SCHEDULED_POLL, NON_SCHEDULED_POLL_ERRORS,CLEANUP_ERRORS, CREATE_SCHEDULED_POLL, SCHEDULED_POLL_ERRORS, CLEANUP_POLL } from "./actionTypes";
 
 
 export const RegisterUser = (UserData) =>  dispatch => {
@@ -96,4 +96,47 @@ export const OauthSuccess=(token)=>dispatch=>{
 })
 
 }
+///
+export const CreateNonScheduledPoll = (userId,pollData)=>dispatch => {
+    dispatch({
+        type:IS_LOADING
+    })
+    axios.post(`/api/v1/polls/${userId}/non_scheduled_poll`,pollData).then((result) => {
+        dispatch({
+            type:CREATE_NON_SCHEDULED_POLL,
+        })
+        
+    }).catch((err) => {
+        dispatch({
+            type:NON_SCHEDULED_POLL_ERRORS,
+            payload: err.response.data
+          })
+    });
+};
+export const CleanupPoll = (userId,pollData)=>dispatch => {
+    dispatch({
+        type:CLEANUP_POLL
+    })
+};
+export const CleanupErrors = (userId,pollData)=>dispatch => {
+    dispatch({
+        type:CLEANUP_ERRORS
+    })
+};
+export const CreateScheduledPoll = (userId,pollData)=>dispatch => {
+    dispatch({
+        type:IS_LOADING
+    })
+    axios.post(`/api/v1/polls/${userId}/scheduled_poll`,pollData).then((result) => {
+        dispatch({
+            type:CREATE_SCHEDULED_POLL,
+        })
+        
+    }).catch((err) => {
+        dispatch({
+            type:SCHEDULED_POLL_ERRORS,
+            payload: err.response.data
+          })
+    });
+};
 
