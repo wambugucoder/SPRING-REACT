@@ -1,9 +1,11 @@
-import {  CLEANUP_POLL,CREATE_NON_SCHEDULED_POLL, CREATE_SCHEDULED_POLL, IS_LOADING } from "../actions/actionTypes";
+import {  ACTIVE_POLLS, CLEANUP_POLL,CREATE_NON_SCHEDULED_POLL, CREATE_SCHEDULED_POLL, IS_LOADING } from "../actions/actionTypes";
 
 const INITIAL_STATE = {
     isLoading:false,
     hasCreatedNonScheduledPoll:false,
     hasCreatedScheduledPoll:false,
+    hasFetchedAllActivePolls:false,
+    pollsData:[],
 
 };
  
@@ -24,12 +26,21 @@ export default (state = INITIAL_STATE, action) => {
                     isLoading:false,
                     hasCreatedScheduledPoll:true
                     }
-                case CLEANUP_POLL:
-                    return {...state,
-                    isLoading:false,
-                    hasCreatedNonScheduledPoll:false,
-                    hasCreatedScheduledPoll:false,
-                    }
+                    case ACTIVE_POLLS:
+                        return {...state,
+                        isLoading:false,
+                        hasFetchedAllActivePolls:true,
+                        pollsData:action.payload
+                        }  
+                        case CLEANUP_POLL:
+                            return {...state,
+                            isLoading:false,
+                            hasCreatedNonScheduledPoll:false,
+                            hasCreatedScheduledPoll:false,
+                            }      
+               
+                   
+
                     
         default:
             return state

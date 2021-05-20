@@ -3,7 +3,7 @@ import jwt_decode from 'jwt-decode';
 import { ACCESS_TOKEN } from "../../constants/Constant";
 import SetAuthToken from "../../utils/SetAuthHeader";
 import { ACTIVATE_USER_ACCOUNT, ACTIVATION_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS, LOGIN_USER, LOGOUT_USER, 
-    REGISTER_USER, CREATE_NON_SCHEDULED_POLL, NON_SCHEDULED_POLL_ERRORS,CLEANUP_ERRORS, CREATE_SCHEDULED_POLL, SCHEDULED_POLL_ERRORS, CLEANUP_POLL } from "./actionTypes";
+    REGISTER_USER, CREATE_NON_SCHEDULED_POLL, NON_SCHEDULED_POLL_ERRORS,CLEANUP_ERRORS, CREATE_SCHEDULED_POLL, SCHEDULED_POLL_ERRORS, CLEANUP_POLL, ACTIVE_POLLS, ACTIVE_POLL_ERRORS } from "./actionTypes";
 
 
 export const RegisterUser = (UserData) =>  dispatch => {
@@ -135,6 +135,24 @@ export const CreateScheduledPoll = (userId,pollData)=>dispatch => {
     }).catch((err) => {
         dispatch({
             type:SCHEDULED_POLL_ERRORS,
+            payload: err.response.data
+          })
+    });
+};
+///api/v1/polls/opened_polls
+export const FetchAllActivePolls = ()=> dispatch => {
+    dispatch({
+        type:IS_LOADING
+    })
+    axios.get("/api/v1/polls/opened_polls").then((result) => {
+        dispatch({
+            type:ACTIVE_POLLS,
+            payload:result.data
+        })
+        
+    }).catch((err) => {
+        dispatch({
+            type:ACTIVE_POLL_ERRORS,
             payload: err.response.data
           })
     });
