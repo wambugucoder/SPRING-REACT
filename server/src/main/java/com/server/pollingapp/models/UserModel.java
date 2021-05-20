@@ -23,7 +23,6 @@ public class UserModel implements Serializable {
     private String id = UUID.randomUUID().toString();
 
     @Column(nullable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String username;
 
     @Column(nullable = false, unique = true)
@@ -35,7 +34,6 @@ public class UserModel implements Serializable {
     private String password;
 
     @Column
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String imageurl="none";
 
     @Column(nullable = false)

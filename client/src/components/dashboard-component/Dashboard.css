@@ -1,5 +1,5 @@
 .polling-bar{
-    display: inline-block;
+    display:inline-block;
     position: relative;
     width: 100%;
     height: 100%;
@@ -7,14 +7,14 @@
     overflow-y: hidden;
     scroll-behavior: smooth;
     z-index:1000;
+  
    
 
 }
  .polling-tabs{
-    padding-left: 64px;
+    justify-content: center;
     width:100%;
     align-content: center;
-    padding-right:64px;
     margin-top:2rem;
 }
 .polling-bar .polling-section-1{

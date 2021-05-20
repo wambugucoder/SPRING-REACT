@@ -33,8 +33,7 @@ const RenderAvatar=()=>{
              )
     }
     else{
-        return(<Avatar shape ="circle"  src={<Image src={auth.user.Avatar} />}
-        />);
+        return(<Avatar shape ="circle"  src={auth.user.Avatar}/>)
     }
 
 }

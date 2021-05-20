@@ -1,4 +1,4 @@
-import { ACTIVATION_ERRORS, CLEANUP_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS, NON_SCHEDULED_POLL_ERRORS, SCHEDULED_POLL_ERRORS } from "../actions/actionTypes";
+import { ACTIVATION_ERRORS, ACTIVE_POLL_ERRORS, CLEANUP_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS, NON_SCHEDULED_POLL_ERRORS, SCHEDULED_POLL_ERRORS } from "../actions/actionTypes";
 
 const INITIAL_STATE = {
     isLoading:false,
@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     hasLoginErrors:false,
     hasNonScheduledPollErrors:false,
     hasScheduledPollErrors:false,
+    hasActivePollErrors:false,
     errorHandler:{}
 };
  
@@ -42,11 +43,18 @@ export default (state = INITIAL_STATE, action) => {
         } 
         case SCHEDULED_POLL_ERRORS:
             return {...state,
-                isLoading:true,
+                isLoading:false,
                 hasScheduledPollErrors:true,
                 errorHandler:action.payload
         
-    }        
+    }     
+    case ACTIVE_POLL_ERRORS:
+        return {...state,
+            isLoading:false,
+            hasActivePollErrors:true,
+            errorHandler:action.payload
+    
+}     
         case IS_LOADING:
                 return {...state,
                     isLoading:true
@@ -56,6 +64,7 @@ export default (state = INITIAL_STATE, action) => {
               return{...state,
                 isLoading:false,
                 hasErrors:false,
+                hasActivePollErrors:false,
                 hasActivationErrors:false,
                 hasLoginErrors:false,
                 hasNonScheduledPollErrors:false,

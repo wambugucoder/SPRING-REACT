@@ -49,32 +49,32 @@ function Landing() {
   <div className="container-content" >            
     <div className="content-topic">
      <Row  justify="center" align="middle">
-     <Col xs={{ span: 14, offset: 1 }} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>
+     <Col xs={{ span: 24, offset: 1 }} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>
       <Title level={1}><LineChartOutlined/> Polling App</Title>
      </Col>
      </Row>
      </div>
      <div className="content-subtopic">
      <Row  justify="center" align="middle">
-     <Col xs={{ span: 18, offset: 1 }} sm={{ span: 16, offset: 1 }} md={{ span: 10, offset: 1 }} lg={{ span: 6, offset: 1 }}>
+     <Col xs={{ span: 100.5, offset: 1 }} sm={{ span: 16, offset: 1 }} md={{ span: 10, offset: 1 }} lg={{ span: 6, offset: 1 }}>
       <Title className="typewriter"  level={5}>Vote With Ease From Your Home...</Title>
      </Col>
      </Row>
      </div>
      <div className="content-buttons">
    <Row justify="center" align="middle">
-   <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 2 }}><RenderLoginButton/></Col>
-   <Col xs={{ span: 6, offset: 1 }} lg={{ span: 6, offset: 3 }}><RenderSignUpButton/></Col>
+   <Col xs={{ span: 10, offset: 0 }} lg={{ span: 4, offset: 2 }}><RenderLoginButton/></Col>
+   <Col xs={{ span: 10, offset: 1 }} lg={{ span: 4, offset: 3 }}><RenderSignUpButton/></Col>
    
      </Row>
      </div>
 
      <div className="footer">
          <Row justify="center" align="middle">
-         <Col xs={{ span: 6, offset: 1 }} lg={{ span: 2, offset: 1}}>
+         <Col xs={{ span: 20.5, offset: 0 }} lg={{ span: 4, offset: 2}}>
              <Link  to ="/privacy-policy" className="link"><p>Privacy Policy</p></Link></Col>
-         <Col xs={{ span: 6, offset: 1 }} lg={{ span: 2, offset: 1}}><Link to ="/issues" className="link"><p>Report A Bug</p></Link></Col>
-         <Col xs={{ span: 6, offset: 1 }} lg={{ span: 2, offset: 1 }}><Link to ="/project" className="link"><GithubOutlined /></Link></Col>
+         <Col xs={{ span: 20.5, offset: 1 }} lg={{ span: 4, offset: 2.5}}><Link to ="/issues" className="link"><p>Report A Bug</p></Link></Col>
+         <Col xs={{ span: 20.5, offset: 3 }} lg={{ span: 4, offset: 2.9}}><Link to ="/project" className="link"><p><GithubOutlined style={{fontSize:20}}/></p></Link></Col>
         
          </Row>
      

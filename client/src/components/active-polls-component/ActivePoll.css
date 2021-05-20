@@ -1,0 +1,16 @@
+.poll{
+    display: inline-block;
+    width: 70%;
+    
+}
+.poll .question{
+    font-weight:700;
+    font-size:large;
+    text-transform:capitalize;
+}
+.poll .options{
+    margin-top: 20px;
+    font-weight:500;
+    font-size:large;
+    text-transform:capitalize;
+}

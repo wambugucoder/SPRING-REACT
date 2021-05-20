@@ -154,14 +154,14 @@ const GoogleOauth=()=>{
             </div>
             <div className="oauth-github-button">
               <Row justify="center" align="center">
-              <Col xs={{ span: 12, offset: 2 }} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>
+              <Col xs={{ span: 14, offset: 2 }} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>
                 <GithubOauth/>
               </Col>
               </Row>
               </div>
               <div className="oauth-google-button">
               <Row justify="center" align="center">
-              <Col xs={{ span: 12, offset: 2}} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>
+              <Col xs={{ span: 14, offset: 2}} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>
                 <GoogleOauth/>
               </Col>
               </Row>
