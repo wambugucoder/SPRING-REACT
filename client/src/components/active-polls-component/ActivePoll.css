@@ -1,6 +1,6 @@
 .poll{
     display: inline-block;
-    width: 70%;
+    width: 75%;
     
 }
 .poll .question{
@@ -10,7 +10,35 @@
 }
 .poll .options{
     margin-top: 20px;
-    font-weight:500;
-    font-size:large;
+    display: block;
+    line-height: 1.7;
+    font-size: 15px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.poll .poll-results{
+    margin-top: 20px;
+    display: block;
+    line-height: 1.7;
+    font-size: 15px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     text-transform:capitalize;
 }
+.poll-results .results{
+    margin-top: 5px;
+    margin-bottom: 15px;
+    max-width: 75%;
+    font-weight: bolder;
+    font-size: larger;
+   
+}
+

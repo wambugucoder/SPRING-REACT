@@ -39,7 +39,7 @@ public class PollSchedule {
      */
     @Scheduled(fixedDelay = 1000)
     private void ClosePollsWhenClosingTimeArrives(){
-        List<PollModel> polls=pollRepository.findAllByPollStatusEquals(PollStatus.POLL_OPENED);
+        List<PollModel> polls=pollRepository.findAllByPollStatusEqualsOrderByCreatedAtDesc(PollStatus.POLL_OPENED);
         if (!polls.isEmpty()){
             polls.stream().filter(poll->(LocalDateTime.now().isAfter(poll.getClosingTime())||
                     poll.getClosingTime().isEqual(LocalDateTime.now())))
@@ -57,7 +57,7 @@ public class PollSchedule {
      */
     @Scheduled(fixedDelay = 1000)
     private void OpenScheduledPolls(){
-     List<PollModel> scheduledpolls=pollRepository.findAllByCategoryEquals(PollsCategory.SCHEDULED_POLL);
+     List<PollModel> scheduledpolls=pollRepository.findAllByCategoryEqualsOrderByCreatedAtDesc(PollsCategory.SCHEDULED_POLL);
      if (!scheduledpolls.isEmpty()){
          scheduledpolls.stream().filter(eachpoll->(LocalDateTime.now().isAfter(eachpoll.getScheduledTime())||
                  eachpoll.getScheduledTime().isEqual(LocalDateTime.now())
@@ -76,7 +76,7 @@ public class PollSchedule {
      */
     @Scheduled(fixedDelay = 300000)
     private void SendResultsToTwitterFeed(){
-        List<PollModel> closedPolls=pollRepository.findAllByPollStatusEquals(PollStatus.POLL_CLOSED);
+        List<PollModel> closedPolls=pollRepository.findAllByPollStatusEqualsOrderByCreatedAtDesc(PollStatus.POLL_CLOSED);
         if (!closedPolls.isEmpty()){
             closedPolls.stream()
                     .peek(twitterService::SendNotification)

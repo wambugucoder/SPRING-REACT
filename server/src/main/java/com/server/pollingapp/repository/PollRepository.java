@@ -17,11 +17,11 @@ public interface PollRepository extends JpaRepository<PollModel,String> {
 
    @Cacheable("Polls")
   //  @Query(value = "SELECT polls FROM PollModel polls WHERE polls.pollStatus = ?1",nativeQuery = true)
-    List<PollModel> findAllByPollStatusEquals(PollStatus pollStatus);
+    List<PollModel> findAllByPollStatusEqualsOrderByCreatedAtDesc(PollStatus pollStatus);
 
     @Cacheable("ScheduledPolls")
     //@Query(value = "SELECT polls FROM PollModel polls WHERE polls.category=?1",nativeQuery = true)
-    List<PollModel> findAllByCategoryEquals(PollsCategory pollsCategory);
+    List<PollModel> findAllByCategoryEqualsOrderByCreatedAtDesc(PollsCategory pollsCategory);
 
     PollModel findByQuestion(String question);
 

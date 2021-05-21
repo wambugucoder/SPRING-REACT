@@ -3,7 +3,7 @@ import jwt_decode from 'jwt-decode';
 import { ACCESS_TOKEN } from "../../constants/Constant";
 import SetAuthToken from "../../utils/SetAuthHeader";
 import { ACTIVATE_USER_ACCOUNT, ACTIVATION_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS, LOGIN_USER, LOGOUT_USER, 
-    REGISTER_USER, CREATE_NON_SCHEDULED_POLL, NON_SCHEDULED_POLL_ERRORS,CLEANUP_ERRORS, CREATE_SCHEDULED_POLL, SCHEDULED_POLL_ERRORS, CLEANUP_POLL, ACTIVE_POLLS, ACTIVE_POLL_ERRORS } from "./actionTypes";
+    REGISTER_USER, CREATE_NON_SCHEDULED_POLL, NON_SCHEDULED_POLL_ERRORS,CLEANUP_ERRORS, CREATE_SCHEDULED_POLL, SCHEDULED_POLL_ERRORS, CLEANUP_POLL, ACTIVE_POLLS, ACTIVE_POLL_ERRORS, CAST_VOTE, VOTE_ERRORS } from "./actionTypes";
 
 
 export const RegisterUser = (UserData) =>  dispatch => {
@@ -158,3 +158,20 @@ export const FetchAllActivePolls = ()=> dispatch => {
     });
 };
 
+///api/v1/polls/cast_vote/{userId}/{pollId}/{choiceId}
+export const CastVote = (uId,pId,cId)=>dispatch =>{
+    dispatch({
+        type:IS_LOADING
+    })
+    axios.post(`/api/v1/polls/cast_vote/${uId}/${pId}/${cId}`).then((result) => {
+        dispatch({
+            type:CAST_VOTE,
+        })
+        
+    }).catch((err) => {
+        dispatch({
+            type:VOTE_ERRORS,
+            payload: err.response.data
+          })
+        });
+};
