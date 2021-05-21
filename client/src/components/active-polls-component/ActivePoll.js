@@ -1,13 +1,17 @@
-import { List, Avatar, Space, Tag, Radio, Input, Button } from 'antd';
+import { List, Avatar, Space, Tag, Radio, Button, message, Progress } from 'antd';
 import {StarOutlined, ClockCircleOutlined } from '@ant-design/icons';
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { FetchAllActivePolls } from '../../store/actions/Action';
+import { CastVote, FetchAllActivePolls } from '../../store/actions/Action';
 import RandomColor from '../../constants/RandomColor';
 import moment from 'moment';
 import "./ActivePoll.css";
+import LoadingPolls from '../loading-polls-content/LoadingPolls';
+import ProgressBar from "@ramonak/react-progress-bar";
 
 
+var totalVotes=0
+var optionVote=0
 
 const IconText = ({ icon, text }) => (
   <Space>
@@ -17,25 +21,147 @@ const IconText = ({ icon, text }) => (
 );
 
 
-function ActivePoll(){
+function ActivePoll(props){
   const[value,setValue]=useState("")
   const dispatch=useDispatch();
   const ActivePolls=useSelector(state=>state.poll)
+  const auth=useSelector(state=>state.auth)
   const error=useSelector(state=>state.error)
-
-
+  
   useEffect(() => {
     dispatch(FetchAllActivePolls())
-   
+    
    },[])
 
- 
+  
+
+const HasUserVoted=(pollId)=>{
+
+  var pollsCopy=[]
+//LOOP THROUGH EACH POLL
+//SEARCH FOR VOTES
+//CHECK FOR USE IN VOTES VIA ID
+var pollData=ActivePolls.pollsData.filter((item)=>{return item.id === pollId})
+pollsCopy=pollData
+for(let eachPoll of pollsCopy){
+  for(let eachVote of eachPoll.votes){
+   return eachVote.user.id===auth.user.Id?true:false
+  }
+}
+} 
+ const CalculatePercentage=(pollId,choiceId)=>{
+  var pollsCopy=[]
+  var choices=[]
+  var pollData=ActivePolls.pollsData.filter((item)=>{return item.id === pollId})
+  pollsCopy=pollData
+  for(let eachPoll of pollsCopy){
+    totalVotes=eachPoll.votes.length
+    for(let anyOption of eachPoll.options){
+     choices.push(anyOption)
+    }}
+    for(let choice of choices){
+      if(choice.id===choiceId){
+         optionVote=choice.incomingvotes.length
+      }
+    }
+    var results=(optionVote/totalVotes)*(100) 
+    console.log(results)
+    return results
+}
+  
+const DoesPollContainCorrectChoice=(pollId,choiceId)=>{
+  var pollsCopy=[]
+  var choices=[]
+  var pollData=ActivePolls.pollsData.filter((item)=>{return item.id === pollId})
+  pollsCopy=pollData
+  for(let eachPoll of pollsCopy){
+    for(let anyOption of eachPoll.options){
+      console.log(anyOption)
+     choices.push(anyOption)
+    }}
+    console.log(choices)
+    for(let choice of choices){
+      if(choice.id===choiceId){
+        return true;
+      }
+      return false;
+    }
+}
 
 const onChange = e => {
   console.log('radio checked', e.target.value);
   setValue(e.target.value)
   
 };
+
+const CastYourVote=(pid)=>{
+
+  if(value===""){
+    message.error('Choose An Option ');
+  }
+  if(DoesPollContainCorrectChoice(pid,value)===false){
+    message.error('Choose An Option In the Specific Poll');
+  }
+  const uid=auth.user.Id
+  const cid=value
+  dispatch(CastVote(uid,pid,cid))
+  
+  
+}
+const RenderVoteButton=({pid})=>{
+  if(HasUserVoted(pid)){
+    return(
+     <div key={pid}></div>
+      );
+
+  }
+  return(
+    <Button key={pid}  className="vote-button" type="primary" shape="round" size="default"  onClick={()=>{CastYourVote(pid)}}>Vote</Button> 
+    );
+  
+  }
+
+const RenderOptionsOrResults=({options,pollId})=>{
+     if(HasUserVoted(pollId)){
+       return(
+        <div className="poll-results">
+           {options.map((choices,i)=>{
+             const choiceId=choices.id
+          return <div className="results">
+            <span>{choices.option}</span>
+             <span className="percent"> <ProgressBar 
+            completed={CalculatePercentage(pollId,choiceId)}
+            bgColor="#529c9c"
+            height="40px"
+            width="75%"
+            borderRadius="15px"
+            labelAlignment="left"
+            baseBgColor="#f0f0df"
+            labelColor="#0c0b0b"
+    /></span>
+           
+    
+            </div>
+             })}
+        </div>
+       ) 
+     }
+     return(
+      <div className="options">
+      <Radio.Group  onChange={onChange}>
+      <Space direction="vertical">
+        {options.map((choices,i)=>{
+     return <Radio key={i} value={choices.id}>{choices.option}</Radio>
+        })}
+   
+    </Space>
+      </Radio.Group>
+    <div>
+  
+    </div>
+      </div>
+     )
+  }
 const RenderIfFetched=()=>{
 
   if(ActivePolls.hasFetchedAllActivePolls===true && error.hasActivationErrors===false){
@@ -53,7 +179,7 @@ const RenderIfFetched=()=>{
       dataSource={ActivePolls.pollsData}
       footer={
         <div>
-          <b>ant design</b> footer part
+          <b>Polling App</b> 2021
         </div>
       }
       renderItem={item => (
@@ -62,7 +188,7 @@ const RenderIfFetched=()=>{
           actions={[
             <IconText icon={StarOutlined} text={item.votes.length+" "+"votes"} key="list-vertical-star-o" />,
             <IconText icon={ClockCircleOutlined} text={"posted "+moment(item.createdAt).fromNow()} key="list-vertical-message" />,
-            <div> <Button className="vote-button" type="primary" shape="round" size="default">Vote</Button></div> 
+            <RenderVoteButton pid={item.id}/>
           ]}
          
         >
@@ -81,25 +207,16 @@ const RenderIfFetched=()=>{
             <div className="question">
               {item.question}
             </div>
-            <div className="options">
-            <Radio.Group  onChange={onChange}>
-            <Space direction="vertical">
-              {item.options.map((choices,i)=>{
-           return <Radio key={i} value={choices.id}>{choices.option}</Radio>
-              })}
-         
-          </Space>
-            </Radio.Group>
-
+            <RenderOptionsOrResults options={item.options} pollId={item.id}/>
             </div>
-            </div>}
+            }
         </List.Item>
       )}
     />
   )
   }
   return(
-    <div>Loading...</div>
+    <LoadingPolls/>
   )
 }
 return(

@@ -162,7 +162,7 @@ public class PollService {
     }
 
     public List<PollModel> GetAllOpenPolls(PollStatus pollStatus) {
-        return pollRepository.findAllByPollStatusEquals(pollStatus);
+        return pollRepository.findAllByPollStatusEqualsOrderByCreatedAtDesc(pollStatus);
     }
 
     public ResponseEntity<UniversalResponse> CastVote(String pollId, String choiceId, String userId) {
@@ -221,11 +221,11 @@ public class PollService {
 
     }
     public List<PollModel> GetClosedPolls(PollStatus pollStatus){
-        return pollRepository.findAllByPollStatusEquals(pollStatus);
+        return pollRepository.findAllByPollStatusEqualsOrderByCreatedAtDesc(pollStatus);
     }
 
     public List<PollModel> GetScheduledPolls(PollsCategory pollsCategory){
-        return pollRepository.findAllByCategoryEquals(pollsCategory);
+        return pollRepository.findAllByCategoryEqualsOrderByCreatedAtDesc(pollsCategory);
     }
 
 }
