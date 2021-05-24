@@ -43,7 +43,7 @@ export default (state = INITIAL_STATE, action) => {
                             isLoading:false,
                             hasCreatedNonScheduledPoll:false,
                             hasCreatedScheduledPoll:false,
-                            hasFetchedAllActivePolls:false,
+                            hasCastedVote:false,
                             }      
                
                    
