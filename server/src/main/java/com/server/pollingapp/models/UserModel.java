@@ -2,6 +2,7 @@ package com.server.pollingapp.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Proxy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Proxy(lazy=false)
 @Table(name = "users")
 public class UserModel implements Serializable {
     private static final long serialVersionUID = -999055560350713378L;
@@ -23,6 +25,7 @@ public class UserModel implements Serializable {
     private String id = UUID.randomUUID().toString();
 
     @Column(nullable = false)
+    @JsonProperty(access= JsonProperty.Access.READ_WRITE)
     private String username;
 
     @Column(nullable = false, unique = true)
@@ -34,6 +37,7 @@ public class UserModel implements Serializable {
     private String password;
 
     @Column
+    @JsonProperty(access= JsonProperty.Access.READ_WRITE)
     private String imageurl="none";
 
     @Column(nullable = false)

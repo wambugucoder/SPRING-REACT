@@ -14,13 +14,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SentimentAnalysisService {
-
-    final StanfordCoreNLP stanfordCoreNLP;
-
     @Autowired
-    public SentimentAnalysisService(@Lazy StanfordCoreNLP stanfordCoreNLP) {
-        this.stanfordCoreNLP = stanfordCoreNLP;
-    }
+    StanfordCoreNLP stanfordCoreNLP;
+
 
     public int GetSentimentScoreOfPoll(String text){
         int sentimentScore=0;

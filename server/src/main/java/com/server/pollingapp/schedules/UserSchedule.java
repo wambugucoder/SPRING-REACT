@@ -14,22 +14,16 @@ import java.util.List;
 
 @Component
 public class UserSchedule {
-    final
+    @Autowired
     UserRepositoryImpl userRepositoryImpl;
 
-    final
+    @Autowired
     JwtService jwtService;
 
-    final
+    @Autowired
     EmailService emailService;
 
-    @Autowired
-    public UserSchedule(@Lazy UserRepositoryImpl userRepositoryImpl,@Lazy JwtService jwtService,@Lazy EmailService emailService) {
-        this.userRepositoryImpl = userRepositoryImpl;
-        this.jwtService = jwtService;
-        this.emailService = emailService;
 
-    }
 
     /**
      * This scheduled method is supposed to run after every 1 minute sending verification emails to users

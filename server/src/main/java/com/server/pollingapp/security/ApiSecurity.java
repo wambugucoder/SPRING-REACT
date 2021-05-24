@@ -28,24 +28,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @Configuration
 public class ApiSecurity extends WebSecurityConfigurerAdapter {
-    final PollsUserDetailsService pollsUserDetailsService;
+    @Autowired  PollsUserDetailsService pollsUserDetailsService;
 
-    final JwtFilter jwtFilter;
+    @Autowired JwtFilter jwtFilter;
 
-    private final CustomOauth2UserService customOAuth2UserService;
+    @Autowired CustomOauth2UserService customOAuth2UserService;
 
-    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    @Autowired OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    @Autowired OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
-    @Autowired
-    public ApiSecurity(@Lazy PollsUserDetailsService pollsUserDetailsService,@Lazy JwtFilter jwtFilter,@Lazy CustomOauth2UserService customOAuth2UserService,@Lazy OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler, OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
-        this.pollsUserDetailsService = pollsUserDetailsService;
-        this.jwtFilter = jwtFilter;
-        this.customOAuth2UserService = customOAuth2UserService;
-        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
-        this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
-    }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

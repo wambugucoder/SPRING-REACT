@@ -1,9 +1,10 @@
 import "./Dashboard.css"
-import { Row, Tabs ,Col,Space} from 'antd';
+import { Row, Tabs ,Col,Space, message} from 'antd';
 import ActivePoll from "../active-polls-component/ActivePoll";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { useEffect } from "react";
+import { CleanupPoll } from "../../store/actions/Action";
 
 const { TabPane } = Tabs;
 
@@ -22,6 +23,8 @@ function Dashboard(){
      }
    
   }, [auth.isAuthenticated, history])
+
+ 
     return(
       <div className="polling-bar">
        <div className="polling-tabs">

@@ -21,29 +21,20 @@ import java.util.Optional;
 
 @Service
 public class PollService {
-    final PollRepository pollRepository;
+    @Autowired PollRepository pollRepository;
 
-    final UserRepository userRepository;
+    @Autowired UserRepository userRepository;
 
-    final UserRepositoryImpl userRepositoryImp;
+    @Autowired UserRepositoryImpl userRepositoryImp;
 
-    final SentimentAnalysisService sentimentAnalysisService;
+    @Autowired SentimentAnalysisService sentimentAnalysisService;
 
-    final ChoiceRepository choiceRepository;
+    @Autowired ChoiceRepository choiceRepository;
 
-    final VotesRepository votesRepository;
+    @Autowired VotesRepository votesRepository;
 
     Logger log=  LoggerFactory.getLogger(PollService.class);
 
-    @Autowired
-    public PollService(@Lazy PollRepository pollRepository, @Lazy UserRepository userRepository,@Lazy UserRepositoryImpl userRepositoryImp,@Lazy SentimentAnalysisService sentimentAnalysisService,@Lazy ChoiceRepository choiceRepository,@Lazy VotesRepository votesRepository) {
-        this.pollRepository = pollRepository;
-        this.userRepository = userRepository;
-        this.userRepositoryImp = userRepositoryImp;
-        this.sentimentAnalysisService = sentimentAnalysisService;
-        this.choiceRepository = choiceRepository;
-        this.votesRepository = votesRepository;
-    }
 
     private UserModel fetchUserId(String userId) {
         return userRepositoryImp.findUserById(userId);
@@ -166,9 +157,9 @@ public class PollService {
     }
 
     public ResponseEntity<UniversalResponse> CastVote(String pollId, String choiceId, String userId) {
-        PollModel poll = pollRepository.getOne(pollId);
+        PollModel poll = pollRepository.findById(pollId).get();
         UserModel user = fetchUserId(userId);
-        ChoiceModel choice = choiceRepository.getOne(choiceId);
+        ChoiceModel choice = choiceRepository.findById(choiceId).get();
 
         Optional<VotesModel> findIfUserVoted = poll.getVotes().stream().filter(votes -> (votes.getUser().getId().equalsIgnoreCase(userId)))
                 .findFirst();
@@ -180,13 +171,11 @@ public class PollService {
             votesModel.setPoll(poll);
             votesModel.setUser(user);
 
+
             try {
-                List<VotesModel>list =new ArrayList<>();
-                //SET POLL
-                list.add(votesModel);
-                poll.setVotes(list);
+                poll.addVotes(votesModel);
                 //CHOICES
-                choice.setIncomingvotes(list);
+                choice.addVotes(votesModel);
                 choice.setPolls(poll);
 
                 //SAVE TO DB

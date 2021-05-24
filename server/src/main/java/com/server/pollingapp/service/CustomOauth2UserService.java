@@ -49,15 +49,11 @@ import java.util.Optional;
  */
 @Service
 public class CustomOauth2UserService extends DefaultOAuth2UserService {
-    private final UserRepositoryImpl userRepositoryImpl;
+    @Autowired UserRepositoryImpl userRepositoryImpl;
 
-    private final UserRepository userRepository;
+    @Autowired UserRepository userRepository;
 
-    @Autowired
-    public CustomOauth2UserService(@Lazy UserRepositoryImpl userRepositoryImpl,@Lazy UserRepository userRepository) {
-        this.userRepositoryImpl = userRepositoryImpl;
-        this.userRepository = userRepository;
-    }
+
 
 
     /**

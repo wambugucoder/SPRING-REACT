@@ -1,5 +1,5 @@
-import { List, Avatar, Space, Tag, Radio, Button, message, Progress } from 'antd';
-import {StarOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { List, Avatar, Space, Tag, Radio, Button, message } from 'antd';
+import {StarOutlined, ClockCircleOutlined, CheckCircleTwoTone } from '@ant-design/icons';
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { CastVote, FetchAllActivePolls } from '../../store/actions/Action';
@@ -23,6 +23,7 @@ const IconText = ({ icon, text }) => (
 
 function ActivePoll(props){
   const[value,setValue]=useState("")
+  const [disabled,setDisabled]=useState([])
   const dispatch=useDispatch();
   const ActivePolls=useSelector(state=>state.poll)
   const auth=useSelector(state=>state.auth)
@@ -33,6 +34,7 @@ function ActivePoll(props){
     
    },[])
 
+   
   
 
 const HasUserVoted=(pollId)=>{
@@ -45,8 +47,11 @@ var pollData=ActivePolls.pollsData.filter((item)=>{return item.id === pollId})
 pollsCopy=pollData
 for(let eachPoll of pollsCopy){
   for(let eachVote of eachPoll.votes){
-   return eachVote.user.id===auth.user.Id?true:false
+  if( eachVote.user.id===auth.user.Id){
+    return true;
   }
+  }
+  return false;
 }
 } 
  const CalculatePercentage=(pollId,choiceId)=>{
@@ -65,18 +70,44 @@ for(let eachPoll of pollsCopy){
       }
     }
     var results=(optionVote/totalVotes)*(100) 
-    console.log(results)
     return results
 }
+const DidUserVoteForThisCoice=(pollId,choiceId) =>{
+  var pollsCopy=[]
+  var pollData=ActivePolls.pollsData.filter((item)=>{return item.id === pollId})
+  pollsCopy=pollData
+  //LOOP THROUGH POLL ARRAY TO FIND OPTIONS
+  for(let eachPollData of pollsCopy){
+    //LOOP THROUGH EVERY OPTION
+    for(let eachOption of eachPollData.options){
+      //SEARCH IF USER VOTED FOR THIS CHOICE
+        //IF CHOICE ID MATCHES THE CHOICEID
+        if(eachOption.id===choiceId){
+          console.log("Tuko hapa 4")
+          for(let incomingVotes of eachOption.incomingvotes){
+           if(incomingVotes.user.id===auth.user.Id){
+              return true;
+            }
+            else{
+              continue
+            }  
+        }
+      }
+    }
+    return false;
   
+  }
+  
+}
 const DoesPollContainCorrectChoice=(pollId,choiceId)=>{
   var pollsCopy=[]
   var choices=[]
   var pollData=ActivePolls.pollsData.filter((item)=>{return item.id === pollId})
   pollsCopy=pollData
+
   for(let eachPoll of pollsCopy){
     for(let anyOption of eachPoll.options){
-      console.log(anyOption)
+     // console.log(anyOption)
      choices.push(anyOption)
     }}
     console.log(choices)
@@ -84,8 +115,9 @@ const DoesPollContainCorrectChoice=(pollId,choiceId)=>{
       if(choice.id===choiceId){
         return true;
       }
-      return false;
+     
     }
+    return false;
 }
 
 const onChange = e => {
@@ -97,13 +129,14 @@ const onChange = e => {
 const CastYourVote=(pid)=>{
 
   if(value===""){
-    message.error('Choose An Option ');
+   return message.error('Choose An Option ');
   }
   if(DoesPollContainCorrectChoice(pid,value)===false){
-    message.error('Choose An Option In the Specific Poll');
+   return  message.error('Choose An Option In the Specific Poll');
   }
   const uid=auth.user.Id
   const cid=value
+  setDisabled([...disabled,pid])
   dispatch(CastVote(uid,pid,cid))
   
   
@@ -116,7 +149,7 @@ const RenderVoteButton=({pid})=>{
 
   }
   return(
-    <Button key={pid}  className="vote-button" type="primary" shape="round" size="default"  onClick={()=>{CastYourVote(pid)}}>Vote</Button> 
+    <Button key={pid} disabled={disabled.indexOf(pid)!==-1} className="vote-button" type="primary" shape="round" size="default"  onClick={()=>{CastYourVote(pid)}}>Vote</Button> 
     );
   
   }
@@ -128,16 +161,18 @@ const RenderOptionsOrResults=({options,pollId})=>{
            {options.map((choices,i)=>{
              const choiceId=choices.id
           return <div className="results">
-            <span>{choices.option}</span>
-             <span className="percent"> <ProgressBar 
+            <span className="result-choice">{choices.option}</span>
+            <span> </span>
+            <span>{ DidUserVoteForThisCoice(pollId,choiceId)?<CheckCircleTwoTone/>:<span></span>}</span>
+             <span className="percent"> <ProgressBar className="pg-chart"
             completed={CalculatePercentage(pollId,choiceId)}
-            bgColor="#529c9c"
+            bgColor="#3C6177"
             height="40px"
             width="75%"
-            borderRadius="15px"
+            borderRadius="7px"
             labelAlignment="left"
-            baseBgColor="#f0f0df"
-            labelColor="#0c0b0b"
+            baseBgColor="#000000"
+            labelColor="#fffff"
     /></span>
            
     
@@ -179,7 +214,7 @@ const RenderIfFetched=()=>{
       dataSource={ActivePolls.pollsData}
       footer={
         <div>
-          <b>Polling App</b> 2021
+          <b>@Polling App</b> 2021
         </div>
       }
       renderItem={item => (

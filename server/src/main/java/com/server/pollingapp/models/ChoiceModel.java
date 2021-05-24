@@ -3,6 +3,7 @@ package com.server.pollingapp.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Proxy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "choices")
+@Proxy(lazy=false)
 public class ChoiceModel implements Serializable {
 
     private static final long serialVersionUID = 5952008960623028980L;
@@ -62,7 +64,10 @@ public class ChoiceModel implements Serializable {
     public void setIncomingvotes(List<VotesModel> votes) {
         this.incomingvotes = votes;
     }
-
+   public void addVotes(VotesModel votes){
+        incomingvotes.add(votes);
+        setIncomingvotes(incomingvotes);
+   }
     public PollModel getPolls() {
         return polls;
     }

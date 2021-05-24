@@ -21,14 +21,10 @@ import java.util.List;
 public class PollSchedule {
 
 
-    final PollRepository pollRepository;
-    final TwitterService twitterService;
+    @Autowired PollRepository pollRepository;
+    @Autowired TwitterService twitterService;
 
-    @Autowired
-    public PollSchedule(@Lazy PollRepository pollRepository,@Lazy TwitterService twitterService) {
-        this.pollRepository = pollRepository;
-        this.twitterService = twitterService;
-    }
+    
 
 
 
