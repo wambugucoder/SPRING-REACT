@@ -69,17 +69,10 @@ public class PollService {
 
 
             //SAVE POLL
-            try {
-                pollRepository.save(pollModel);
+         
+           pollRepository.save(pollModel);
 
-            } catch (IllegalArgumentException e) {
-                //GENERATE LOGS
-                log.error("Could Not Create Non-Scheduled Poll");
-                UniversalResponse error = new UniversalResponse();
-                error.setError(true);
-                error.setMessage(e.getMessage());
-                return ResponseEntity.badRequest().body(error);
-            }
+           
             //ON SUCCESS->SEND 200
             //GENERATE LOGS
             log.info("Non-Scheduled Poll Created Successfully");
@@ -124,16 +117,9 @@ public class PollService {
 
 
             //SAVE POLL AND CHOICES
-            try {
-                pollRepository.save(pollModel);
-            } catch (IllegalArgumentException e) {
-                //GENERATE LOGS
-                log.error("Could Not Create Scheduled Poll");
-                UniversalResponse error = new UniversalResponse();
-                error.setError(true);
-                error.setMessage(e.getMessage());
-                return ResponseEntity.badRequest().body(error);
-            }
+            
+             pollRepository.save(pollModel);
+           
             //ON SUCCESS->SEND 200
             //GENERATE LOGS
             log.info("Created a Scheduled Poll");
@@ -172,7 +158,7 @@ public class PollService {
             votesModel.setUser(user);
 
 
-            try {
+            
                 poll.addVotes(votesModel);
                 //CHOICES
                 choice.addVotes(votesModel);
@@ -182,15 +168,6 @@ public class PollService {
                 choiceRepository.save(choice);
 
 
-
-
-
-            } catch (IllegalArgumentException e) {
-                UniversalResponse error = new UniversalResponse();
-                error.setMessage(e.getMessage());
-                error.setError(true);
-                return ResponseEntity.badRequest().body(error);
-            }
             //IF USER DIDN'T VOTE
             //CAST VOTE AND RETURN A 200
             UniversalResponse success = new UniversalResponse();
