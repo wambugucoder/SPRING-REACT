@@ -28,12 +28,9 @@ import java.util.List;
 public class PollController implements SecuredController {
 
 
-   final  PollService pollService;
+    @Autowired PollService pollService;
 
-   @Autowired
-    public PollController(@Lazy PollService pollService) {
-        this.pollService = pollService;
-    }
+
 
     @PostMapping(value = "/api/v1/polls/{userId}/non_scheduled_poll",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UniversalResponse> NonScheduledPoll(@RequestBody @Valid NonScheduledPollRequest nonScheduledPollRequest, @PathVariable String userId, BindingResult bindingResult){
@@ -69,7 +66,7 @@ public class PollController implements SecuredController {
 
     @GetMapping(value = "/api/v1/polls/scheduled_polls",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PollModel> GetAllScheduledPolls(){
-        return pollService.GetScheduledPolls(PollsCategory.SCHEDULED_POLL);
+        return pollService.GetScheduledPolls(PollStatus.POLL_PENDING);
     }
 
     @GetMapping(value = "/api/v1/polls/specific_poll/{pollId}",produces = MediaType.APPLICATION_JSON_VALUE)

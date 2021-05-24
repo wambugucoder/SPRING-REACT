@@ -1,9 +1,11 @@
 import "./Dashboard.css"
-import { Row, Tabs ,Col,Space} from 'antd';
+import { Row, Tabs ,Col,Space, message} from 'antd';
 import ActivePoll from "../active-polls-component/ActivePoll";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { useEffect } from "react";
+import { CleanupPoll } from "../../store/actions/Action";
+import ScheduledList from "../Scheduled-Poll-list/ScheduledList";
 
 const { TabPane } = Tabs;
 
@@ -22,6 +24,8 @@ function Dashboard(){
      }
    
   }, [auth.isAuthenticated, history])
+
+ 
     return(
       <div className="polling-bar">
        <div className="polling-tabs">
@@ -33,7 +37,7 @@ function Dashboard(){
     </TabPane>
     <Space/>
     <TabPane tab="Scheduled Polls" key="2">
-      Content of Tab Pane 2
+    <div className="polling-section-1"><ScheduledList/></div>
     </TabPane>
     <Space/>
     <TabPane tab="Closed Polls" key="3">

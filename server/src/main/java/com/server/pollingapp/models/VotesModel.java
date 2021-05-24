@@ -2,6 +2,7 @@ package com.server.pollingapp.models;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Proxy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -11,6 +12,8 @@ import java.util.UUID;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "votes")
+@Proxy(lazy=false)
+
 public class VotesModel implements Serializable {
 
     private static final long serialVersionUID = -7267712774522332916L;

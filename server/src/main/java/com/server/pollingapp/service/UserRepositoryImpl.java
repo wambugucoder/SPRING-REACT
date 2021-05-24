@@ -5,7 +5,6 @@ import com.server.pollingapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -23,12 +22,11 @@ import java.util.List;
 public class UserRepositoryImpl implements Serializable{
 
     private static final long serialVersionUID = 2227703948534184774L;
-    final UserRepository userRepository;
 
     @Autowired
-    public UserRepositoryImpl(@Lazy UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    UserRepository userRepository;
+
+
 
     @Cacheable(value = "Users")
     public List<UserModel> findAllUsers() {

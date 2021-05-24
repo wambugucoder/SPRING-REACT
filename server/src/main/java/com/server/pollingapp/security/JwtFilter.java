@@ -19,14 +19,10 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    final JwtService jwtService;
-    final PollsUserDetailsService pollsUserDetailsService;
+    @Autowired JwtService jwtService;
+    @Autowired PollsUserDetailsService pollsUserDetailsService;
 
-    @Autowired
-    public JwtFilter(@Lazy JwtService jwtService,@Lazy PollsUserDetailsService pollsUserDetailsService) {
-        this.jwtService = jwtService;
-        this.pollsUserDetailsService = pollsUserDetailsService;
-    }
+
 
     /**
      * Same contract as for {@code doFilter}, but guaranteed to be

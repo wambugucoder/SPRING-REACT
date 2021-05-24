@@ -41,4 +41,13 @@
     font-size: larger;
    
 }
-
+.results .result-choice{
+font-size:17px;
+font-weight: lighter;
+}
+ .percent{
+    font-size: small;
+}
+.pg-chart{
+    border:0px solid black
+}

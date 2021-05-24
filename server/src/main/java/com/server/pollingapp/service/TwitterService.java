@@ -12,14 +12,10 @@ import java.time.LocalDateTime;
 
 @Service
 public class TwitterService {
-
-    final Twitter twitter;
+    @Autowired
+    Twitter twitter;
     Logger log= LoggerFactory.getLogger(TwitterService.class);
 
-    @Autowired
-    public TwitterService(@Lazy Twitter twitter) {
-        this.twitter = twitter;
-    }
 
     public void SendNotification(PollModel pollModel){
         try {

@@ -34,30 +34,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserAuthenticationService {
 
-    final
+    @Autowired
     UserRepositoryImpl userRepositoryImpl;
-    final
+    @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
-    final
+    @Autowired
     AuthenticationManager authenticationManager;
-    final
+    @Autowired
     JwtService jwtService;
-    final
+    @Autowired
     EmailService emailService;
-    final
+    @Autowired
     UserRepository userRepository;
 
     Logger log= LoggerFactory.getLogger(UserAuthenticationService.class);
 
-    @Autowired
-    public UserAuthenticationService(@Lazy UserRepositoryImpl userRepositoryImpl, @Lazy BCryptPasswordEncoder bCryptPasswordEncoder, @Lazy AuthenticationManager authenticationManager, @Lazy JwtService jwtService, @Lazy EmailService emailService, @Lazy UserRepository userRepository) {
-        this.userRepositoryImpl = userRepositoryImpl;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-        this.emailService = emailService;
-        this.userRepository = userRepository;
-    }
+
 
     public ResponseEntity<UniversalResponse>RegisterUser(RegistrationRequest registrationRequest){
         // CHECK IF EMAIL OR USERNAME EXISTS

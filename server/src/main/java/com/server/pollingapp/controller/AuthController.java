@@ -24,12 +24,9 @@ import javax.validation.Valid;
 @RestController
 public class AuthController {
 
-    final UserAuthenticationService userAuthenticationService;
+    @Autowired UserAuthenticationService userAuthenticationService;
 
-    @Autowired
-    public AuthController(@Lazy UserAuthenticationService userAuthenticationService) {
-        this.userAuthenticationService = userAuthenticationService;
-    }
+
 
 
     @PostMapping(value = "/api/v1/auth/signup",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)

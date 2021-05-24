@@ -5,6 +5,7 @@ package com.server.pollingapp.models;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Proxy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Proxy(lazy=false)
 @Table(name = "polls")
 public class PollModel implements Serializable {
     private static final long serialVersionUID = -4406604081033568663L;
@@ -128,6 +130,12 @@ public class PollModel implements Serializable {
 
     public String getQuestion() {
         return question;
+    }
+
+    public void addVotes(VotesModel vote){
+        votes.add(vote);
+        setVotes(votes);
+
     }
 
     public void setQuestion(String question) {
