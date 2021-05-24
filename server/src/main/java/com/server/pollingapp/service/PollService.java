@@ -213,8 +213,8 @@ public class PollService {
         return pollRepository.findAllByPollStatusEqualsOrderByCreatedAtDesc(pollStatus);
     }
 
-    public List<PollModel> GetScheduledPolls(PollsCategory pollsCategory){
-        return pollRepository.findAllByCategoryEqualsOrderByCreatedAtDesc(pollsCategory);
+    public List<PollModel> GetScheduledPolls(PollStatus pollStatus){
+        return pollRepository.findAllByPollStatusEqualsOrderByCreatedAtDesc(pollStatus);
     }
 
 }

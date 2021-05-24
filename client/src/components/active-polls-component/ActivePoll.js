@@ -186,7 +186,8 @@ const RenderOptionsOrResults=({options,pollId})=>{
       <Radio.Group  onChange={onChange}>
       <Space direction="vertical">
         {options.map((choices,i)=>{
-     return <Radio key={i} value={choices.id}>{choices.option}</Radio>
+          return <Radio key={i} disabled={disabled.indexOf(pollId)!==-1} value={choices.id}>{choices.option}</Radio>
+   
         })}
    
     </Space>

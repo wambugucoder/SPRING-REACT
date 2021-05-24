@@ -66,7 +66,7 @@ public class PollController implements SecuredController {
 
     @GetMapping(value = "/api/v1/polls/scheduled_polls",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PollModel> GetAllScheduledPolls(){
-        return pollService.GetScheduledPolls(PollsCategory.SCHEDULED_POLL);
+        return pollService.GetScheduledPolls(PollStatus.POLL_PENDING);
     }
 
     @GetMapping(value = "/api/v1/polls/specific_poll/{pollId}",produces = MediaType.APPLICATION_JSON_VALUE)
