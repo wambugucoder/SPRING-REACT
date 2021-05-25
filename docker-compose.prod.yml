@@ -1,0 +1,68 @@
+version: "3"
+services: 
+    server:
+        build: 
+            context: ./server
+            dockerfile: Dockerfile.prod
+        ports: 
+            - 8443:8443
+        container_name: 
+            - poll_server
+        restart: 
+            -always
+        depends_on: 
+            - redis
+            - database
+            - client
+        links: 
+            - redis
+            - database
+            - client
+        networks: 
+            - polls_network
+    client:
+        build: 
+            context: ./client
+            dockerfile: Dockerfile
+        ports: 
+            - 80:80
+        depends_on: 
+            - server
+        container_name: 
+            - poll_client
+        networks: 
+            - polls_network
+    redis:
+        image: redis:alpine
+        hostname: redis
+        restart: always
+        volumes:
+            - ../data/redis:/data
+        entrypoint: redis-server --appendonly yes
+        ports:
+            - 6379:6379
+        networks:
+            - polls_network
+     database:
+        image: postgres:alpine
+        environment:
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_DB: polls-db-prod
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_is ready -U postgres']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        restart: always
+        volumes: 
+            - ../data/pg-data:/var/libs/postgresql/data
+        ports: 
+            - 5432:5432
+        networks:
+            - polls_network
+networks:
+    polls_network:
+         driver: bridge
+
+

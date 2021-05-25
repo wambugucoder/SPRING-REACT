@@ -7,8 +7,9 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class SentimentAnalysisService {
     @Autowired
     StanfordCoreNLP stanfordCoreNLP;
+
+    Logger logger= LoggerFactory.getLogger(SentimentAnalysisService.class);
 
 
     public int GetSentimentScoreOfPoll(String text){
@@ -26,7 +29,7 @@ public class SentimentAnalysisService {
             Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
            sentimentScore= RNNCoreAnnotations.getPredictedClass(tree);
         }
-        System.out.println(sentimentScore);
+        logger.info(String.valueOf(sentimentScore));
         return sentimentScore;
     }
 }

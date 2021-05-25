@@ -5,7 +5,6 @@ import com.server.pollingapp.service.EmailService;
 import com.server.pollingapp.service.JwtService;
 import com.server.pollingapp.service.UserRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

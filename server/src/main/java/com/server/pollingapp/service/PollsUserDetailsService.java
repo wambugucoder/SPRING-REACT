@@ -4,7 +4,6 @@ import com.server.pollingapp.models.UserModel;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.security.PollsUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,7 +33,8 @@ public class PollsUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserDetails result;
-        if (userRepository.existsByEmail(email)) {
+        Boolean existsByEmail=userRepository.existsByEmail(email);
+        if (Boolean.TRUE.equals(existsByEmail)) {
             UserModel userModel = userRepository.findByEmail(email);
             result = new PollsUserDetails(userModel);
         } else {

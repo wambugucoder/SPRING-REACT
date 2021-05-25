@@ -2,7 +2,6 @@ package com.server.pollingapp.service;
 
 import com.server.pollingapp.models.UserModel;
 import io.rocketbase.commons.colors.ColorPalette;
-
 import io.rocketbase.commons.email.EmailTemplateBuilder;
 import io.rocketbase.commons.email.model.HtmlTextEmail;
 import io.rocketbase.commons.email.template.styling.FontWeight;
@@ -10,20 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 
 @Service
 public class EmailService {
-
-    final JavaMailSender javaMailSender;
 
 
     @Value("${app.frontend}")
@@ -35,9 +30,7 @@ public class EmailService {
     Logger log= LoggerFactory.getLogger(EmailService.class);
 
     @Autowired
-    public EmailService(@Lazy JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
+    JavaMailSender javaMailSender;
 
     public void createActivationTemplate(String token, UserModel userModel){
         EmailTemplateBuilder.EmailTemplateConfigBuilder builder = EmailTemplateBuilder.builder();

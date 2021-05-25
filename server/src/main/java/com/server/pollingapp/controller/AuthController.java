@@ -6,7 +6,6 @@ import com.server.pollingapp.response.LoginResponse;
 import com.server.pollingapp.response.UniversalResponse;
 import com.server.pollingapp.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

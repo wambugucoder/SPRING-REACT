@@ -513,7 +513,7 @@ class PollingappApplicationTests {
     @DisplayName("/api/v1/polls/opened_polls -Retrieve All Open Polls")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
-    void RetrieveAllOpenPolls() throws Exception {
+    void SuccessFullyRetrieveAllOpenPolls() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
 
@@ -539,7 +539,7 @@ class PollingappApplicationTests {
     @DisplayName("/api/v1/polls/closed_polls -Retrieve All Closed Polls")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
-    void RetrieveAllClosedPolls() throws Exception {
+    void DoRetrieveAllClosedPolls() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
 
@@ -566,7 +566,7 @@ class PollingappApplicationTests {
     @DisplayName("/api/v1/polls/scheduled_polls -Retrieve All Scheduled Polls")
     @EnabledOnJre(value = JRE.JAVA_8,disabledReason = "Server Was Programmed to run on Java 8 Environment")
     @EnabledOnOs(value=OS.LINUX,disabledReason = "Test should run under docker in a CI/CD environment")
-    void RetrieveAllScheduledPolls() throws Exception {
+    void ImmediatelyRetrieveAllScheduledPolls() throws Exception {
         //GIVEN USERDETAILS
         UserModel user=userRepository.findByEmail("abcd@gmail.com");
 
