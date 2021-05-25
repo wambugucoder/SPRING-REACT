@@ -38,13 +38,10 @@ public class UserSchedule {
                 String token= jwtService.GenerateAccountActivationToken(eachuser.getEmail());
                 emailService.createActivationTemplate(token,eachuser);
                 return eachuser;
-            }).peek(eachuser -> {
+            }).peek(eachuser ->
                 //UPDATE EMAILSENT TO TRUE
-                eachuser.setEmailVerificationSent(true);
-            }).peek(eachuser -> {
-                //GENERATE LOGS
-
-            }).forEachOrdered(userRepositoryImpl::updateUser);
+                eachuser.setEmailVerificationSent(true)
+            ).forEachOrdered(userRepositoryImpl::updateUser);
 
         }
 

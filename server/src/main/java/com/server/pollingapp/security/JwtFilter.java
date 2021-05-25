@@ -3,7 +3,6 @@ package com.server.pollingapp.security;
 import com.server.pollingapp.service.JwtService;
 import com.server.pollingapp.service.PollsUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -59,7 +58,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (email!= null && SecurityContextHolder.getContext().getAuthentication()==null){
            UserDetails userDetails=pollsUserDetailsService.loadUserByUsername(email);
            //VALIDATE TOKEN DETAILS AND SET AUTHORIZED IN SECURITY CONTEXT
-            if (jwtService.IsAuthHeaderValid(jwtToken, userDetails)){
+            Boolean isAuthHeaderValid=jwtService.IsAuthHeaderValid(jwtToken, userDetails);
+            if (Boolean.TRUE.equals(isAuthHeaderValid)){
                 UsernamePasswordAuthenticationToken passToAuthorizationServer = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 
                 passToAuthorizationServer.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
