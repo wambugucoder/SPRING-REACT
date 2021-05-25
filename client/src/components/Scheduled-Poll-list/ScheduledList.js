@@ -7,8 +7,8 @@ import { CastVote, FetchAllActivePolls, FetchScheduledPolls } from '../../store/
 import RandomColor from '../../constants/RandomColor';
 import moment from 'moment';
 import LoadingPolls from '../loading-polls-content/LoadingPolls';
-import ProgressBar from "@ramonak/react-progress-bar";
-import AddToCalendar from 'react-add-to-calendar';
+
+
 
 
 const IconText = ({ icon, text }) => (

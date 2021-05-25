@@ -6,6 +6,7 @@ import { useHistory } from "react-router";
 import { useEffect } from "react";
 import { CleanupPoll } from "../../store/actions/Action";
 import ScheduledList from "../Scheduled-Poll-list/ScheduledList";
+import ClosedPollList from "../closed-poll-list/ClosedPollList";
 
 const { TabPane } = Tabs;
 
@@ -41,7 +42,7 @@ function Dashboard(){
     </TabPane>
     <Space/>
     <TabPane tab="Closed Polls" key="3">
-      Content of Tab Pane 3
+    <div className="polling-section-1"><ClosedPollList/></div>
     </TabPane>
   </Tabs>
               </Col>
