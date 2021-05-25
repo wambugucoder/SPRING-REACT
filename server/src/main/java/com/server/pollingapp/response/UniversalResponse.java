@@ -7,20 +7,13 @@ import java.io.Serializable;
  * @since 13-04-2021
  */
 public class UniversalResponse implements Serializable {
-    private static final long serialVersionUID = 2269386659574330817L;
-    public String message;
-    public Boolean error;
+  private static final long serialVersionUID = 2269386659574330817L;
+  public String message;
+  public Boolean error;
 
-    public UniversalResponse() {
+  public UniversalResponse() {}
 
-    }
+  public void setMessage(String message) { this.message = message; }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-
-    public void setError(Boolean error) {
-        this.error = error;
-    }
+  public void setError(Boolean error) { this.error = error; }
 }

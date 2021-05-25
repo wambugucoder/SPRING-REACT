@@ -12,25 +12,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class SentimentAnalysisService {
-    @Autowired
-    StanfordCoreNLP stanfordCoreNLP;
+  @Autowired StanfordCoreNLP stanfordCoreNLP;
 
-    Logger logger= LoggerFactory.getLogger(SentimentAnalysisService.class);
+  Logger logger = LoggerFactory.getLogger(SentimentAnalysisService.class);
 
-
-    public int GetSentimentScoreOfPoll(String text){
-        int sentimentScore=0;
-        Annotation annotation= stanfordCoreNLP.process(text);
-        for (CoreMap sentence: annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
-            //CREATE A SENTIMENT TREE
-            Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
-           sentimentScore= RNNCoreAnnotations.getPredictedClass(tree);
-        }
-        String score=String.valueOf(sentimentScore);
-        logger.info("Sentiment has a score of:"+score);
-        return sentimentScore;
+  public int GetSentimentScoreOfPoll(String text) {
+    int sentimentScore = 0;
+    Annotation annotation = stanfordCoreNLP.process(text);
+    for (CoreMap sentence :
+         annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
+      // CREATE A SENTIMENT TREE
+      Tree tree =
+          sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
+      sentimentScore = RNNCoreAnnotations.getPredictedClass(tree);
     }
+    String score = String.valueOf(sentimentScore);
+    logger.info("Sentiment has a score of:" + score);
+    return sentimentScore;
+  }
 }
