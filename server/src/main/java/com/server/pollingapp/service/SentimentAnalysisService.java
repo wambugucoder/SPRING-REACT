@@ -29,7 +29,8 @@ public class SentimentAnalysisService {
             Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
            sentimentScore= RNNCoreAnnotations.getPredictedClass(tree);
         }
-        logger.info(String.valueOf(sentimentScore));
+        String score=String.valueOf(sentimentScore);
+        logger.info("Sentiment has a score of:"+score);
         return sentimentScore;
     }
 }

@@ -159,7 +159,8 @@ public class UserAuthenticationService {
         String email = jwtService.ExtractEmail(token);
         UserModel user= userRepository.findByEmail(email);
         //CHECK IF USER HAD ALREADY VALIDATED
-        if (user.getEnabled()){
+        Boolean isEnabled=user.getEnabled();
+        if (Boolean.TRUE.equals(isEnabled)){
             //RETURN ERROR SAYING ACCOUNT WAS ALREADY ACTIVATED
             UniversalResponse response= new UniversalResponse();
             response.setError(true);

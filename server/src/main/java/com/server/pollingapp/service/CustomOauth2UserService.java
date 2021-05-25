@@ -10,7 +10,6 @@ import com.server.pollingapp.oauth2.OAuth2UserInfoFactory;
 import com.server.pollingapp.repository.UserRepository;
 import com.server.pollingapp.security.PollsUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.*;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
