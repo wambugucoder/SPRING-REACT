@@ -2,11 +2,8 @@ package com.server.pollingapp.schedules;
 
 import com.server.pollingapp.models.PollModel;
 import com.server.pollingapp.models.PollStatus;
-import com.server.pollingapp.models.PollsCategory;
 import com.server.pollingapp.repository.PollRepository;
-import com.server.pollingapp.service.TwitterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +19,7 @@ public class PollSchedule {
 
 
     @Autowired PollRepository pollRepository;
-    @Autowired TwitterService twitterService;
+
 
     
 
@@ -53,7 +50,7 @@ public class PollSchedule {
      */
     @Scheduled(fixedDelay = 1000)
     private void OpenScheduledPolls(){
-     List<PollModel> scheduledpolls=pollRepository.findAllByCategoryEqualsOrderByCreatedAtDesc(PollsCategory.SCHEDULED_POLL);
+     List<PollModel> scheduledpolls=pollRepository.findAllByPollStatusEqualsOrderByCreatedAtDesc(PollStatus.POLL_PENDING);
      if (!scheduledpolls.isEmpty()){
          scheduledpolls.stream().filter(eachpoll->(LocalDateTime.now().isAfter(eachpoll.getScheduledTime())||
                  eachpoll.getScheduledTime().isEqual(LocalDateTime.now())
@@ -63,25 +60,7 @@ public class PollSchedule {
      }
      }
 
-    /**
-     * Once A poll is Closed,Results should be posted to the "official" Twitter feed
-     * If result has been posted,change poll status to POLL_CLOSED_AND_RESULTS SENT to
-     * avoid resending.
-     * Process runs after every 5 minutes
-     * Reason for sending results to twitter->To Notify Users and direct traffic towards the app.
-     */
-    @Scheduled(fixedDelay = 300000)
-    private void SendResultsToTwitterFeed(){
-        List<PollModel> closedPolls=pollRepository.findAllByPollStatusEqualsOrderByCreatedAtDesc(PollStatus.POLL_CLOSED);
-        if (!closedPolls.isEmpty()){
-            closedPolls.stream()
-                    .peek(twitterService::SendNotification)
-                    .peek(eachPoll-> eachPoll.setPollStatus(PollStatus.POLL_CLOSED_AND_NOTIFICATION_SENT))
-                    .forEachOrdered(pollRepository::save);
-        }
 
-
-    }
 
 }
 

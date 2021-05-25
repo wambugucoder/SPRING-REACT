@@ -1,4 +1,4 @@
-import { ACTIVATION_ERRORS, ACTIVE_POLL_ERRORS, CLEANUP_ERRORS, FETCH_SCHEDULED_POLLS_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS, NON_SCHEDULED_POLL_ERRORS, SCHEDULED_POLL_ERRORS, VOTE_ERRORS } from "../actions/actionTypes";
+import { ACTIVATION_ERRORS, ACTIVE_POLL_ERRORS, CLEANUP_ERRORS, CLOSED_POLLS_ERRORS, FETCH_SCHEDULED_POLLS_ERRORS, GET_ERRORS, IS_LOADING, LOGIN_ERRORS, NON_SCHEDULED_POLL_ERRORS, SCHEDULED_POLL_ERRORS, VOTE_ERRORS } from "../actions/actionTypes";
 
 const INITIAL_STATE = {
     isLoading:false,
@@ -10,6 +10,7 @@ const INITIAL_STATE = {
     hasActivePollErrors:false,
     hasFetchedScheduledErrors:false,
     hasVoteErrors:false,
+    hasFetchedClosedPollsErrors:false,
     errorHandler:{}
 };
  
@@ -64,6 +65,13 @@ export default (state = INITIAL_STATE, action) => {
             errorHandler:action.payload
     
 }   
+    case CLOSED_POLLS_ERRORS:
+        return {...state,
+            isLoading:false,
+            hasFetchedClosedPollsErrors:true,
+            errorHandler:action.payload
+    
+}   
 
     case VOTE_ERRORS:
       return {...state,
@@ -80,14 +88,16 @@ export default (state = INITIAL_STATE, action) => {
 
          case CLEANUP_ERRORS:
               return{...state,
-                isLoading:false,
                 hasErrors:false,
-                hasActivePollErrors:false,
                 hasActivationErrors:false,
                 hasLoginErrors:false,
                 hasNonScheduledPollErrors:false,
                 hasScheduledPollErrors:false,
-            }
+                hasActivePollErrors:false,
+                hasFetchedScheduledErrors:false,
+                hasVoteErrors:false,
+                hasFetchedClosedPollsErrors:false,
+              }
         default:
             return state
     }

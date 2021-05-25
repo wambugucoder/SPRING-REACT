@@ -59,7 +59,7 @@ const RenderPageHeader=()=>{
             Create Poll
               </Link>
           </Menu.Item>
-          <SubMenu key="SubMenu" title={<RenderAvatar/>}>
+          <SubMenu key="SubMenu"  title={<RenderAvatar/>}>
           <Menu.ItemGroup style={{fontWeight:'bold'}} title="Profile">
           <Menu.Item key="setting:1"><UserOutlined/>{auth.user.UserName}</Menu.Item>
           <Menu.Item key="setting:2"><MailOutlined/>{auth.user.Email}</Menu.Item>

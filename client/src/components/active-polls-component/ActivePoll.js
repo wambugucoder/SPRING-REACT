@@ -200,7 +200,7 @@ const RenderOptionsOrResults=({options,pollId})=>{
   }
 const RenderIfFetched=()=>{
 
-  if(ActivePolls.hasFetchedAllActivePolls===true && error.hasActivationErrors===false){
+  if(ActivePolls.hasFetchedAllActivePolls===true && error.hasActivePollErrors===false){
 
     return(
       <List
