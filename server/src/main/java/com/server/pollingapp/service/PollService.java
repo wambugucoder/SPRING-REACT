@@ -11,7 +11,6 @@ import com.server.pollingapp.response.UniversalResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class PollService {
     public ResponseEntity<UniversalResponse> CreateNonScheduledPoll(NonScheduledPollRequest nonScheduledPollRequest, String userId) {
         //ANALYZE POLL CONTENT
         Boolean goodContent=AnalyzePollContents(nonScheduledPollRequest.getQuestion());
-        if (goodContent) {
+        if (Boolean.TRUE.equals(goodContent)) {
 
             // FIND AUTHOR DETAILS
             UserModel author = fetchUserId(userId);
@@ -91,7 +90,8 @@ public class PollService {
 
     public ResponseEntity<UniversalResponse> CreateScheduledPoll(ScheduledPollRequest scheduledPollRequest, String userId) {
         //ANALYZE POLL CONTENT
-        if (AnalyzePollContents(scheduledPollRequest.getQuestion())) {
+        Boolean goodContent=AnalyzePollContents(scheduledPollRequest.getQuestion());
+        if (Boolean.TRUE.equals(goodContent)) {
 
             // FIND AUTHOR DETAILS
             UserModel author = fetchUserId(userId);
@@ -143,9 +143,9 @@ public class PollService {
     }
 
     public ResponseEntity<UniversalResponse> CastVote(String pollId, String choiceId, String userId) {
-        PollModel poll = pollRepository.findById(pollId).get();
+        PollModel poll = pollRepository.getOne(pollId);
         UserModel user = fetchUserId(userId);
-        ChoiceModel choice = choiceRepository.findById(choiceId).get();
+        ChoiceModel choice = choiceRepository.getOne(choiceId);
 
         Optional<VotesModel> findIfUserVoted = poll.getVotes().stream().filter(votes -> (votes.getUser().getId().equalsIgnoreCase(userId)))
                 .findFirst();

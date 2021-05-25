@@ -6,6 +6,15 @@ import com.server.pollingapp.models.AuthProvider;
 import java.util.Map;
 
 public class OAuth2UserInfoFactory {
+   /*
+   * Add a private constructor to hide the implicit public one.
+   * Utility classes, which are collections of static members, are not meant to be instantiated
+   * Even abstract utility classes, which can be extended, should not have public constructors.
+   */
+    private OAuth2UserInfoFactory() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * The Method below is used to get the registration id of the oauth2.0 provider
      * and map it to its correct oauthUserInfo .

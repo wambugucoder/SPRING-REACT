@@ -7,6 +7,7 @@ public class GithubEmailResponse {
     private String visibility;
 
     public GithubEmailResponse() {
+        //EMPTY CONSTRUCTOR
     }
 
     public String getEmail() {

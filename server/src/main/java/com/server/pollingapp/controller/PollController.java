@@ -3,14 +3,12 @@ package com.server.pollingapp.controller;
 
 import com.server.pollingapp.models.PollModel;
 import com.server.pollingapp.models.PollStatus;
-import com.server.pollingapp.models.PollsCategory;
 import com.server.pollingapp.request.NonScheduledPollRequest;
 import com.server.pollingapp.request.ScheduledPollRequest;
 import com.server.pollingapp.response.UniversalResponse;
 import com.server.pollingapp.security.SecuredController;
 import com.server.pollingapp.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

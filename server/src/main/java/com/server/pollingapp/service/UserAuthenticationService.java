@@ -10,7 +10,6 @@ import com.server.pollingapp.response.UniversalResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -53,7 +52,10 @@ public class UserAuthenticationService {
 
     public ResponseEntity<UniversalResponse>RegisterUser(RegistrationRequest registrationRequest){
         // CHECK IF EMAIL OR USERNAME EXISTS
-        if (userRepository.existsByEmail(registrationRequest.getEmail())){
+        Boolean existsByUsername=userRepository.existsByUsername(registrationRequest.getUsername());
+        Boolean existsByEmail=userRepository.existsByEmail(registrationRequest.getEmail());
+
+        if (Boolean.TRUE.equals(existsByEmail)){
             UniversalResponse details = new UniversalResponse();
             details.setMessage("Email Already Exists");
             details.setError(true);
@@ -62,13 +64,14 @@ public class UserAuthenticationService {
             log.warn("User Already Exists");
             return ResponseEntity.badRequest().body(details);
         }
-        else if (userRepository.existsByUsername(registrationRequest.getUsername())){
+
+        else if (Boolean.TRUE.equals(existsByUsername)){
             UniversalResponse details = new UniversalResponse();
             details.setMessage("UserName Already Exists");
             details.setError(true);
 
             //GENERATE LOGS
-            log.warn(registrationRequest.getUsername()+""+"Already Exists");
+            log.warn("UserName Already Exists");
             return ResponseEntity.badRequest().body(details);
 
         }
