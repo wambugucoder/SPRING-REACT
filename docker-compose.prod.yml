@@ -13,10 +13,6 @@ services:
             - redis
             - database
             - client
-        links: 
-            - redis
-            - database
-            - client
         networks: 
             - polls_network
     client:
