@@ -7,8 +7,6 @@ services:
             dockerfile: Dockerfile.prod
         ports: 
             - 8443:8443
-        container_name: 
-            - "poll_server"
         restart: 
             -always
         depends_on: 
@@ -30,8 +28,6 @@ services:
             - 80:80
         depends_on: 
             - server
-        container_name: 
-            - "poll_client"
         networks: 
             - polls_network
     redis:
