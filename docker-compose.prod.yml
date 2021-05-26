@@ -8,7 +8,7 @@ services:
         ports: 
             - 8443:8443
         container_name: 
-            - poll_server
+            - "poll_server"
         restart: 
             -always
         depends_on: 
@@ -31,7 +31,7 @@ services:
         depends_on: 
             - server
         container_name: 
-            - poll_client
+            - "poll_client"
         networks: 
             - polls_network
     redis:
