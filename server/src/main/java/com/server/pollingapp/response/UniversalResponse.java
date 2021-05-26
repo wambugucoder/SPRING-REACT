@@ -8,8 +8,8 @@ import java.io.Serializable;
  */
 public class UniversalResponse implements Serializable {
     private static final long serialVersionUID = 2269386659574330817L;
-    private String message;
-    private Boolean error;
+    public String message;
+    public Boolean error;
 
     public UniversalResponse() {
 
