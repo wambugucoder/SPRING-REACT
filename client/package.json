@@ -32,7 +32,7 @@
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://localhost:8443",
+  "proxy": "https://backend",
   "eslintConfig": {
     "extends": [
       "react-app",
