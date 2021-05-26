@@ -1,6 +1,7 @@
 version: "3"
 services: 
     server:
+        hostname: server
         build: 
             context: ./server
             dockerfile: Dockerfile.prod
@@ -21,6 +22,7 @@ services:
         networks: 
             - polls_network
     client:
+        hostname: client
         build: 
             context: ./client
             dockerfile: Dockerfile
@@ -33,6 +35,7 @@ services:
         networks: 
             - polls_network
     redis:
+        hostname: redis
         image: redis:alpine
         hostname: redis
         restart: always
@@ -44,6 +47,7 @@ services:
         networks:
             - polls_network
      database:
+        hostname: database
         image: postgres:alpine
         environment:
             POSTGRES_PASSWORD: postgres
