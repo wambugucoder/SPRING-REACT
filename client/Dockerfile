@@ -1,6 +1,6 @@
 # build environment
 FROM node:12 as build
-
+LABEL maintainer="josphatwambugu77@gmail.com"
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
@@ -9,9 +9,27 @@ RUN npm install --silent
 COPY . /app
 RUN npm run build
 
-# production environment
-FROM nginx:1.16.0-alpine
+
+FROM nginx:1.18.0-alpine as app
+
+# Add bash
+RUN apk add --no-cache bash
+
+FROM debian:10.4-slim
+
+RUN apt-get update \
+    && apt-get install -y nginx openssl \
+    && openssl req \
+      -x509 \
+      -subj "/C=KE/ST=NRB/L=Wambugu/O=Home/CN=pollsApp-2021.com" \
+      -nodes \
+      -days 365 \
+      -newkey rsa:2048 \
+      -keyout /etc/ssl/private/nginx-selfsigned.key \
+      -out /etc/ssl/certs/nginx-selfsigned.crt
+
+COPY  nginx/nginx.conf  /etc/nginx/nginx.conf
 COPY --from=build /app/build /var/www
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+EXPOSE 80 443
+CMD ["/bin/bash", "-c", "nginx -g \"daemon off;\""]
