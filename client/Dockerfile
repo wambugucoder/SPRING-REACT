@@ -21,7 +21,7 @@ RUN apt-get update \
     && apt-get install -y nginx openssl \
     && openssl req \
       -x509 \
-      -subj "/C=KE/ST=NRB/L=Wambugu/O=Home/CN=pollsApp-2021.com" \
+      -subj "/C=KE/ST=NRB/L=Wambugu/O=Home/CN=pollsapp-2021.westeurope.cloudapp.azure.com" \
       -nodes \
       -days 365 \
       -newkey rsa:2048 \
