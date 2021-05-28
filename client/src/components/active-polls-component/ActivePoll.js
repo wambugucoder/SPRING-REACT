@@ -168,7 +168,7 @@ const RenderOptionsOrResults=({options,pollId})=>{
             completed={CalculatePercentage(pollId,choiceId)}
             bgColor="#3C6177"
             height="40px"
-            width="75%"
+            width="55%"
             borderRadius="7px"
             labelAlignment="left"
             baseBgColor="#000000"
