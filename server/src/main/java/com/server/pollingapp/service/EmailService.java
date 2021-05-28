@@ -27,6 +27,11 @@ public class EmailService {
     @Value("${app.email}")
     private String emailToBeUsed;
 
+     @Value("${app.url}")
+    private String appUrl;
+
+    
+
     Logger log= LoggerFactory.getLogger(EmailService.class);
 
     @Autowired
@@ -44,7 +49,7 @@ public class EmailService {
                 .and()
                 .addText("Thanks for Registering with Votex. We’re thrilled to have you on board. To get started you will need to verify your Account:")
                 .and()
-                .addButton("Verify Account", "http://localhost:3000/activate-account/"+token).color(ColorPalette.FRENCH_BLUE)
+                .addButton("Verify Account", appUrl+token).color(ColorPalette.FRENCH_BLUE)
                 .and()
                 .addHtml(
                         "If you have any questions, feel free to <a href=poll-helpdesk-3482a7@inbox.mailtrap.io>email</a> our customer service team. (We're lightning quick at replying.) We also offer live chat during business hours."
