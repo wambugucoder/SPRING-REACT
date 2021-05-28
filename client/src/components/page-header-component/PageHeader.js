@@ -71,7 +71,7 @@ const RenderPageHeader=()=>{
           <Menu.ItemGroup style={{fontWeight:'bold'}} title="Profile">
           <Menu.Item key="setting:1"><IconText icon={UserOutlined} text={auth.user.UserName}/></Menu.Item>
           <Menu.Item key="setting:2"><IconText icon={MailOutlined} text={auth.user.Email}/></Menu.Item>
-          <Menu.Item key="setting:3"><IconText icon={CalendarOutlined} text={"createdAt"}/><CalendarOutlined/><Space/>{createdAt}</Menu.Item>
+          <Menu.Item key="setting:3"><IconText icon={CalendarOutlined} text={createdAt}/></Menu.Item>
           </Menu.ItemGroup>
           <Menu.ItemGroup style={{fontWeight:'bold'}} title="Logout">
           <Menu.Item key="setting:4" onClick={()=>{dispatch(LogOutUser())}}><IconText icon={LogoutOutlined} text={"Exit"}/></Menu.Item>
