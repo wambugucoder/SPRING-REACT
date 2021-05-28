@@ -167,8 +167,8 @@ const RenderOptionsOrResults=({options,pollId})=>{
              <span className="percent"> <ProgressBar className="pg-chart"
             completed={CalculatePercentage(pollId,choiceId)}
             bgColor="#3C6177"
-            height="40px"
-            width="55%"
+            height="35px"
+            width="75%"
             borderRadius="7px"
             labelAlignment="left"
             baseBgColor="#000000"
