@@ -88,7 +88,7 @@ function ClosedPollList(){
                completed={CalculatePercentage(pollId,choiceId)}
                bgColor="#3C6177"
                height="40px"
-               width="75%"
+               width="55%"
                borderRadius="7px"
                labelAlignment="left"
                baseBgColor="#000000"
@@ -137,9 +137,7 @@ function ClosedPollList(){
                </Avatar>:<Avatar src={item.createdBy.imageurl} />}
                title={<b>{item.createdBy.username}</b>}
                description={<Tag icon={<ClockCircleOutlined />} color="processing">
-                 {moment(item.closingTime).diff(moment(),"hours")>1?"Closes in "+ moment(item.closingTime).diff(moment(),"hours")+" hour(s)":
-                 "Closes in "+ moment(item.closingTime).diff(moment(),"minutes")+" minute(s)"
-                 }
+                 {"Closed  "+ moment(item.closingTime).fromNow()}
              </Tag>}
              />
              {<div className="poll">

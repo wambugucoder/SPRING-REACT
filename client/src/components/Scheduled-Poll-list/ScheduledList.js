@@ -38,7 +38,7 @@ function ScheduledList(){
   };
   
   const setReminder=(items)=>{
-  window.location.href=`https://calendar.google.com/calendar/u/0/r/eventedit?dates=${moment(items.scheduledTime).format('YYYYMMDD[T]HHmmss[Z]')}/${moment(items.closingTime).format('YYYYMMDD[T]HHmmss[Z]')}&location=Nairobi,+Kenya&text=Poll-Schedule+Event&details=${items.question}`
+  window.location.href=`https://calendar.google.com/calendar/u/0/r/eventedit?dates=${moment(items.scheduledTime).format('YYYYMMDD[T]HHmmss')}/${moment(items.closingTime).format('YYYYMMDD[T]HHmmss')}&location=Nairobi,+Kenya&text=Poll-Schedule+Event&details=${items.question}`
   }
   
  
