@@ -21,12 +21,19 @@ margin-top: 0.5rem;
  .oauth-redirect-buttons{
    border-radius: .5rem;
    height: 40px;
-   font-weight: 500;
+   font-weight: 700;
    font-size: medium;
    text-align: center;
    justify-content: center;
+   background-color:#242c37;
+   outline: 2px solid transparent;
+   outline-offset: 2px;
    width: 90%;
   
+ }
+ .oauth-redirect-buttons:hover{
+  background-color:rgb(102, 111, 128);
+  color: aliceblue;
  }
 
  .login-form {
