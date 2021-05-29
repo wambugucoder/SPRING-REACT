@@ -16,11 +16,11 @@ function Activate(){
     const history=useHistory();
     
 
+// eslint-disable-next-line react-hooks/exhaustive-deps
 useEffect(() => {
   if(start===0){
     setTimeout(() => {
       dispatch(ActivateUserAccount(params.tokenid))
-      //console.log("jelo")
     }, 8500);
     setStart(start+1)
   }

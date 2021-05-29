@@ -1,40 +1,33 @@
 import "./ScheduledList.css"
-import { List, Avatar, Space, Tag, Radio, Button, message } from 'antd';
-import {StarOutlined, ClockCircleOutlined, CheckCircleTwoTone,CalendarTwoTone } from '@ant-design/icons';
-import React, { useEffect, useState } from "react";
+import { List, Avatar, Space, Tag, Radio, Button } from 'antd';
+import { ClockCircleOutlined, CalendarTwoTone } from '@ant-design/icons';
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { CastVote, FetchAllActivePolls, FetchScheduledPolls } from '../../store/actions/Action';
+import {FetchScheduledPolls } from '../../store/actions/Action';
 import RandomColor from '../../constants/RandomColor';
 import moment from 'moment';
 import LoadingPolls from '../loading-polls-content/LoadingPolls';
 
 
 
-
-const IconText = ({ icon, text }) => (
-    <Space>
-      {React.createElement(icon)}
-      {text}
-    </Space>
-  );
   
 function ScheduledList(){
-    const[value,setValue]=useState("")
+
     const dispatch=useDispatch();
     const ScheduledPolls=useSelector(state=>state.poll)
-    const auth=useSelector(state=>state.auth)
     const error=useSelector(state=>state.error)
     
     useEffect(() => {
       dispatch(FetchScheduledPolls())
       
+     // eslint-disable-next-line react-hooks/exhaustive-deps
      },[])
   
      
       
   const onChange = e => {
     console.log('radio checked', e.target.value);
-    setValue(e.target.value)  
+     
   };
   
   const setReminder=(items)=>{
@@ -91,11 +84,13 @@ function ScheduledList(){
           <List.Item
             key={item.id}
             actions={[
-              <IconText icon={CalendarTwoTone } text={  <Button ghost size="small"
+                <Button ghost size="small"
+              key="list-vertical-message"
+              icon={<CalendarTwoTone/> }
               onClick={()=>{setReminder(item)}}
               >
               Set Reminder
-            </Button>} key="list-vertical-message" />,
+            </Button> ,
               <RenderVoteButton pid={item.id}/>
             ]}
            
@@ -105,7 +100,7 @@ function ScheduledList(){
                   {item.createdBy.username.charAt(0).toUpperCase()}
               </Avatar>:<Avatar src={item.createdBy.imageurl} />}
               title={<b>{item.createdBy.username}</b>}
-              description={<Tag icon={<ClockCircleOutlined />} color="processing">
+              description={<Tag color="cyan" icon={<ClockCircleOutlined />}>
                 {"Opens "+moment(item.scheduledTime).fromNow()}
             </Tag>}
             />
