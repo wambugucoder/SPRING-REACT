@@ -30,11 +30,6 @@ RUN apt-get update \
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY  nginx/nginx.conf  /etc/nginx/nginx.conf
-COPY  nginx/compression.conf /etc/nginx/compression.conf
-COPY  nginx/general.conf  /etc/nginx/general.conf
-COPY  nginx/security.conf /etc/nginx/security.conf
-COPY  nginx/ssl.conf  /etc/nginx/ssl.conf
-
 COPY --from=build /app/build /usr/share/nginx/html
 
 EXPOSE 80 443
