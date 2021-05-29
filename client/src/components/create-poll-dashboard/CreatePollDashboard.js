@@ -63,7 +63,7 @@ function CreatePollDashboard(){
         <div className="poll-activity">
        <div className="poll-menu">
                 <Row justify="center" align="center">
-              <Col xs={{ span: 24, offset: 0 }} sm={{ span: 12, offset: 2}} md={{ span: 9, offset: 1 }} lg={{ span: 6, offset: 2 }}>
+              <Col xs={{ span: 24, offset: 0 }} sm={{ span: 12, offset: 2}} md={{ span: 9, offset: 1 }} lg={{ span: 6, offset: 0}}>
               <Tabs defaultActiveKey="1" onChange={callback}>
     <TabPane tab={<span><FormOutlined/>Create Poll</span>} key="1">
       <div className="poll-section-1"><NonScheduledPoll/></div>

@@ -1,5 +1,5 @@
 import { Link, useHistory } from "react-router-dom"
-import { PageHeader, Menu,Avatar,Image, Space } from 'antd';
+import { PageHeader, Menu,Avatar,Space } from 'antd';
 import { MailOutlined,HomeOutlined,EditOutlined, UserOutlined,CalendarOutlined, LogoutOutlined } from '@ant-design/icons';
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";

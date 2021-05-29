@@ -11,10 +11,10 @@
 
 }
  .poll-menu{
-    padding-left: 64px;
+    padding-left: 32px;
     width:100%;
     align-content: center;
-    padding-right:20px;
+    padding-right:30px;
     margin-top:2rem;
 }
 .poll-activity .poll-section-1{

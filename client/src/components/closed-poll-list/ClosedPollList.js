@@ -1,5 +1,5 @@
 import { List, Avatar, Space, Tag } from 'antd';
-import {StarOutlined, ClockCircleOutlined, CheckCircleTwoTone } from '@ant-design/icons';
+import {StarOutlined, ClockCircleOutlined,CheckCircleOutlined } from '@ant-design/icons';
 import React, { useEffect} from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { FetchClosedPolls } from '../../store/actions/Action';
@@ -75,6 +75,7 @@ function ClosedPollList(){
         }
         
       }
+     
       const RenderOptionsOrResults=({options,pollId})=>{
           return(
            <div className="poll-results">
@@ -83,7 +84,7 @@ function ClosedPollList(){
              return <div className="results">
                <span className="result-choice">{choices.option}</span>
                <span> </span>
-               <span>{ DidUserVoteForThisChoice(pollId,choiceId)?<CheckCircleTwoTone/>:<span></span>}</span>
+               <span>{ DidUserVoteForThisChoice(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
                 <span className="percent"> <ProgressBar className="pg-chart"
                completed={CalculatePercentage(pollId,choiceId)}
                bgColor="#3C6177"
@@ -125,9 +126,9 @@ function ClosedPollList(){
            <List.Item
              key={item.id}
              actions={[
-               <IconText icon={StarOutlined} text={item.votes.length+" votes"} key="list-vertical-star-o" />,
-               <IconText icon={ClockCircleOutlined} text={"posted "+moment(item.createdAt).fromNow()} key="list-vertical-message" />,
                
+               <IconText icon={StarOutlined} text={item.votes.length +" votes"}/>,
+                
              ]}
             
            >
@@ -136,7 +137,7 @@ function ClosedPollList(){
                    {item.createdBy.username.charAt(0).toUpperCase()}
                </Avatar>:<Avatar src={item.createdBy.imageurl} />}
                title={<b>{item.createdBy.username}</b>}
-               description={<Tag icon={<ClockCircleOutlined />} color="processing">
+               description={<Tag icon={<ClockCircleOutlined />} color="red">
                  {"Closed  "+ moment(item.closingTime).fromNow()}
              </Tag>}
              />

@@ -1,5 +1,5 @@
 import { List, Avatar, Space, Tag, Radio, Button, message } from 'antd';
-import {StarOutlined, ClockCircleOutlined, CheckCircleTwoTone } from '@ant-design/icons';
+import {StarOutlined, ClockCircleOutlined, CheckCircleTwoTone, CheckCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { CastVote, FetchAllActivePolls } from '../../store/actions/Action';
@@ -163,7 +163,7 @@ const RenderOptionsOrResults=({options,pollId})=>{
           return <div className="results">
             <span className="result-choice">{choices.option}</span>
             <span> </span>
-            <span>{ DidUserVoteForThisCoice(pollId,choiceId)?<CheckCircleTwoTone/>:<span></span>}</span>
+            <span>{ DidUserVoteForThisCoice(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
              <span className="percent"> <ProgressBar className="pg-chart"
             completed={CalculatePercentage(pollId,choiceId)}
             bgColor="#3C6177"
