@@ -32,12 +32,7 @@ RUN  add-apt-repository ppa:nginx/stable/ \
      && apt-get update \
      && apt-get install nginx-module-geoip
 
-RUN apt-get geoip-database libgeoip1\
-    && apt-get install -y wget \
-    && mv /usr/share/GeoIP/GeoIP.dat /usr/share/GeoIP/GeoIP.dat_bak \
-    && cd /usr/share/GeoIP/ \
-    && wget https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=GZwedjnfUKJojMcp&suffix=tar.gz \
-    && tar -xvzf geoip_download?edition_id=GeoLite2-Country&license_key=GZwedjnfUKJojMcp&suffix=tar.gz
+RUN apt-get geoip-database libgeoip1
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY  nginx/nginx.conf  /etc/nginx/nginx.conf
