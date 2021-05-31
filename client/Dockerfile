@@ -28,6 +28,12 @@ RUN apt-get update \
       -keyout /etc/ssl/private/nginx-selfsigned.key \
       -out /etc/ssl/certs/nginx-selfsigned.crt
 
+RUN apt-get install geoip-database libgeoip1\
+    && mv /usr/share/GeoIP/GeoIP.dat /usr/share/GeoIP/GeoIP.dat_bak \
+    && cd /usr/share/GeoIP/ \
+    && wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz \
+    && gunzip GeoIP.dat.gz
+
 RUN rm -rf /usr/share/nginx/html/*
 COPY  nginx/nginx.conf  /etc/nginx/nginx.conf
 COPY --from=build /app/build /usr/share/nginx/html

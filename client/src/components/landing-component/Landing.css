@@ -10,7 +10,8 @@
 .container-content .content-topic{
     margin-top: 7rem;
     font-weight: 700;
-    padding-left:30px;
+    text-align:center;
+    justify-content:center;
     
  }
 .container-content .footer{
