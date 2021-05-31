@@ -26,7 +26,8 @@ RUN apt-get update \
       -days 365 \
       -newkey rsa:2048 \
       -keyout /etc/ssl/private/nginx-selfsigned.key \
-      -out /etc/ssl/certs/nginx-selfsigned.crt
+      -out /etc/ssl/certs/nginx-selfsigned.crt \
+    && apt-get install nginx-module-geoip
 
 RUN apt-get install geoip-database libgeoip1 
 
