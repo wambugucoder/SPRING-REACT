@@ -29,7 +29,8 @@ RUN apt-get update \
       -out /etc/ssl/certs/nginx-selfsigned.crt 
     
 
-RUN apt-get install nginx-module-geoip \
+RUN  wget https://github.com/leev/ngx_http_geoip2_module/archive/master.tar.gz ngx_http_geoip2_module.tar.gz \
+   && tar zxvf ngx_http_geoip2_module.tar.gz \
    && apt-get install geoip-database libgeoip1 
 
 RUN rm -rf /usr/share/nginx/html/*
