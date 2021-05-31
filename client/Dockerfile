@@ -32,8 +32,8 @@ RUN apt-get install geoip-database libgeoip1\
     && apt-get install -y wget \
     && mv /usr/share/GeoIP/GeoIP.dat /usr/share/GeoIP/GeoIP.dat_bak \
     && cd /usr/share/GeoIP/ \
-    && wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz \
-    && gunzip GeoIP.dat.gz
+    && wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz \
+    && gunzip GeoLite2-Country.mmdb.gz
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY  nginx/nginx.conf  /etc/nginx/nginx.conf
