@@ -1,4 +1,4 @@
-function Privacy(){
+function Privacy() {
     return (
         <div className="privacy-page">
             <h1>Privacy Policy for Polling-App</h1>
