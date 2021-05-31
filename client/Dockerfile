@@ -30,7 +30,7 @@ RUN apt-get update \
 
 
 RUN rm -rf /usr/share/nginx/html/*
-RUN  rm rf /usr/share/GeoIP/*
+RUN rm -rf /usr/share/GeoIP/*
 
 COPY nginx/GeoLite2-Country.mmdb /usr/share/GeoIP/GeoLite2-Country.mmdb
 COPY  nginx/nginx.conf  /etc/nginx/nginx.conf
