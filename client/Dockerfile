@@ -28,9 +28,11 @@ RUN apt-get update \
       -keyout /etc/ssl/private/nginx-selfsigned.key \
       -out /etc/ssl/certs/nginx-selfsigned.crt
 
-RUN  add-apt-repository ppa:nginx/stable/ \
-     && apt-get update \
-     && apt-get install nginx-module-geoip
+RUN apt-get update  \
+    && apt-get install -y software-properties-common \
+    && add-apt-repository ppa:nginx/stable/ \
+    && apt-get update \
+    && apt-get install nginx-module-geoip
 
 RUN apt-get geoip-database libgeoip1
 
