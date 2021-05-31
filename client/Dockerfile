@@ -26,12 +26,18 @@ RUN apt-get update \
       -days 365 \
       -newkey rsa:2048 \
       -keyout /etc/ssl/private/nginx-selfsigned.key \
-      -out /etc/ssl/certs/nginx-selfsigned.crt 
-    
+      -out /etc/ssl/certs/nginx-selfsigned.crt
 
-RUN  wget https://github.com/leev/ngx_http_geoip2_module/archive/master.tar.gz ngx_http_geoip2_module.tar.gz \
-   && tar zxvf ngx_http_geoip2_module.tar.gz \
-   && apt-get install geoip-database libgeoip1 
+RUN  add-apt-repository ppa:nginx/stable/ \
+     && apt-get update \
+     && apt-get install nginx-module-geoip
+
+RUN apt-get geoip-database libgeoip1\
+    && apt-get install -y wget \
+    && mv /usr/share/GeoIP/GeoIP.dat /usr/share/GeoIP/GeoIP.dat_bak \
+    && cd /usr/share/GeoIP/ \
+    && wget https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=GZwedjnfUKJojMcp&suffix=tar.gz \
+    && tar -xvzf geoip_download?edition_id=GeoLite2-Country&license_key=GZwedjnfUKJojMcp&suffix=tar.gz
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY  nginx/nginx.conf  /etc/nginx/nginx.conf
