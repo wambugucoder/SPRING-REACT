@@ -3,7 +3,7 @@ function Privacy(){
         <div className="privacy-page">
             <h1>Privacy Policy for Polling-App</h1>
 
-<p>At polling-app, accessible from localhost:3000, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by polling-app and how we use it.</p>
+<p>At polling-app, accessible from https://pollsapp-2021.westeurope.cloudapp.azure.com/, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by polling-app and how we use it.</p>
 
 <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
 

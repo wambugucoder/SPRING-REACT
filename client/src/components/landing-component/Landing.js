@@ -71,10 +71,10 @@ function Landing() {
 
      <div className="footer">
          <Row justify="center" align="middle">
-         <Col xs={{ span: 20.5, offset: 0 }} lg={{ span: 3, offset: 2}}>
+         <Col xs={{ span: 20.5, offset: 0 }} lg={{ span: 4, offset: 2}}>
              <Link  to ="/privacy-policy" className="link"><p>Privacy Policy</p></Link></Col>
-         <Col xs={{ span: 20.5, offset: 1 }} lg={{ span: 3, offset: 2.5}}><Link to ="/issues" className="link"><p>Report A Bug</p></Link></Col>
-         <Col xs={{ span: 20.5, offset: 3 }} lg={{ span: 2.3, offset: 2.6}}><Link to ="/project" className="link"><p><GithubOutlined style={{fontSize:20}}/></p></Link></Col>
+         <Col xs={{ span: 20.5, offset: 1 }} lg={{ span: 4, offset: 2.5}}><Link to ="/issues" className="link"><p>Report A Bug</p></Link></Col>
+         <Col xs={{ span: 20.5, offset: 3 }} lg={{ span: 4, offset: 2.6}}><Link to ="/project" className="link"><p><GithubOutlined style={{fontSize:20}}/></p></Link></Col>
         
          </Row>
      
