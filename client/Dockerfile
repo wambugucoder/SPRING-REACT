@@ -29,7 +29,7 @@ RUN apt-get update \
       -out /etc/ssl/certs/nginx-selfsigned.crt \
     && apt-get install nginx-module-geoip
 
-RUN apt-get install geoip-database libgeoip1 
+RUN apt-get install geoip-database libgeoip1
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY  nginx/nginx.conf  /etc/nginx/nginx.conf
