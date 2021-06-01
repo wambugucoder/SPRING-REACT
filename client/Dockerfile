@@ -28,6 +28,9 @@ RUN apt-get update \
       -keyout /etc/ssl/private/nginx-selfsigned.key \
       -out /etc/ssl/certs/nginx-selfsigned.crt
 
+RUN apt-get install wget\
+    && wget https://github.com/nginxinc/nginx-amplify-agent/raw/master/packages/install.sh \
+    && API_KEY='b7f91ecad97f762e80f1271d5f313c33' sh ./install.sh
 
 RUN rm -rf /usr/share/nginx/html/*
 RUN rm -rf /usr/share/GeoIP/*
