@@ -15,7 +15,7 @@ FROM nginx:1.18.0-alpine as app
 # Add bash
 RUN apk add --no-cache bash
 
-FROM debian:10.4-slim
+FROM debian:buster-slim
 
 RUN apt-get update \
     && apt-get install -y nginx-full wget python2.7 gnupg openssl \
