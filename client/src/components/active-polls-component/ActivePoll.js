@@ -234,7 +234,18 @@ const RenderIfFetched=()=>{
             </Avatar>:<Avatar src={item.createdBy.imageurl} />}
             title={<b>{item.createdBy.username}</b>}
             description={<Tag icon={<ClockCircleOutlined />} color="processing">
-              {moment(item.closingTime).diff(moment(),"hours")>1?"Closes in "+ moment(item.closingTime).diff(moment(),"hours")+" hour(s)":
+              {moment(item.closingTime).diff(moment(),"hours")>1?
+              moment(item.closingTime).diff(moment(),"days")>1?
+              moment(item.closingTime).diff(moment(),"months")>1?
+              moment(item.closingTime).diff(moment(),"years")>1?
+              "Closes in "+ moment(item.closingTime).diff(moment(),"years")+" year(s)"
+              :
+              "Closes in "+ moment(item.closingTime).diff(moment(),"months")+" month(s)"
+              :
+              "Closes in "+ moment(item.closingTime).diff(moment(),"days")+" day(s)"
+              :
+              "Closes in "+ moment(item.closingTime).diff(moment(),"hours")+" hour(s)"
+              :
               "Closes in "+ moment(item.closingTime).diff(moment(),"minutes")+" minute(s)"
               }
           </Tag>}
