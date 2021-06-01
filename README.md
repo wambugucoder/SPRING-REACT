@@ -115,19 +115,19 @@ Once NodeJs is installed,get the latest npm version.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
- <img src="preview/login.PNG" alt="Logo" >Login Page</img>
+ <img src="preview/login.PNG" alt="Logo" ></img>
 
-<img src="preview/register.PNG" alt="Logo" >Register Page</img>
+<img src="preview/register.PNG" alt="Logo" ></img>
 
-<img src="preview/create-Poll.PNG" alt="Logo" >Create Poll</img>
+<img src="preview/create-Poll.PNG" alt="Logo" ></img>
 
-<img src="preview/scheduled-Poll.PNG" alt="Logo" >Scheduled Poll</img>
+<img src="preview/scheduled-Poll.PNG" alt="Logo" ></img>
  
- <img src="preview/dashboard1.PNG" >Dashboard</img>
+ <img src="preview/dashboard1.PNG" ></img>
 
-<img src="preview/dashboard3.PNG"  >Dashboard</img>
+<img src="preview/dashboard3.PNG"  ></img>
 
-<img src="preview/scheduledlist.PNG" >Scheduled</img>
+<img src="preview/scheduledlist.PNG" >/img>
 
 
 <!-- ROADMAP -->
