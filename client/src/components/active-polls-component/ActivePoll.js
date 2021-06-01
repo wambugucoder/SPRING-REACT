@@ -70,7 +70,7 @@ for(let eachPoll of pollsCopy){
       }
     }
     var results=(optionVote/totalVotes)*(100) 
-    return results
+    return Math.round(results)
 }
 const DidUserVoteForThisCoice=(pollId,choiceId) =>{
   var pollsCopy=[]
@@ -83,7 +83,6 @@ const DidUserVoteForThisCoice=(pollId,choiceId) =>{
       //SEARCH IF USER VOTED FOR THIS CHOICE
         //IF CHOICE ID MATCHES THE CHOICEID
         if(eachOption.id===choiceId){
-          console.log("Tuko hapa 4")
           for(let incomingVotes of eachOption.incomingvotes){
            if(incomingVotes.user.id===auth.user.Id){
               return true;
