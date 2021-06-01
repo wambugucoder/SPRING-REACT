@@ -115,19 +115,19 @@ Once NodeJs is installed,get the latest npm version.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
- <img src="preview/login.PNG" alt="Logo" >Login Page</img>
+ <img src="preview/login.PNG" alt="Logo" ></img>
 
-<img src="preview/register.PNG" alt="Logo" >Register Page</img>
+<img src="preview/register.PNG" alt="Logo" ></img>
 
-<img src="preview/create-Poll.PNG" alt="Logo" >Create Poll</img>
+<img src="preview/create-Poll.PNG" alt="Logo" ></img>
 
-<img src="preview/scheduled-Poll.PNG" alt="Logo" >Scheduled Poll</img>
+<img src="preview/scheduled-Poll.PNG" alt="Logo" ></img>
  
- <img src="preview/dashboard1.PNG" >Dashboard</img>
+ <img src="preview/dashboard1.PNG" ></img>
 
-<img src="preview/dashboard3.PNG"  >Dashboard</img>
+<img src="preview/dashboard3.PNG"  ></img>
 
-<img src="preview/scheduledlist.PNG" >Scheduled</img>
+<img src="preview/scheduledlist.PNG" >/img>
 
 
 <!-- ROADMAP -->
@@ -160,9 +160,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@JosWambugu](https://twitter.com/JosWWambugu) - email@example.com
+JosWambugu - [@JosWambugu](https://twitter.com/JosWambugu) - josphatwambugu77@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+
 
 
 
