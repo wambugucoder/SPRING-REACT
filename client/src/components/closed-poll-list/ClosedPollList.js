@@ -47,7 +47,7 @@ function ClosedPollList(){
             }
           }
           var results=(optionVote/totalVotes)*(100) 
-          return isNaN(results)?0:results
+          return isNaN(results)?0:Math.round(results)
       }
       const DidUserVoteForThisChoice=(pollId,choiceId) =>{
         var pollsCopy=[]
