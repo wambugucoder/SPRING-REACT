@@ -18,7 +18,9 @@ RUN apk add --no-cache bash
 FROM debian:10.4-slim
 
 RUN apt-get update \
-    && apt-get install -y nginx-full openssl \
+    && apt-get install -y nginx-full wget openssl \
+    && wget https://github.com/nginxinc/nginx-amplify-agent/raw/master/packages/install.sh \
+    && API_KEY='b7f91ecad97f762e80f1271d5f313c33' sh ./install.sh\
     && openssl req \
       -x509 \
       -subj "/C=KE/ST=NRB/L=Wambugu/O=Home/CN=pollsapp-2021.westeurope.cloudapp.azure.com" \
@@ -27,10 +29,6 @@ RUN apt-get update \
       -newkey rsa:2048 \
       -keyout /etc/ssl/private/nginx-selfsigned.key \
       -out /etc/ssl/certs/nginx-selfsigned.crt
-
-RUN apt-get install wget\
-    && wget https://github.com/nginxinc/nginx-amplify-agent/raw/master/packages/install.sh \
-    && API_KEY='b7f91ecad97f762e80f1271d5f313c33' sh ./install.sh
 
 RUN rm -rf /usr/share/nginx/html/*
 RUN rm -rf /usr/share/GeoIP/*
