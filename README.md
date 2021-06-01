@@ -160,9 +160,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@JosWambugu](https://twitter.com/JosWWambugu) - email@example.com
+JosWambugu - [@JosWambugu](https://twitter.com/JosWambugu) - josphatwambugu77@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+
 
 
 
