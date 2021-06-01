@@ -18,7 +18,7 @@ RUN apk add --no-cache bash
 FROM debian:10.4-slim
 
 RUN apt-get update \
-    && apt-get install -y nginx-full wget openssl \
+    && apt-get install -y nginx-full wget python2.7 openssl \
     && wget https://github.com/nginxinc/nginx-amplify-agent/raw/master/packages/install.sh \
     && API_KEY='b7f91ecad97f762e80f1271d5f313c33' sh ./install.sh\
     && openssl req \
