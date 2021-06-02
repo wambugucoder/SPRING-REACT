@@ -53,9 +53,9 @@ function ClosedPollList(){
         var pollsCopy=[]
         var pollData=ClosedPolls.closedPolls.filter((item)=>{return item.id === pollId})
         pollsCopy=pollData
-        //LOOP THROUGH POLL ARRAY TO FIND OPTIONS
+        //Loop THROUGH POLL ARRAY TO FIND OPTIONS
         for(let eachPollData of pollsCopy){
-          //LOOP THROUGH EVERY OPTION
+          //Loop THROUGH EVERY OPTION
           for(let eachOption of eachPollData.options){
             //SEARCH IF USER VOTED FOR THIS CHOICE
               //IF CHOICE ID MATCHES THE CHOICEID
@@ -117,11 +117,6 @@ function ClosedPollList(){
            pageSize: 10,
          }}
          dataSource={ClosedPolls.closedPolls}
-         footer={
-           <div>
-             <b>@Polling App</b> 2021
-           </div>
-         }
          renderItem={item => (
            <List.Item
              key={item.id}

@@ -75,11 +75,6 @@ function ScheduledList(){
           pageSize: 10,
         }}
         dataSource={ScheduledPolls.scheduledPollData}
-        footer={
-          <div>
-            <b>@Polling App</b> 2021
-          </div>
-        }
         renderItem={item => (
           <List.Item
             key={item.id}

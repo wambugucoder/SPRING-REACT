@@ -17,7 +17,7 @@ function Oauth2(props){
     if(error){
        
         return  <Redirect to={{
-            pathname: "/login",
+            pathname: "/",
             state: { 
                 from: props.location,
                 error: error 

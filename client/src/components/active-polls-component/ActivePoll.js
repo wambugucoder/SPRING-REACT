@@ -8,6 +8,7 @@ import moment from 'moment';
 import "./ActivePoll.css";
 import LoadingPolls from '../loading-polls-content/LoadingPolls';
 import ProgressBar from "@ramonak/react-progress-bar";
+import { useHistory } from 'react-router';
 
 
 var totalVotes=0
@@ -23,17 +24,24 @@ const IconText = ({ icon, text }) => (
 
 function ActivePoll(props){
   const[value,setValue]=useState("")
+  const[choicevoted,setChoice]=useState([])
   const [disabled,setDisabled]=useState([])
   const dispatch=useDispatch();
   const ActivePolls=useSelector(state=>state.poll)
   const auth=useSelector(state=>state.auth)
   const error=useSelector(state=>state.error)
+  const history=useHistory()
   
   useEffect(() => {
     dispatch(FetchAllActivePolls())
     
    },[])
-
+   
+   
+   useEffect(() => {
+    dispatch(FetchAllActivePolls())
+    
+   },[dispatch])
    
   
 
@@ -72,7 +80,30 @@ for(let eachPoll of pollsCopy){
     var results=(optionVote/totalVotes)*(100) 
     return Math.round(results)
 }
-const DidUserVoteForThisCoice=(pollId,choiceId) =>{
+const CalculateTemporaryPercentage=(pollId,choiceId)=>{
+  var pollsCopy=[]
+  var choices=[]
+  var pollData=ActivePolls.pollsData.filter((item)=>{return item.id === pollId})
+  pollsCopy=pollData
+  for(let eachPoll of pollsCopy){
+    totalVotes=eachPoll.votes.length+1
+    for(let anyOption of eachPoll.options){
+     choices.push(anyOption)
+    }}
+    for(let choice of choices){
+      if(choice.id===choiceId){
+        choicevoted.indexOf(choiceId)!==-1?optionVote=choice.incomingvotes.length+1:optionVote=choice.incomingvotes.length 
+          
+       }
+             
+    }
+    var results=(optionVote/totalVotes)*(100) 
+   
+    
+    return Math.round(results)
+}
+
+const DidUserVoteForThisChoice=(pollId,choiceId) =>{
   var pollsCopy=[]
   var pollData=ActivePolls.pollsData.filter((item)=>{return item.id === pollId})
   pollsCopy=pollData
@@ -83,6 +114,7 @@ const DidUserVoteForThisCoice=(pollId,choiceId) =>{
       //SEARCH IF USER VOTED FOR THIS CHOICE
         //IF CHOICE ID MATCHES THE CHOICEID
         if(eachOption.id===choiceId){
+         
           for(let incomingVotes of eachOption.incomingvotes){
            if(incomingVotes.user.id===auth.user.Id){
               return true;
@@ -98,6 +130,32 @@ const DidUserVoteForThisCoice=(pollId,choiceId) =>{
   }
   
 }
+
+const TemporarySelectedOption=(pollId,choiceId) =>{
+  var pollsCopy=[]
+  var choices=[]
+  var value=false
+  var pollData=ActivePolls.pollsData.filter((item)=>{return item.id === pollId})
+  pollsCopy=pollData
+  for(let eachPoll of pollsCopy){
+    totalVotes=eachPoll.votes.length+1
+    for(let anyOption of eachPoll.options){
+     choices.push(anyOption)
+    }}
+    for(let choice of choices){
+      if(choice.id===choiceId){
+        choicevoted.indexOf(choiceId)!==-1?value=true:value=false
+          
+       }
+             
+    }
+    var results=(optionVote/totalVotes)*(100) 
+   
+    
+    return value
+  
+}
+
 const DoesPollContainCorrectChoice=(pollId,choiceId)=>{
   var pollsCopy=[]
   var choices=[]
@@ -136,12 +194,14 @@ const CastYourVote=(pid)=>{
   const uid=auth.user.Id
   const cid=value
   setDisabled([...disabled,pid])
+  setChoice([...choicevoted,value])
   dispatch(CastVote(uid,pid,cid))
+ 
   
   
 }
 const RenderVoteButton=({pid})=>{
-  if(HasUserVoted(pid)){
+  if(HasUserVoted(pid) || disabled.indexOf(pid)!==-1){
     return(
      <div key={pid}></div>
       );
@@ -154,32 +214,60 @@ const RenderVoteButton=({pid})=>{
   }
 
 const RenderOptionsOrResults=({options,pollId})=>{
-     if(HasUserVoted(pollId)){
-       return(
-        <div className="poll-results">
-           {options.map((choices,i)=>{
-             const choiceId=choices.id
-          return <div className="results">
-            <span className="result-choice">{choices.option}</span>
-            <span> </span>
-            <span>{ DidUserVoteForThisCoice(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
-             <span className="percent"> <ProgressBar className="pg-chart"
-            completed={CalculatePercentage(pollId,choiceId)}
-            bgColor="#3C6177"
-            height="35px"
-            width="75%"
-            borderRadius="7px"
-            labelAlignment="left"
-            baseBgColor="#000000"
-            labelColor="#fffff"
-    /></span>
-           
+  if(disabled.indexOf(pollId)!==-1 && !HasUserVoted(pollId)){
+    return(
+      <div className="poll-results">
+    {options.map((choices,i)=>{
+      const choiceId=choices.id
+   return <div className="results">
+     <span className="result-choice">{choices.option}</span>
+     <span> </span>
+     <span>{  TemporarySelectedOption(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
+      <span className="percent"> <ProgressBar className="pg-chart"
+     completed={CalculateTemporaryPercentage(pollId,choiceId)}
+     bgColor="#3C6177"
+     height="35px"
+     width="75%"
+     borderRadius="7px"
+     labelAlignment="left"
+     baseBgColor="#000000"
+     labelColor="#fffff"
+/></span>
     
-            </div>
-             })}
-        </div>
-       ) 
-     }
+
+     </div>
+      })}
+ </div>
+    )
+
+   }
+   if(HasUserVoted(pollId)){
+    return(
+     <div className="poll-results">
+        {options.map((choices,i)=>{
+          const choiceId=choices.id
+       return <div className="results">
+         <span className="result-choice">{choices.option}</span>
+         <span> </span>
+         <span>{ DidUserVoteForThisChoice(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
+        <span className="percent"> <ProgressBar className="pg-chart"
+         completed={CalculatePercentage(pollId,choiceId)}
+         bgColor="#3C6177"
+         height="35px"
+         width="75%"
+         borderRadius="7px"
+         labelAlignment="left"
+         baseBgColor="#000000"
+         labelColor="#fffff"
+ /></span>
+        
+ 
+         </div>
+          })}
+     </div>
+    ) 
+  }
+    
      return(
       <div className="options">
       <Radio.Group  onChange={onChange}>
@@ -212,16 +300,13 @@ const RenderIfFetched=()=>{
         pageSize: 10,
       }}
       dataSource={ActivePolls.pollsData}
-      footer={
-        <div>
-          <b>@Polling App</b> 2021
-        </div>
-      }
       renderItem={item => (
         <List.Item
           key={item.id}
           actions={[
-            <IconText icon={StarOutlined} text={item.votes.length+" "+"votes"} key="list-vertical-star-o" />,
+            <IconText icon={StarOutlined} text={
+              disabled.indexOf(item.id)!==-1 && !HasUserVoted(item.id)? item.votes.length+1 +" "+"vote(s)":
+              item.votes.length+" "+"vote(s)"} key="list-vertical-star-o" />,
             <IconText icon={ClockCircleOutlined} text={"posted "+moment(item.createdAt).fromNow()} key="list-vertical-message" />,
             <RenderVoteButton pid={item.id}/>
           ]}
