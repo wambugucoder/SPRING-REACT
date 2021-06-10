@@ -31,7 +31,7 @@ function Dashboard(){
       <div className="polling-bar">
        <div className="polling-tabs">
                 <Row justify="center" align="center">
-              <Col xs={{ span: 25, offset:1 }} sm={{ span: 100, offset: 1 }} md={{ span: 25, offset: 1 }} lg={{ span: 18, offset: 2 }}>
+              <Col xs={{ span: 25, offset:1 }} sm={{ span: 25, offset: 1 }} md={{ span: 25, offset: 1 }} lg={{ span: 18, offset: 2 }}>
               <Tabs defaultActiveKey="1" onChange={callback}>
     <TabPane tab="Active Polls" key="1">
       <div className="polling-section-1"><ActivePoll/></div>

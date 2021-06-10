@@ -7,6 +7,7 @@ import RandomColor from '../../constants/RandomColor';
 import moment from 'moment';
 import LoadingPolls from '../loading-polls-content/LoadingPolls';
 import ProgressBar from "@ramonak/react-progress-bar";
+import "../active-polls-component/ActivePoll.css"
 
 
 var totalVotes=0

@@ -1,6 +1,6 @@
 .poll{
-    display: inline-block;
-    width: 75%;
+    display:block;
+    width: 600px;
     
 }
 .poll .question{
