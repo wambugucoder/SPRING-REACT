@@ -56,7 +56,7 @@ services:
             POSTGRES_PASSWORD: postgres
             POSTGRES_USER: postgres
             POSTGRES_DB: polls-db-prod
-            PGDATA: /var/libs/postgresql/data
+            #PGDATA: /var/libs/postgresql/data
             TZ: "Africa/Nairobi"
             
         healthcheck:
@@ -68,7 +68,8 @@ services:
         depends_on: 
             - redis
         volumes: 
-            - ../data/pg-data:/var/libs/postgresql/data/:rw
+            #- ../data/pg-data:/var/libs/postgresql/data/:rw
+            - ../data/pg-data:/var/libs/postgresql/data
         ports: 
             - 5432:5432
         networks:
