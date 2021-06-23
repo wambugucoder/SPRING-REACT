@@ -35,7 +35,7 @@ const RenderAvatar=()=>{
     if(auth.user.avatar==="none"){
         return(<Avatar style={{backgroundColor:RandomColor()}}
              shape ="circle" >
-                 {auth.user.UserName.charAt(0).toUpperCase()}
+                 {auth.user.UserName.trim().charAt(0).toUpperCase()}
              </Avatar>
              
              )
