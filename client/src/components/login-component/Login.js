@@ -63,8 +63,8 @@ function Login(props) {
     if(auth.isRegistered){
       return(
         <Alert
-        message="Info"
-        description="Please Check Your Email To Activate Your Account"
+        message="Account Activation"
+        description="Please Check Your Email or Spam Folder To Activate Your Account."
         type="info"
         showIcon
         closable
