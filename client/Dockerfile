@@ -18,10 +18,10 @@ RUN apk add --no-cache bash
 FROM debian:10.4-slim
 
 RUN apt-get update \
-    && apt-get install -y nginx-full openssl \
+    && apt-get install -y nginx-full wget python2.7 python3.7 gnupg openssl \
     && openssl req \
       -x509 \
-      -subj "/C=KE/ST=NRB/L=Wambugu/O=Home/CN=pollsapp-2021.westeurope.cloudapp.azure.com" \
+      -subj "/C=KE/ST=NRB/L=Wambugu/O=Home/CN=poll-app.tech" \
       -nodes \
       -days 365 \
       -newkey rsa:2048 \
