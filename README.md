@@ -14,7 +14,7 @@
     <a href="https://github.com/wambugucoder/FINAL-YEAR-PROJECT/blob/main/README.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https:// pollsapp-2021.westeurope.cloudapp.azure.com">View Demo</a>
+    <a href="https://poll-app.tech">View Demo</a>
     ·
     <a href="https://github.com/wambugucoder/FINAL-YEAR-PROJECT/issues/new">Report Bug</a>
     ·
