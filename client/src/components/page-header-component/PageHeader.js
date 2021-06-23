@@ -32,7 +32,7 @@ const HandleClick = e => {
       const auth=useSelector(state=>state.auth)
 
 const RenderAvatar=()=>{
-    if(auth.user.avatar==="none"){
+    if(auth.user.Avatar==="none"){
         return(<Avatar style={{backgroundColor:RandomColor()}}
              shape ="circle" >
                  {auth.user.UserName.trim().charAt(0).toUpperCase()}
