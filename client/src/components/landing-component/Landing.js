@@ -1,5 +1,6 @@
-import {Typography,Button,Row, Col } from 'antd';
+import {Typography,Button,Row, Col, Space } from 'antd';
 import {LineChartOutlined,GithubOutlined } from '@ant-design/icons';
+import { useThemeSwitcher } from "react-css-theme-switcher";
 import{Link,useHistory}from "react-router-dom";
 import "./Landing.css";
 import { useSelector } from 'react-redux';
@@ -10,6 +11,7 @@ function Landing() {
 
     const auth=useSelector(state=>state.auth);
     const { Title } = Typography;
+    const { currentTheme } = useThemeSwitcher();
     const history=useHistory();
     
     useEffect(() => {
@@ -71,10 +73,18 @@ function Landing() {
 
      <div className="footer">
          <Row justify="center" align="middle">
-         <Col xs={{ span: 20.5, offset: 0 }} lg={{ span: 4, offset: 2}}>
-             <Link  to ="/privacy-policy" className="link"><p>Privacy Policy</p></Link></Col>
-         <Col xs={{ span: 20.5, offset: 1 }} lg={{ span: 4, offset: 2.5}}><Link to ="/issues" className="link"><p>Report A Bug</p></Link></Col>
-         <Col xs={{ span: 20.5, offset: 3 }} lg={{ span: 4, offset: 2.6}}><Link to ="/project" className="link"><p><GithubOutlined style={{fontSize:20}}/></p></Link></Col>
+         <Col xs={{ span: 19, offset: 0 }} lg={{ span: 18, offset: 0}}>
+             <span className="footer-notes"> <Link  to ="/privacy-policy" className={currentTheme==="dark"?"link":""}><p>Privacy Policy</p></Link></span>
+             <span className="footer-notes"> </span>
+             <span className="footer-notes"> <Link to ="/issues" className={currentTheme==="dark"?"link":""}><p>Report A Bug</p></Link></span>
+             <span className="footer-notes"> </span>
+             <span className="footer-notes">  <Link to ="/project" className={currentTheme==="dark"?"link":""}><GithubOutlined style={{fontSize:20}}/></Link>
+             </span>
+             
+             
+            </Col>
+         
+
         
          </Row>
      

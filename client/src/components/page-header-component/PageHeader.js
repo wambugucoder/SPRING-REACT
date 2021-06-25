@@ -1,11 +1,13 @@
 import { Link, useHistory } from "react-router-dom"
-import { PageHeader, Menu,Avatar,Space } from 'antd';
+import { PageHeader, Menu,Avatar,Space,Row,Col } from 'antd';
 import { MailOutlined,HomeOutlined,EditOutlined, UserOutlined,CalendarOutlined, LogoutOutlined } from '@ant-design/icons';
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RandomColor from "../../constants/RandomColor";
 import moment from "moment";
 import {LogOutUser} from '../../store/actions/Action';
+import Theme from "../theme-switch/Theme";
+import "./PageHeader.css";
 
 const { SubMenu } = Menu;
 
@@ -73,8 +75,11 @@ const RenderPageHeader=()=>{
           <Menu.Item key="setting:2"><IconText icon={MailOutlined} text={auth.user.Email}/></Menu.Item>
           <Menu.Item key="setting:3"><IconText icon={CalendarOutlined} text={createdAt}/></Menu.Item>
           </Menu.ItemGroup>
+          <Menu.ItemGroup style={{fontWeight:'bold'}} title="Set Theme">
+          <Menu.Item key="setting:4"><Theme/></Menu.Item>
+          </Menu.ItemGroup>
           <Menu.ItemGroup style={{fontWeight:'bold'}} title="Logout">
-          <Menu.Item key="setting:4" onClick={()=>{dispatch(LogOutUser())}}><IconText icon={LogoutOutlined} text={"Exit"}/></Menu.Item>
+          <Menu.Item key="setting:5" onClick={()=>{dispatch(LogOutUser())}}><IconText icon={LogoutOutlined} text={"Exit"}/></Menu.Item>
            </Menu.ItemGroup>
           </SubMenu>
           </Menu>,
@@ -85,7 +90,14 @@ const RenderPageHeader=()=>{
     
     else{
         return(
-        <div></div>
+          <Row justify="center" align="center">
+          <Col>
+          <Theme/>
+          </Col>
+          </Row>
+          
+        
+        
         );
     }
 }

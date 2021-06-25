@@ -25,9 +25,15 @@
    
     
 }
-.footer .link{
+.footer-notes .link{
   color: rgba(84, 92, 99, 0.699);
 }
+.footer .footer-notes{
+  display: inline-block;
+  padding-left: 20px;
+  
+}
+
  .link :hover{
   transform: scale(1.0);
   color: #FFF;
