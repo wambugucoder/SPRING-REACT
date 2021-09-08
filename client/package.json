@@ -9,7 +9,7 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "antd": "^4.15.4",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "customize-cra": "^1.0.0",
     "jwt-decode": "^3.1.2",
     "less": "^4.1.1",
