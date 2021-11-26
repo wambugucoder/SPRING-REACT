@@ -55,7 +55,7 @@ const RenderPageHeader=()=>{
         <PageHeader style={{position: "sticky",top:0,zIndex:1001}}
         ghost={false}
         onBack={() => history.goBack()}
-        title="Polling App"
+        title="JKUAT Elections"
         subTitle=""
         extra={[
           <Menu onClick={HandleClick} selectedKeys={[current]} mode="horizontal" >
@@ -64,11 +64,14 @@ const RenderPageHeader=()=>{
             Home
               </Link>
           </Menu.Item>
+          {auth.user.Email==="admin@jkuat.com"?
           <Menu.Item key="create-poll"  icon={<EditOutlined/>}>
           <Link to="/create_poll">
             Create Poll
               </Link>
           </Menu.Item>
+          :<div></div>}
+          
           <SubMenu key="SubMenu"  title={<RenderAvatar/>}>
           <Menu.ItemGroup style={{fontWeight:'bold'}} title="Profile">
           <Menu.Item key="setting:1"><IconText icon={UserOutlined} text={auth.user.UserName}/></Menu.Item>
@@ -92,7 +95,6 @@ const RenderPageHeader=()=>{
         return(
           <Row justify="center" align="center">
           <Col>
-          <Theme/>
           </Col>
           </Row>
           

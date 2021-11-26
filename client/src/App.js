@@ -14,7 +14,7 @@ import Dashboard from './components/dashboard-component/Dashboard';
 import PollPageHeader from './components/page-header-component/PageHeader';
 import { LogOutUser } from './store/actions/Action';
 import CreatePollDashboard from './components/create-poll-dashboard/CreatePollDashboard';
-import Theme from './components/theme-switch/Theme';
+
 
 
 
@@ -43,7 +43,7 @@ if(localStorage.jwtToken){
     //remove token
     localStorage.removeItem("jwtToken");
      // Logout user
-    window.location.href="/login"
+    window.location.href="/"
     store.dispatch(LogOutUser())
    }
   }
