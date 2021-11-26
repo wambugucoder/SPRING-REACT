@@ -1,10 +1,9 @@
 import "./Dashboard.css"
-import { Row, Tabs ,Col,Space, message} from 'antd';
+import { Row, Tabs ,Col,Space} from 'antd';
 import ActivePoll from "../active-polls-component/ActivePoll";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { useEffect } from "react";
-import { CleanupPoll } from "../../store/actions/Action";
 import ScheduledList from "../Scheduled-Poll-list/ScheduledList";
 import ClosedPollList from "../closed-poll-list/ClosedPollList";
 
@@ -31,7 +30,7 @@ function Dashboard(){
       <div className="polling-bar">
        <div className="polling-tabs">
                 <Row justify="center" align="center">
-              <Col xs={{ span: 25, offset:1 }} sm={{ span: 25, offset: 1 }} md={{ span: 25, offset: 1 }} lg={{ span: 18, offset: 2 }}>
+              <Col xs={{ span: 25, offset:1 }} sm={{ span: 25, offset: 1 }} md={{ span: 25, offset: 1 }} lg={{ span: 18, offset: 1 }}>
               <Tabs defaultActiveKey="1" onChange={callback}>
     <TabPane tab="Active Polls" key="1">
       <div className="polling-section-1"><ActivePoll/></div>

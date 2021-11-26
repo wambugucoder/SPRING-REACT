@@ -43,11 +43,11 @@ public class EmailService {
         HtmlTextEmail htmlTextEmail = builder
                 .header(header)
                 .and()
-                .logo("https://www.rocketbase.io/img/logo-dark.png","",0,41)
+                .logo("https://netstorage-tuko.akamaized.net/images/5cd3d44ba68de436.png","",0,41)
                 .and()
                 .addText("Welcome," +userModel.getUsername() +"!").fontWeight(FontWeight.BOLD).center()
                 .and()
-                .addText("Thanks for Registering with Votex. We’re thrilled to have you on board. To get started you will need to verify your Account:")
+                .addText("Thanks for Registering to the JKUAT Election System. We’re thrilled to have you on board. To get started you will need to verify your Student Account:")
                 .and()
                 .addButton("Verify Account", appUrl+token).color(ColorPalette.FRENCH_BLUE)
                 .and()
@@ -55,16 +55,16 @@ public class EmailService {
                         "If you have any questions, feel free to <a href=poll-helpdesk-3482a7@inbox.mailtrap.io>email</a> our customer service team. (We're lightning quick at replying.) We also offer live chat during business hours."
                 ).and()
                 .addText(
-                        " Cheers, The Votex Team "
+                        " Cheers, The JKUAT Electoral Commission Team "
                 ).and()
-                .copyright("votex").url(website)
+                .copyright("JKUATx").url(website)
                 .and()
                 .addPlainTextFooter(
-                        "[Votex, LLC]," +
-                        "1234 Street Rd,"+
+                        "[JKUAT, EC]," +
+                        "1234 JUJA,"+
                          "Suite 1234"
                 ).and()
-                .addImage("https://cdn.rocketbase.io/assets/loading/no-image.jpg","",100,0)
+                .addImage("https://netstorage-tuko.akamaized.net/images/5cd3d44ba68de436.png","",100,0)
                 .linkUrl(website).and()
                 .build();
            SendAccountActivationEmail( htmlTextEmail, userModel);
@@ -80,7 +80,7 @@ public class EmailService {
         try {
             assert messageHelper != null;
             messageHelper.setTo( userModel.getEmail());
-            messageHelper.setSubject("Votex Account Activation");
+            messageHelper.setSubject("JKUAT Election Account Activation");
             messageHelper.setText(htmlTextEmail.getText(),htmlTextEmail.getHtml());
             messageHelper.setFrom(emailToBeUsed);
 

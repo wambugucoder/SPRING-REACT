@@ -6,35 +6,14 @@
   overflow: hidden;
   justify-content: center;
  }
- .login-page .oauth-github-button{
-   margin-top:7rem;
- }
- .login-page .oauth-google-button{
-  margin-top: 0.9rem;
-}
+
 .login-page .normal-login{
-  margin-top: 2rem;
+  margin-top: 13rem;
 }
 .login-page .alert-registration{
 margin-top: 0.5rem;
 }
- .oauth-redirect-buttons{
-   border-radius: .5rem;
-   height: 40px;
-   font-weight: 700;
-   font-size: medium;
-   text-align: center;
-   justify-content: center;
-   background-color:#242c37;
-   outline: 2px solid transparent;
-   outline-offset: 2px;
-   width: 90%;
-  
- }
- .oauth-redirect-buttons:hover{
-  background-color:rgb(102, 111, 128);
-  color: aliceblue;
- }
+ 
 
  .login-form {
     max-width: 300px;
@@ -48,3 +27,20 @@ margin-top: 0.5rem;
    .login-form-button {
     width: 100%;
   }
+  .site-statistic-demo-card{
+    margin-top: 4rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+.intro-card{
+    border-radius: 25px;
+    border: 2px hidden #7a7c77;
+    padding: 20px;
+    
+
+}
+.card-header{
+  font-weight: 700;
+  font-size: large;
+}

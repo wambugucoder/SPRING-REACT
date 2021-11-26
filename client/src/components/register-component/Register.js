@@ -1,17 +1,19 @@
-import { Form, Input, Button, Checkbox, Row ,Col,message,notification} from 'antd';
+import { Form, Input, Button, Checkbox, Row ,Col,message,notification,Card} from 'antd';
 import { UserOutlined, LockOutlined,MailOutlined} from '@ant-design/icons';
 import "./Register.css"
 import { Link, useHistory } from 'react-router-dom';
-import Title from 'antd/lib/typography/Title';
 import {useDispatch, useSelector} from 'react-redux';
-import {RegisterUser} from "../../store/actions/Action";
+import {CleanupErrors, RegisterUser} from "../../store/actions/Action";
 import { useEffect } from 'react';
+import { useThemeSwitcher } from "react-css-theme-switcher";
+import Theme from '../theme-switch/Theme';
 
 
 
 
 function Register(props) {
   const dispatch = useDispatch();
+  const {currentTheme}=useThemeSwitcher();
   const history=useHistory();
   const auth=useSelector(state=>state.auth)
   const error=useSelector(state=>state.error)
@@ -25,7 +27,7 @@ function Register(props) {
   
   
   if(auth.isLoading && error.isLoading){
-    message.loading("Registering User..")
+    message.loading({duration:2,content:"Registering User.."})
        
    }
    if(error.hasErrors && error.isLoading===false){
@@ -33,8 +35,7 @@ function Register(props) {
       message: 'Registration Error',
       description:error.errorHandler.message,
     });
-
-
+    dispatch(CleanupErrors())
 
    }
    if(auth.isRegistered){
@@ -57,24 +58,28 @@ function Register(props) {
         return(
           
           <Form
+          layout={currentTheme==="dark"?"horizontal":"vertical"}
           name="normal_registration"
           className="registration-form"
           initialValues={{ remember: true }}
           onFinish={onFinish}
         >
             <Form.Item
+            label={currentTheme==="dark"?"":"UserName"}
             name="username"
             rules={[{ required: true,min:6, message: "UserName must be minimum 6 characters."}]}
           >
             <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="UserName" />
           </Form.Item>
           <Form.Item
+          label={currentTheme==="dark"?"":"Email"}
             name="email"
             rules={[{ required: true,type: "email", message: "The input is not valid E-mail!"}]}
           >
             <Input prefix={<MailOutlined  className="site-form-item-icon" />} placeholder="Email" />
           </Form.Item>
           <Form.Item
+          label={currentTheme==="dark"?"":"Password"}
             name="password"
             rules={[{ required:true,min: 6, message: 'Password must be minimum 6 characters.'}]}
           >
@@ -85,6 +90,8 @@ function Register(props) {
             />
           </Form.Item>
           <Form.Item
+          label={currentTheme==="dark"?"":"Confirm Password"}
+      
             name="confirm"
             dependencies={['password']}
             rules={[
@@ -135,15 +142,25 @@ function Register(props) {
       }
     return (
         <div className="register-form">
-            <div className="registration-title">
-                <Title level={2}>Register Below </Title>
-            </div>
-            <div className="basic-form">
-                <Row justify="center" align="center">
-                <Col xs={{ span: 14, offset: 1 }} sm={{ span: 10, offset: 1 }} md={{ span: 8, offset: 1 }} lg={{ span: 6, offset: 1 }}>
+          <div>
+            <Theme/>
+          </div>
+          
+            <div className={currentTheme==="dark"?"basic-form":"light-form"}>
+            <Row justify='center' align='center'>
+        <div className="site-statistic-demo-card">
+        <Col span={12}>
+        <Card className="intro-card"
+        style={{ width: 350 }}>
+    <p className="card-header">Register Below</p>
+      
                 <RegisterForm/>
-                </Col>
-                </Row>
+  </Card>
+        </Col>
+        </div>
+</Row>
+               
+                
             </div>
             
         </div>

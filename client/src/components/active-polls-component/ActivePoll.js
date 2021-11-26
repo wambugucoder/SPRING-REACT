@@ -1,5 +1,6 @@
-import { List, Avatar, Space, Tag, Radio, Button, message } from 'antd';
-import {StarOutlined, ClockCircleOutlined, CheckCircleTwoTone, CheckCircleOutlined } from '@ant-design/icons';
+/* eslint-disable no-useless-concat */
+import { List, Avatar, Space, Tag, Radio, Button, message,Progress } from 'antd';
+import {StarOutlined, ClockCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { CastVote, FetchAllActivePolls } from '../../store/actions/Action';
@@ -7,8 +8,7 @@ import RandomColor from '../../constants/RandomColor';
 import moment from 'moment';
 import "./ActivePoll.css";
 import LoadingPolls from '../loading-polls-content/LoadingPolls';
-import ProgressBar from "@ramonak/react-progress-bar";
-import { useHistory } from 'react-router';
+
 
 
 var totalVotes=0
@@ -30,11 +30,12 @@ function ActivePoll(props){
   const ActivePolls=useSelector(state=>state.poll)
   const auth=useSelector(state=>state.auth)
   const error=useSelector(state=>state.error)
-  const history=useHistory()
+
   
   useEffect(() => {
     dispatch(FetchAllActivePolls())
     
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    },[])
    
    
@@ -98,8 +99,6 @@ const CalculateTemporaryPercentage=(pollId,choiceId)=>{
              
     }
     var results=(optionVote/totalVotes)*(100) 
-   
-    
     return Math.round(results)
 }
 
@@ -149,8 +148,6 @@ const TemporarySelectedOption=(pollId,choiceId) =>{
        }
              
     }
-    var results=(optionVote/totalVotes)*(100) 
-   
     
     return value
   
@@ -220,19 +217,17 @@ const RenderOptionsOrResults=({options,pollId})=>{
     {options.map((choices,i)=>{
       const choiceId=choices.id
    return <div className="results">
+     <div>
      <span className="result-choice">{choices.option}</span>
-     <span> </span>
-     <span>{  TemporarySelectedOption(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
-      <span className="percent"> <ProgressBar className="pg-chart"
-     completed={CalculateTemporaryPercentage(pollId,choiceId)}
-     bgColor="#3C6177"
-     height="35px"
-     width="75%"
-     borderRadius="7px"
-     labelAlignment="left"
-     baseBgColor="#000000"
-     labelColor="#fffff"
-/></span>
+     <span></span>
+     <span>{ TemporarySelectedOption(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
+     </div>
+      <span > 
+      
+      <Progress strokeWidth={14} percent= {CalculateTemporaryPercentage(pollId,choiceId)} status="active" />
+     </span>
+     <span></span>
+     
     
 
      </div>
@@ -247,19 +242,17 @@ const RenderOptionsOrResults=({options,pollId})=>{
         {options.map((choices,i)=>{
           const choiceId=choices.id
        return <div className="results">
+         <div>
          <span className="result-choice">{choices.option}</span>
-         <span> </span>
+         <span>  </span>
          <span>{ DidUserVoteForThisChoice(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
-        <span className="percent"> <ProgressBar className="pg-chart"
-         completed={CalculatePercentage(pollId,choiceId)}
-         bgColor="#3C6177"
-         height="35px"
-         width="75%"
-         borderRadius="7px"
-         labelAlignment="left"
-         baseBgColor="#000000"
-         labelColor="#fffff"
- /></span>
+       
+         </div>
+        <span> 
+        
+        <Progress strokeWidth={14} percent={CalculatePercentage(pollId,choiceId)} status="active" /> 
+        </span>
+        <span></span>
         
  
          </div>
@@ -313,11 +306,9 @@ const RenderIfFetched=()=>{
          
         >
           <List.Item.Meta
-            avatar={item.createdBy.imageurl==="none"?  <Avatar style={{backgroundColor:RandomColor()}} >
-                {item.createdBy.username.charAt(0).toUpperCase()}
-            </Avatar>:<Avatar src={item.createdBy.imageurl} />}
-            title={<b>{item.createdBy.username}</b>}
-            description={<Tag icon={<ClockCircleOutlined />} color="processing">
+            avatar={<Avatar src="https://netstorage-tuko.akamaized.net/images/5cd3d44ba68de436.png?&imwidth=800" />}
+            title={<b>JKUAT ELECTION</b>}
+            description={<Tag  color="processing">
               {moment(item.closingTime).diff(moment(),"hours")>1?
               moment(item.closingTime).diff(moment(),"days")>1?
               moment(item.closingTime).diff(moment(),"months")>1?

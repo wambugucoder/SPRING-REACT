@@ -1,5 +1,4 @@
 import { Skeleton, List, Avatar } from 'antd';
-import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons';
 import React from "react";
 
 const listData = [];
@@ -15,12 +14,7 @@ for (let i = 0; i < 3; i++) {
   });
 }
 
-const IconText = ({ icon, text }) => (
-    <span>
-      {React.createElement(icon, { style: { marginRight: 8 } })}
-      {text}
-    </span>
-  );
+
 
 function LoadingPolls(){
     return (
