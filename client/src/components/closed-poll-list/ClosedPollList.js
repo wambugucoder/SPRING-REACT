@@ -1,12 +1,11 @@
-import { List, Avatar, Space, Tag } from 'antd';
-import {StarOutlined, ClockCircleOutlined,CheckCircleOutlined } from '@ant-design/icons';
+import { List, Avatar, Space, Tag ,Progress } from 'antd';
+import {StarOutlined,CheckCircleOutlined} from '@ant-design/icons';
 import React, { useEffect} from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { FetchClosedPolls } from '../../store/actions/Action';
 import RandomColor from '../../constants/RandomColor';
 import moment from 'moment';
 import LoadingPolls from '../loading-polls-content/LoadingPolls';
-import ProgressBar from "@ramonak/react-progress-bar";
 import "../active-polls-component/ActivePoll.css"
 
 
@@ -27,6 +26,7 @@ function ClosedPollList(){
   const error=useSelector(state=>state.error)
   
   useEffect(() => {
+    //dispatch call
     dispatch(FetchClosedPolls())
     
    // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,24 +83,21 @@ function ClosedPollList(){
               {options.map((choices,i)=>{
                 const choiceId=choices.id
              return <div className="results">
-               <span className="result-choice">{choices.option}</span>
-               <span> </span>
-               <span>{ DidUserVoteForThisChoice(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
-                <span className="percent"> <ProgressBar className="pg-chart"
-               completed={CalculatePercentage(pollId,choiceId)}
-               bgColor="#3C6177"
-               height="40px"
-               width="55%"
-               borderRadius="7px"
-               labelAlignment="left"
-               baseBgColor="#000000"
-               labelColor="#fffff"
-       /></span>
-              
-       
-               </div>
-                })}
-           </div>
+             <div>
+             <span className="result-choice">{choices.option}</span>
+             <span></span>
+             <span>{ DidUserVoteForThisChoice(pollId,choiceId)?<CheckCircleOutlined style={{fontSize: 13}}/>:<span></span>}</span>
+           
+             </div>
+            <span> 
+            <Progress strokeWidth={14} percent={CalculatePercentage(pollId,choiceId)} status="active" /> 
+            </span>
+            <span></span>
+            
+     
+             </div>
+              })}
+         </div>
           ) 
      }
    const RenderIfFetched=()=>{
@@ -129,11 +126,9 @@ function ClosedPollList(){
             
            >
              <List.Item.Meta
-               avatar={item.createdBy.imageurl==="none"?  <Avatar style={{backgroundColor:RandomColor()}} >
-                   {item.createdBy.username.charAt(0).toUpperCase()}
-               </Avatar>:<Avatar src={item.createdBy.imageurl} />}
-               title={<b>{item.createdBy.username}</b>}
-               description={<Tag icon={<ClockCircleOutlined />} color="red">
+                avatar={<Avatar src="https://netstorage-tuko.akamaized.net/images/5cd3d44ba68de436.png?&imwidth=800" />}
+                title={<b>JKUAT ELECTION</b>}
+               description={<Tag  color="red">
                  {"Closed  "+ moment(item.closingTime).fromNow()}
              </Tag>}
              />

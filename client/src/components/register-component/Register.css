@@ -12,11 +12,31 @@
     max-width: 300px;
   }
  .register-form .basic-form{
-     margin-top: 6rem;
+     margin-top: 3rem;
  }
+ .register-form .light-form{
+    margin-top: 1rem;
+}
  .register-form .registration-title{
      padding-left: 10px;
      justify-content: center;
      text-align: center;
      margin-top: 4rem;
  }
+ .site-statistic-demo-card{
+    margin-top: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+.intro-card{
+    border-radius: 25px;
+    border: 2px hidden #7a7c77;
+    padding: 20px;
+    
+
+}
+.card-header{
+  font-weight: 700;
+  font-size: large;
+}

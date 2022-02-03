@@ -1,6 +1,5 @@
 import "./ScheduledList.css"
 import { List, Avatar, Space, Tag, Radio, Button } from 'antd';
-import { ClockCircleOutlined, CalendarTwoTone } from '@ant-design/icons';
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import {FetchScheduledPolls } from '../../store/actions/Action';
@@ -79,10 +78,10 @@ function ScheduledList(){
           <List.Item
             key={item.id}
             actions={[
-                <Button ghost size="small"
-              key="list-vertical-message"
-              icon={<CalendarTwoTone/> }
-              onClick={()=>{setReminder(item)}}
+                <Button size="small"
+                type="primary"
+                 key="list-vertical-message"
+                onClick={()=>{setReminder(item)}}
               >
               Set Reminder
             </Button> ,
@@ -91,11 +90,9 @@ function ScheduledList(){
            
           >
             <List.Item.Meta
-              avatar={item.createdBy.imageurl==="none"?  <Avatar style={{backgroundColor:RandomColor()}} >
-                  {item.createdBy.username.charAt(0).toUpperCase()}
-              </Avatar>:<Avatar src={item.createdBy.imageurl} />}
-              title={<b>{item.createdBy.username}</b>}
-              description={<Tag color="cyan" icon={<ClockCircleOutlined />}>
+               avatar={<Avatar src="https://netstorage-tuko.akamaized.net/images/5cd3d44ba68de436.png?&imwidth=800" />}
+               title={<b>JKUAT ELECTION</b>}
+              description={<Tag color="cyan">
                 {"Opens "+moment(item.scheduledTime).fromNow()}
             </Tag>}
             />

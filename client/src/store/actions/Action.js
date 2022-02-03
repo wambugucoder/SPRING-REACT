@@ -81,7 +81,7 @@ export const LogOutUser = () => dispatch => {
      
    })
      // Redirect to login
-window.location.href = "/login";
+window.location.href = "/";
    };
 
 export const OauthSuccess=(token)=>dispatch=>{
@@ -211,3 +211,5 @@ export const CastVote = (uId,pId,cId)=>dispatch =>{
           })
         });
 };
+
+

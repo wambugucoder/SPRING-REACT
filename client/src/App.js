@@ -17,6 +17,8 @@ import CreatePollDashboard from './components/create-poll-dashboard/CreatePollDa
 
 
 
+
+
 //const redux_store=useStore();
 
 //SESSION MANAGEMENT IN MAIN APP
@@ -41,7 +43,7 @@ if(localStorage.jwtToken){
     //remove token
     localStorage.removeItem("jwtToken");
      // Logout user
-    window.location.href="/login"
+    window.location.href="/"
     store.dispatch(LogOutUser())
    }
   }
